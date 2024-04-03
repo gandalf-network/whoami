@@ -1,3 +1,10 @@
+import whoamiQueue from "@/server/helpers/queue";
+
+interface GetShowsFromSauronJobPayload {
+  dataKey: string;
+  sessionID: string;
+}
+
 export async function GET(req: Request) {
   const url = new URL(req.url);
   const searchParams = url.searchParams;
@@ -15,4 +22,18 @@ export async function GET(req: Request) {
       },
     );
   }
+
+  const getShowsFromSauronJobPayload: GetShowsFromSauronJobPayload = {
+    dataKey,
+    sessionID,
+  };
+
+  await whoamiQueue.add(getShowsFromSauronJobPayload);
+
+  return new Response(JSON.stringify({ message: "Crunching you data..." }), {
+    status: 200,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
 }

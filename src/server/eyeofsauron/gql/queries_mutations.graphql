@@ -1,0 +1,107 @@
+query getActivity($dataKey: String!, $source: Source!, $limit: Int64!, $page: Int64!) {
+  getActivity(dataKey: $dataKey, source: $source, limit: $limit, page: $page) {
+    data {
+      id
+      metadata {
+        ... on AmazonActivityMetadata {
+          productName
+          subject {
+            value
+            identifierType
+          }
+          date
+          quantityPurchased
+          totalCost
+        }
+        ... on NetflixActivityMetadata {
+          title
+          subject {
+            value
+            identifierType
+          }
+          date
+        }
+        ... on PlaystationActivityMetadata {
+          title
+          subject {
+            value
+            identifierType
+          }
+          lastPlayedAt
+        }
+        ... on YoutubeActivityMetadata {
+          title
+          subject {
+            value
+            identifierType
+          }
+          date
+          percentageWatched
+          contentType
+        }
+        __typename
+      }
+      __typename
+    }
+    limit
+    total
+    page
+    __typename
+  }
+  __typename
+}query lookupActivity($dataKey: String!, $activityId: UUID!) {
+  lookupActivity(dataKey: $dataKey, activityId: $activityId) {
+    id
+    metadata {
+      ... on AmazonActivityMetadata {
+        productName
+        subject {
+          value
+          identifierType
+        }
+        date
+        quantityPurchased
+        totalCost
+      }
+      ... on NetflixActivityMetadata {
+        title
+        subject {
+          value
+          identifierType
+        }
+        date
+      }
+      ... on PlaystationActivityMetadata {
+        title
+        subject {
+          value
+          identifierType
+        }
+        lastPlayedAt
+      }
+      ... on YoutubeActivityMetadata {
+        title
+        subject {
+          value
+          identifierType
+        }
+        date
+        percentageWatched
+        contentType
+      }
+      __typename
+    }
+    __typename
+  }
+  __typename
+}query getAppByPublicKey($publicKey: String!) {
+  getAppByPublicKey(publicKey: $publicKey) {
+    appName
+    publicKey
+    iconURL
+    gandalfID
+    appRegistrar
+    __typename
+  }
+  __typename
+}

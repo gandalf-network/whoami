@@ -1,11 +1,11 @@
 import { PrismaClient } from "@prisma/client";
 
 import {
-  Resolvers,
-  QueryGetStatsArgs,
   QueryGetReportCardArgs,
   QueryGetSessionArgs,
-} from "../../../__generated__/graphql";
+  QueryGetStatsArgs,
+  Resolvers,
+} from "@/server/__generated__/graphql";
 
 const prisma = new PrismaClient();
 

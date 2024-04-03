@@ -1,9 +1,13 @@
+import { PrismaClient } from "@prisma/client";
+
 import {
   Resolvers,
   QueryGetStatsArgs,
   QueryGetReportCardArgs,
   QueryGetSessionArgs,
 } from "../../../__generated__/graphql";
+
+const prisma = new PrismaClient();
 
 const resolvers: Resolvers = {
   Query: {

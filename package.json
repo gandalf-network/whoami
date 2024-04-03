@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "db-migrate": "npx prisma migrate dev --name",
+    "prisma-generate": "npx prisma generate",
     "compile-gql": "graphql-codegen --config codegen.ts --debug --verbose"
   },
   "dependencies": {

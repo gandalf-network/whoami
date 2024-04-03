@@ -6,9 +6,13 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "db-migrate": "npx prisma migrate dev --name",
+    "compile-gql": "graphql-codegen --config codegen.ts --debug --verbose"
   },
   "dependencies": {
+    "@as-integrations/next": "^3.0.0",
+    "@prisma/client": "^5.12.0",
     "@vercel/analytics": "^1.2.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
@@ -21,6 +25,9 @@
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
+    "@graphql-codegen/cli": "5.0.2",
+    "@graphql-codegen/typescript": "4.0.6",
+    "@graphql-codegen/typescript-resolvers": "4.0.6",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
@@ -31,7 +38,9 @@
     "eslint-config-universe": "^12.0.0",
     "postcss": "^8",
     "prettier": "^3.2.5",
+    "prisma": "^5.12.0",
     "tailwindcss": "^3.3.0",
-    "typescript": "^5"
+    "typescript": "^5",
+    "@graphql-codegen/introspection": "4.0.3"
   }
 }

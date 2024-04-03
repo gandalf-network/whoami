@@ -1,0 +1,60 @@
+type Session {
+  redirectURL: String!
+  sessionID: String!
+}
+
+type TvShowDetails {
+  date: String!
+  title: String!
+  imageURL: String!
+}
+
+type WatchedTvShow {
+  numberOfTimes: Int!
+  title: String!
+  episode: String!
+  season: String!
+  imageURL: String!
+}
+
+type CrossoverStar {
+  name: String!
+  topShows: [String!]!
+  imageURL: String!
+}
+
+type Stats {
+  firstTvShow: TvShowDetails!
+  mostWatchedTvShow: WatchedTvShow!
+  yourCrossoverStar: CrossoverStar!
+  genreDistribution: [String!]!
+}
+
+type TvBFF {
+  name: String!
+  show: String!
+  reason: String!
+  imageURL: String!
+}
+
+type RealStarSign {
+  name: String!
+  show: String!
+  reason: String!
+}
+
+type ReportCard {
+  rottenTomatoeScore: Int!
+  tvBFF: TvBFF!
+  realStarSign: RealStarSign!
+}
+
+type Query {
+  getSession(sessionID: String!): String!
+  getStats(sessionID: String!): Stats!
+  getReportCard(sessionID: String!): ReportCard!
+}
+
+type Mutation {
+  startSession: Session!
+}

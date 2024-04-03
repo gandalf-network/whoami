@@ -1,12 +1,10 @@
 import { Analytics } from "@vercel/analytics/react";
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 
 import "./globals.css";
 import { AppProvider } from "@/components/providers";
+import { poppins } from "@/helpers/fonts";
 import { sharedMetadata } from "@/helpers/metadata";
-
-const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   ...sharedMetadata,
@@ -19,7 +17,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
+      <body className={poppins.className}>
         <AppProvider>{children}</AppProvider>
         <Analytics />
       </body>

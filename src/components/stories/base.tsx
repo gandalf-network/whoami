@@ -1,10 +1,26 @@
 "use client";
 
 import DefaultStories from "react-insta-stories";
-import type { ReactInstaStoriesProps } from "react-insta-stories/dist/interfaces";
+import type {
+  ReactInstaStoriesProps,
+  Story,
+  Action,
+} from "react-insta-stories/dist/interfaces";
 
-interface StoriesProps extends ReactInstaStoriesProps {}
+// --- types
+export type { Story };
 
+export interface StoriesProps extends ReactInstaStoriesProps {}
+
+export interface StoryContentProps
+  extends React.HTMLAttributes<HTMLDivElement> {
+  storyProps: {
+    action?: Action;
+    isPaused?: boolean;
+  };
+}
+
+// --- component
 export const Stories = ({ ...props }: StoriesProps) => {
   const progressStyleConfig = {
     height: "3px",

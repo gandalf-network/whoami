@@ -19,6 +19,10 @@ const config = {
           DEFAULT: "var(--primary)",
           foreground: "var(--primary-foreground)",
           cyan: "var(--primary-cyan)",
+          green: "var(--primary-green)",
+          yellow: "var(--primary-yellow)",
+          pink: "var(--primary-pink)",
+          orange: "var(--primary-orange)",
         },
       },
       borderRadius: {

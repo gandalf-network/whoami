@@ -1,9 +1,9 @@
 import { cn } from "@/helpers/utils";
 
-import { LogoIcon } from "../icon";
+import { LogoIcon, LogoMarkIcon } from "../icon";
 
 export interface HeaderProps extends React.HTMLAttributes<HTMLDivElement> {
-  name: string;
+  name?: string;
 }
 
 export const PageHeader = ({ name, className, ...props }: HeaderProps) => {
@@ -12,8 +12,11 @@ export const PageHeader = ({ name, className, ...props }: HeaderProps) => {
       className={cn("w-full flex items-center justify-between", className)}
       {...props}
     >
-      <LogoIcon />
-      <p className="font-bold text-sm uppercase">{name}</p>
+      <div className="flex items-center gap-x-1">
+        <LogoIcon />
+        <LogoMarkIcon />
+      </div>
+      {name && <p className="font-bold text-sm uppercase">{name}</p>}
     </header>
   );
 };

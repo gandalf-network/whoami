@@ -53,6 +53,21 @@ export const Box = ({
   );
 };
 
+export const Circle = ({
+  className,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement>) => {
+  return (
+    <div
+      className={cn(
+        "w-12 h-12 border-2 rounded-full shadow-black bg-background",
+        className,
+      )}
+      {...props}
+    />
+  );
+};
+
 export const BulletPoint = ({
   className,
   ...props

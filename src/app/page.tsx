@@ -18,15 +18,15 @@ import { appInfo } from "@/helpers/utils";
 export default function Home() {
   return (
     <Container className="relative">
-      <div className="py-10 z-20 flex flex-col items-center justify-center h-full relative">
-        <Box className="flex items-center gap-x-8 h-10">
+      <div className="py-10 flex-col flex-center h-full offset-content">
+        <Box className="flex-center-y gap-x-8 h-10">
           <BulletPoint />
           <PoweredByGandalfIcon className="w-36" />
           <BulletPoint />
         </Box>
 
-        <div className="flex-1 flex flex-col gap-3 justify-center items-center">
-          <div className="flex items-center gap-x-1">
+        <div className="flex-1 flex-center flex-col gap-3">
+          <div className="flex-center-y gap-x-1">
             <LogoIcon className="w-14" />
             <LogoMarkOutlinedIcon className="w-64" />
           </div>
@@ -38,7 +38,7 @@ export default function Home() {
           </a>
         </div>
 
-        <Box className="flex items-center gap-x-2 h-9 border shadow-[0px_4px] mb-8">
+        <Box className="flex-center-y gap-x-2 h-9 border shadow-[0px_4px] mb-8">
           <a target="_blank" href={appInfo.repoUrl}>
             <Button variant="link" className="text-xs gap-x-1 px-0">
               <GithubIcon className="w-5" />
@@ -55,7 +55,7 @@ export default function Home() {
         </Box>
       </div>
 
-      <BluePinkWaveBackground className="justify-end relative z-10" />
+      <BluePinkWaveBackground className="justify-end z-10" />
 
       <GridLineBackground />
     </Container>

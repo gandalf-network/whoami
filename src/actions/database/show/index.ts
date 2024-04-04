@@ -1,8 +1,13 @@
 import { PrismaClient } from "@prisma/client";
+
+import { FirstTvShow, YourCrossoverStar } from "@/types";
+
 const prisma = new PrismaClient();
 
 type CreateShowInput = {
   title: string;
+  numberOfEpisodes: number;
+  episodeTitle: string;
   datePlayed: string;
   userID: string;
   genre?: string;
@@ -25,12 +30,11 @@ export async function createAndConnectShowToUser(
       show = await prisma.show.create({
         data: {
           title: createShowInput.title,
+          numberOfEpisodes: createShowInput.numberOfEpisodes,
           ...(createShowInput.imageURL && {
             imageURL: createShowInput.imageURL,
           }),
-          ...(createShowInput.season && { season: createShowInput.season }),
           ...(createShowInput.genre && { genre: createShowInput.genre }),
-          ...(createShowInput.episode && { episode: createShowInput.episode }),
         },
       });
     }
@@ -44,33 +48,47 @@ export async function createAndConnectShowToUser(
       };
     }
 
-    await prisma.userShow.upsert({
+    const episode = await prisma.episode.upsert({
       where: {
-        userId_showId: {
+        unique_show_season_episode: {
+          showID: show.id,
+          episode: createShowInput.episode || 0,
+          season: createShowInput.season || 0,
+        },
+      },
+      update: {},
+      create: {
+        ...(createShowInput.season && { season: createShowInput.season }),
+        ...(createShowInput.genre && { genre: createShowInput.genre }),
+        ...(createShowInput.episode && { episode: createShowInput.episode }),
+      },
+    });
+
+    await prisma.userEpisode.upsert({
+      where: {
+        userId_episodeID: {
           userId: createShowInput.userID,
-          showId: show.id,
+          episodeID: episode.id,
         },
       },
       update: {},
       create: {
         userId: createShowInput.userID,
-        showId: show.id,
+        episodeID: episode.id,
         datePlayed: createShowInput.datePlayed,
       },
     });
 
-    return { show, error: null };
+    return { episode, error: null };
   } catch (error: any) {
-    return { show: null, error };
+    return { episode: null, error };
   }
 }
 
 type UpdateShowInput = {
   id: string;
-  genre?: string;
   imageURL?: string;
-  season?: number;
-  episode?: number;
+  numberOfEpisodes: number;
 };
 
 export async function updateShow(updateShowInput: UpdateShowInput) {
@@ -81,13 +99,213 @@ export async function updateShow(updateShowInput: UpdateShowInput) {
       },
       data: {
         ...(updateShowInput.imageURL && { imageURL: updateShowInput.imageURL }),
-        ...(updateShowInput.season && { season: updateShowInput.season }),
-        ...(updateShowInput.genre && { genre: updateShowInput.genre }),
-        ...(updateShowInput.episode && { episode: updateShowInput.episode }),
+        ...(updateShowInput.numberOfEpisodes && {
+          season: updateShowInput.numberOfEpisodes,
+        }),
       },
     });
     return { show, error: null };
   } catch (error: any) {
     return { show: null, error };
+  }
+}
+
+type UpdateEpisodeInput = {
+  id: string;
+  genre?: string;
+  season?: number;
+  episode?: number;
+};
+
+export async function updateEpisode(updateEpisodeInput: UpdateEpisodeInput) {
+  try {
+    const episode = await prisma.show.update({
+      where: {
+        id: updateEpisodeInput.id,
+      },
+      data: {
+        ...(updateEpisodeInput.season && { season: updateEpisodeInput.season }),
+        ...(updateEpisodeInput.genre && { genre: updateEpisodeInput.genre }),
+        ...(updateEpisodeInput.episode && {
+          episode: updateEpisodeInput.episode,
+        }),
+      },
+    });
+    return { episode, error: null };
+  } catch (error: any) {
+    return { episode: null, error };
+  }
+}
+
+export async function getTotalNumberOfShowsWatchedByUser(userId: string) {
+  try {
+    const watchCount = await prisma.userEpisode.count({
+      where: {
+        userId,
+      },
+    });
+    return { watchCount, error: null };
+  } catch (error: any) {
+    return { watchCount: null, error };
+  }
+}
+
+export async function getUsersFirstShow(userID: string) {
+  try {
+    const usersFirstShowRes = await prisma.user.findUnique({
+      where: { id: userID },
+      select: {
+        episodes: {
+          orderBy: {
+            datePlayed: "asc",
+          },
+          take: 1,
+          select: {
+            datePlayed: true,
+            episode: {
+              select: {
+                id: true,
+                Show: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!usersFirstShowRes)
+      return { usersFirstShow: null, error: new Error("show not found`") };
+
+    const usersFirstShow: FirstTvShow = {
+      date: usersFirstShowRes.episodes[0].datePlayed.toString(),
+      title: usersFirstShowRes.episodes[0].episode.Show?.title as string,
+      imageURL: usersFirstShowRes.episodes[0].episode.Show?.imageURL as string,
+    };
+
+    return { usersFirstShow, error: null };
+  } catch (error) {
+    return { usersFirstShow: null, error };
+  }
+}
+
+type TopEpisode = {
+  episodeID: string;
+  episode: string;
+  season: string;
+  imageURL: string;
+  title: string;
+  showID: string;
+  numberOfTimes: number;
+  score: number;
+};
+
+export async function getTop5EpisodesByUser(userID: string) {
+  try {
+    const topEpisodes: TopEpisode[] = await prisma.$queryRaw`
+      SELECT 
+        e.id as episodeID, 
+        e.season,
+        e.episode,
+        s."imageURL",
+        s.title,
+        e."showID", 
+      COUNT(ue."episodeID") AS numberOfTimes, 
+      COUNT(ue."episodeID")::FLOAT / s."numberOfEpisodes" AS score
+      FROM 
+        "UserEpisode" ue
+      JOIN 
+        "Episode" e ON ue."episodeID" = e.id
+      JOIN 
+        "Show" s ON e."showID" = s.id
+      WHERE
+        ue."userId" = ${userID}
+      GROUP BY 
+        e.id, s.id
+      ORDER BY 
+        score DESC
+      LIMIT 5;
+    `;
+    return { topEpisodes, error: null };
+  } catch (error) {
+    return { topEpisodes: null, error };
+  }
+}
+
+async function getUsersMostWatchedActor(userID: string) {
+  try {
+    const mostWatchedActor: any = await prisma.$queryRaw`
+      SELECT 
+        a.id, a.name, a."imageURL", COUNT(DISTINCT sa."B") AS shows_count
+      FROM 
+        "UserEpisode" ue
+      INNER JOIN 
+        "Episode" e ON ue."episodeID" = e.id
+      INNER JOIN 
+        "Show" s ON e."showID" = s.id
+      INNER JOIN 
+        "_ActorToShow" sa ON s.id = sa."B"
+      INNER JOIN 
+        "Actor" a ON sa."A" = a.id
+      WHERE 
+        ue."userId" = ${userID}
+      GROUP BY 
+        a.id
+      ORDER BY 
+        shows_count DESC
+      LIMIT 1;
+    `;
+    return { mostWatchedActor, error: null };
+  } catch (error) {
+    return { mostWatchedActor: null, error };
+  }
+}
+
+export async function getUsersTopShowsByActor(userID: string) {
+  try {
+    const { mostWatchedActor, error } = await getUsersMostWatchedActor(userID);
+    if (error || !mostWatchedActor) {
+      return { topShowsForActorByUser: null, error };
+    }
+
+    const topShowsForActorByUserRes: any = await prisma.$queryRaw`
+      SELECT 
+        s.id AS "showId",
+        s.title,
+        COUNT(DISTINCT ue."episodeID") AS "episodesWatched"
+      FROM 
+        "UserEpisode" ue
+      INNER JOIN 
+        "Episode" e ON ue."episodeID" = e.id
+      INNER JOIN 
+        "Show" s ON e."showID" = s.id
+      INNER JOIN 
+        "_ActorToShow" sa ON s.id = sa."B"
+      WHERE 
+        ue."userId" = ${userID} AND sa."A" = ${mostWatchedActor.id}
+      GROUP BY 
+        s.id
+      ORDER BY 
+        "episodesWatched" DESC
+      LIMIT 5;
+    `;
+
+    if (!topShowsForActorByUserRes)
+      return {
+        topShowsForActorByUser: null,
+        error: new Error("actors shows not found`"),
+      };
+
+    const actorsTop5: string[] = topShowsForActorByUserRes.map(
+      (show: any) => show.title,
+    );
+    const topShowsForActorByUser: YourCrossoverStar = {
+      topShows: actorsTop5,
+      name: mostWatchedActor.name,
+      imageURL: mostWatchedActor.imageURL,
+    };
+
+    return { topShowsForActorByUser, error: null };
+  } catch (error) {
+    return { topShowsForActorByUser: null, error };
   }
 }

@@ -13,24 +13,51 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum UserState {
+  AWAITING_CONNECTION
+  CONNECTED
+  CRUNCHING_DATA
+  COMPLETED
+}
+
+model User {
+  id         String    @id @default(uuid())
+  identifier String    @db.VarChar(255) @unique
+  state      UserState @default(AWAITING_CONNECTION)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  shows      UserShow[]
+}
+
 model Show {
-  id         Int      @id @default(autoincrement())
-  title      String   @db.VarChar(255)
-  dataPlayed DateTime @db.Timestamp(6)
-  genre      String
-  season     Int
-  episode    Int
-  Actor      Actor[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id         String    @id @default(uuid())
+  title      String    @db.VarChar(255) @unique
+  genre      String?   @db.VarChar(255)
+  imageURL   String?   @db.VarChar(255)
+  season     Int?
+  episode    Int?
+  actors     Actor[]
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  users      UserShow[]
+}
+
+model UserShow {
+  userId     String @default(uuid())
+  showId     String @default(uuid())
+  datePlayed DateTime
+  
+  user       User @relation(fields: [userId], references: [id])
+  show       Show @relation(fields: [showId], references: [id])
+
+  @@id([userId, showId])
 }
 
 model Actor {
-  id       Int    @id @default(autoincrement())
-  name     String
-  imageURL String
-  showID   Int
-  show     Show   @relation(fields: [showID], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  id        String   @id @default(uuid())
+  name      String  @db.VarChar(255) @unique
+  imageURL  String?  @db.VarChar(255)
+  show      Show[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 }

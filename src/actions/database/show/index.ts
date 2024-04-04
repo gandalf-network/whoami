@@ -64,15 +64,8 @@ export async function createAndConnectShowToUser(
       },
     });
 
-    await prisma.userEpisode.upsert({
-      where: {
-        userId_episodeID: {
-          userId: createShowInput.userID,
-          episodeID: episode.id,
-        },
-      },
-      update: {},
-      create: {
+    await prisma.userEpisode.create({
+      data: {
         userId: createShowInput.userID,
         episodeID: episode.id,
         datePlayed: createShowInput.datePlayed,
@@ -165,7 +158,7 @@ export async function getUsersFirstShow(userID: string) {
             episode: {
               select: {
                 id: true,
-                Show: true,
+                show: true,
               },
             },
           },
@@ -178,8 +171,8 @@ export async function getUsersFirstShow(userID: string) {
 
     const usersFirstShow: FirstTvShow = {
       date: usersFirstShowRes.episodes[0].datePlayed.toString(),
-      title: usersFirstShowRes.episodes[0].episode.Show?.title as string,
-      imageURL: usersFirstShowRes.episodes[0].episode.Show?.imageURL as string,
+      title: usersFirstShowRes.episodes[0].episode.show?.title as string,
+      imageURL: usersFirstShowRes.episodes[0].episode.show?.imageURL as string,
     };
 
     return { usersFirstShow, error: null };

@@ -30,3 +30,9 @@
     @apply bg-background text-foreground overflow-x-hidden;
   }
 }
+
+@layer utilities {
+  .inset-background {
+    @apply absolute inset-0 overflow-hidden pointer-events-none w-full h-full;
+  }
+}

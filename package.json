@@ -12,11 +12,13 @@
     "@vercel/analytics": "^1.2.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
+    "dayjs": "^1.11.10",
     "lucide-react": "^0.331.0",
     "next": "14.1.0",
     "next-themes": "^0.2.1",
     "react": "^18",
     "react-dom": "^18",
+    "react-insta-stories": "^2.6.2",
     "tailwind-merge": "^2.2.1",
     "tailwindcss-animate": "^1.0.7"
   },

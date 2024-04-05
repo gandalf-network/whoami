@@ -10,9 +10,15 @@
     --primary: #FBFE93;
     --primary-foreground: #000;
   
-    --primary-cyan: #D9F5F0;
+    --primary-cyan: #C4F5EC;
+    --primary-green: #B3D3AB;
+    --primary-yellow: #FFE581;
+    --primary-pink: #FDC1C9;
+    --primary-orange: #FFA17B;
 
     --border: #000;
+
+    --progress: #F6D7B2;
 
     --radius: 0.5rem;
   }
@@ -28,5 +34,65 @@
   }
   body {
     @apply bg-background text-foreground overflow-x-hidden;
+  }
+}
+
+@layer components {
+  .custom-progress[value] {
+    @apply appearance-none border-2 border-black rounded-full h-14 bg-white overflow-hidden;
+  }
+
+  .custom-progress[value]::-webkit-progress-bar {
+    @apply rounded-full bg-white h-14;
+  }
+
+  .custom-progress[value]::-webkit-progress-value {
+    appearance: none;
+    border-right: 2px solid var(--foreground);
+    background-color: var(--progress);
+  }
+}
+
+@layer utilities {
+  .story-container {
+    @apply min-h-svh;
+  }
+
+  @media (max-height: 750px) {
+    .story-container {
+      min-height: 120svh;
+    }
+  }
+
+  @media (max-height: 700px) {
+    .story-container {
+      min-height: 125svh;
+    }
+  }
+
+  @media (max-height: 640px) {
+    .story-container {
+      min-height: 135svh;
+    }
+  }
+
+  .inset-background {
+    @apply absolute inset-0 overflow-hidden pointer-events-none w-full h-full;
+  }
+
+  .offset-content {
+    @apply z-20 relative;
+  }
+
+  .flex-center {
+    @apply flex justify-center items-center
+  }
+
+  .flex-center-x {
+    @apply flex justify-center
+  }
+
+  .flex-center-y {
+    @apply flex items-center
   }
 }

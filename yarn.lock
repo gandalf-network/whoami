@@ -730,6 +730,11 @@ damerau-levenshtein@^1.0.8:
   resolved "https://registry.yarnpkg.com/damerau-levenshtein/-/damerau-levenshtein-1.0.8.tgz#b43d286ccbd36bc5b2f7ed41caf2d0aba1f8a6e7"
   integrity sha512-sdQSFB7+llfUcQHUQO3+B8ERRj0Oa4w9POWMI/puGtuf7gFywGmkaLCElnudfTiKZV+NvHqL0ifzdrI8Ro7ESA==
 
+dayjs@^1.11.10:
+  version "1.11.10"
+  resolved "https://registry.yarnpkg.com/dayjs/-/dayjs-1.11.10.tgz#68acea85317a6e164457d6d6947564029a6a16a0"
+  integrity sha512-vjAczensTgRcqDERK0SR2XMwsF/tSvnvlv6VcF2GIhg6Sx4yOIt/irsr1RDJsKiIyBzJDpCoXiWWq28MqH2cnQ==
+
 debug@^3.2.7:
   version "3.2.7"
   resolved "https://registry.yarnpkg.com/debug/-/debug-3.2.7.tgz#72580b7e9145fb39b6676f9c5e5fb100b934179a"
@@ -2248,6 +2253,11 @@ react-dom@^18:
   dependencies:
     loose-envify "^1.1.0"
     scheduler "^0.23.0"
+
+react-insta-stories@^2.6.2:
+  version "2.6.2"
+  resolved "https://registry.yarnpkg.com/react-insta-stories/-/react-insta-stories-2.6.2.tgz#b421ac351d69a841cac4923a3508c661287858a8"
+  integrity sha512-eM1YHr92bV7WK5h9sECjyYnqZtPxnzJrZFr9IaoDcaZaAEOHVRav+pST513DIG8Hk8QjSTHtdvHHZ0Ka5HwH8w==
 
 react-is@^16.13.1:
   version "16.13.1"

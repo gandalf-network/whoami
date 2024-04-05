@@ -1,3 +1,7 @@
+"use client";
+
+import { useEffect, useState } from "react";
+
 import { cn } from "@/helpers/utils";
 
 export interface ProgressProps
@@ -12,8 +16,30 @@ export const Progress = ({
   className,
   containerClassName,
   labelClassName,
+  value,
   ...props
 }: ProgressProps) => {
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    // trigger animation on loader
+    if (value) {
+      const interval = setInterval(() => {
+        setProgress((prevProgress) => {
+          // Increment progress by 10 every second
+          const newProgress = prevProgress + 1;
+          // Clear interval and set progress to 100 when it reaches 100
+          if (newProgress >= +value) {
+            clearInterval(interval);
+            return +value;
+          }
+          return newProgress;
+        });
+      }, 20);
+
+      return () => clearInterval(interval);
+    }
+  }, []);
   return (
     <div className={cn("relative w-full", containerClassName)}>
       {label && (
@@ -23,7 +49,11 @@ export const Progress = ({
           </p>
         </div>
       )}
-      <progress className={cn("custom-progress", className)} {...props} />
+      <progress
+        className={cn("custom-progress", className)}
+        value={progress}
+        {...props}
+      />
     </div>
   );
 };

@@ -17,6 +17,8 @@
     "axios": "^1.6.8",
     "bottleneck": "^2.19.5",
     "cheerio": "^1.0.0-rc.12",
+    "@vercel/node": "^3.0.26",
+    "bullmq": "^5.5.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "dotenv": "^16.4.5",
@@ -24,7 +26,11 @@
     "graphql": "^16.8.1",
     "graphql-request": "^6.1.0",
     "graphql-tag": "^2.12.6",
+<<<<<<< HEAD
     "js-levenshtein": "^1.1.6",
+=======
+    "ioredis": "^5.3.2",
+>>>>>>> c55f698 ([ feat ] serverless functions)
     "lucide-react": "^0.331.0",
     "next": "14.1.0",
     "next-themes": "^0.2.1",

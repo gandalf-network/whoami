@@ -28,7 +28,7 @@ export const Container = ({
   return (
     <div
       className={cn(
-        "flex min-h-svh justify-center bg-gray-200 md:p-4",
+        "story-container flex justify-center bg-gray-200 md:p-4",
         containerClassName,
       )}
       {...props}

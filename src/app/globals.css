@@ -54,6 +54,28 @@
 }
 
 @layer utilities {
+  .story-container {
+    @apply min-h-svh;
+  }
+
+  @media (max-height: 750px) {
+    .story-container {
+      min-height: 110svh;
+    }
+  }
+
+  @media (max-height: 700px) {
+    .story-container {
+      min-height: 120svh;
+    }
+  }
+
+  @media (max-height: 640px) {
+    .story-container {
+      min-height: 135svh;
+    }
+  }
+
   .inset-background {
     @apply absolute inset-0 overflow-hidden pointer-events-none w-full h-full;
   }

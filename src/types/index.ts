@@ -1,15 +1,16 @@
-export type FirstTvShow = {
-  date: string;
+export type Show = {
+  id: string;
   title: string;
+  dateFirstPlayed: string;
+  watchCount?: number;
   imageURL?: string;
 };
 
-export type MostWatchedTvShow = {
-  numberOfTimes: number;
-  title: string;
+export type Episode = {
+  id: string;
   episode: string;
   season: string;
-  imageURL: string;
+  watchCount?: number;
 };
 
 export type YourCrossoverStar = {
@@ -20,5 +21,14 @@ export type YourCrossoverStar = {
 
 export type WatchHistory = {
   totalShowsWatched: number;
-  topShows: MostWatchedTvShow[];
+  topShows: Show[];
+};
+
+export type MostWatchedTvShowWithEpisode = Show & Episode;
+
+export type UserStats = {
+  firstTvShow: Show;
+  watchHistory: WatchHistory;
+  mostWatchedTvShow: MostWatchedTvShowWithEpisode;
+  yourCrossoverStar: YourCrossoverStar;
 };

@@ -20,53 +20,71 @@ enum UserState {
   COMPLETED
 }
 
-model User {
+model user {
   id         String     @id @default(uuid())
   identifier String     @unique @db.VarChar(255)
   state      UserState  @default(AWAITING_CONNECTION)
+  episodes   user_episode[]
+  shows      user_show[]
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
-  episodes   UserEpisode[]
 }
 
-model Episode {
+model episode {
   id      String     @id @default(uuid())
   season  Int?
   episode Int?
-  users   UserEpisode[]
-  show    Show?      @relation(fields: [showID], references: [id])
   showID  String?
+  users   user_episode[]
+  show    show?      @relation(fields: [showID], references: [id])
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 
   @@unique([showID, season, episode], name: "unique_show_season_episode")
+  @@index([showID])
 }
 
-model Show {
+model show {
   id               String    @id @default(uuid())
   title            String    @unique @db.VarChar(255)
   numberOfEpisodes Int
   genre            String?   @db.VarChar(255)
   imageURL         String?   @db.VarChar(255)
+  episodes         episode[]
+  actors           actor[]
+  users            user_show[]
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
-  episodes         Episode[]
-  actors           Actor[]
 }
 
-model UserEpisode {
+model user_episode {
   id         String    @id @default(uuid())
-  userId     String  
+  userID     String  
   episodeID  String  
   datePlayed DateTime
 
-  user    User    @relation(fields: [userId], references: [id])
-  episode Episode @relation(fields: [episodeID], references: [id])
+  user    user    @relation(fields: [userID], references: [id])
+  episode episode @relation(fields: [episodeID], references: [id])
+
+  @@index([userID])
+  @@index([episodeID])
 }
 
-model Actor {
+model user_show {
+  userID     String  
+  showID     String  
+
+  user    user    @relation(fields: [userID], references: [id])
+  show    show    @relation(fields: [showID], references: [id])
+
+  @@id([userID, showID], name: "user_show_id")
+}
+
+model actor {
   id        String    @id @default(uuid())
   name      String    @unique @db.VarChar(255)
   imageURL  String?   @db.VarChar(255)
-  shows     Show[]
+  shows     show[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 }

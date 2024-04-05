@@ -1,25 +1,13 @@
-import {
-  FirstTvShow,
-  WatchHistory,
-  MostWatchedTvShow,
-  YourCrossoverStar,
-} from "@/types";
+import { MostWatchedTvShowWithEpisode, UserStats } from "@/types";
 
 import {
-  getTop5EpisodesByUser,
+  getTop5ShowsByUser,
   getTotalNumberOfShowsWatchedByUser,
   getUsersFirstShow,
+  getUsersMostWatchedEpisodeByShow,
   getUsersTopShowsByActor,
 } from "./show";
 import { findOrCreateUserBySessionID } from "./user";
-
-type Stats = {
-  firstTvShow: FirstTvShow;
-  watchHistory: WatchHistory;
-  mostWatchedTvShow: MostWatchedTvShow;
-  yourCrossoverStar: YourCrossoverStar;
-  // genreDistribution: "[]String";
-};
 
 export async function getStats(sessionID: string) {
   const { user, error } = await findOrCreateUserBySessionID(sessionID);
@@ -27,35 +15,47 @@ export async function getStats(sessionID: string) {
     return { stats: null, error };
   }
 
-  const { usersFirstShow, error: ufsError } = await getUsersFirstShow(user.id);
-  if (ufsError || !usersFirstShow) {
+  const { usersFirstShow, error: usersFirstShowError } =
+    await getUsersFirstShow(user.id);
+  if (usersFirstShowError || !usersFirstShow) {
     return { stats: null, error };
   }
 
-  const { topEpisodes, error: teError } = await getTop5EpisodesByUser(user.id);
-  if (teError || !topEpisodes) {
+  const { topShows, error: topShowsError } = await getTop5ShowsByUser(user.id);
+  if (topShowsError || !topShows) {
     return { stats: null, error };
   }
 
-  const { watchCount, error: wcError } =
+  const { topEpisode, error: topEpisodeError } =
+    await getUsersMostWatchedEpisodeByShow(user.id, topShows[0].id);
+  if (topEpisodeError || !topEpisode) {
+    return { stats: null, error };
+  }
+
+  const { watchCount, error: watchCountError } =
     await getTotalNumberOfShowsWatchedByUser(user.id);
-  if (wcError || !watchCount) {
+  if (watchCountError || !watchCount) {
     return { stats: null, error };
   }
 
-  const { topShowsForActorByUser, error: t5sError } =
+  const { topShowsForActorByUser, error: topShowsForActorByUserError } =
     await getUsersTopShowsByActor(user.id);
-  if (t5sError || !topShowsForActorByUser) {
+  if (topShowsForActorByUserError || !topShowsForActorByUser) {
     return { stats: null, error };
   }
 
-  const stats: Stats = {
+  const mostWatchedTvShow: MostWatchedTvShowWithEpisode = {
+    ...topShows[0],
+    ...topEpisode,
+  };
+
+  const stats: UserStats = {
     firstTvShow: usersFirstShow,
-    mostWatchedTvShow: topEpisodes[0],
+    mostWatchedTvShow,
     yourCrossoverStar: topShowsForActorByUser,
     watchHistory: {
       totalShowsWatched: watchCount,
-      topShows: topEpisodes,
+      topShows,
     },
   };
 

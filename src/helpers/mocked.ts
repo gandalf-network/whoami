@@ -47,7 +47,7 @@ export const TVStatsMockedData = {
         percentage: 8,
       },
     ],
-    description:
+    summary:
       "Looks like you're a well-rounded viewer with a penchant for a good laugh and an adrenaline rush!",
   },
   totalShows: {

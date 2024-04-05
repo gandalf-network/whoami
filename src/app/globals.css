@@ -18,6 +18,8 @@
 
     --border: #000;
 
+    --progress: #F6D7B2;
+
     --radius: 0.5rem;
   }
 
@@ -32,6 +34,22 @@
   }
   body {
     @apply bg-background text-foreground overflow-x-hidden;
+  }
+}
+
+@layer components {
+  .custom-progress[value] {
+    @apply appearance-none border-2 border-black rounded-full h-14 bg-white overflow-hidden;
+  }
+
+  .custom-progress[value]::-webkit-progress-bar {
+    @apply rounded-full bg-white h-14;
+  }
+
+  .custom-progress[value]::-webkit-progress-value {
+    appearance: none;
+    border-right: 2px solid var(--foreground);
+    background-color: var(--progress);
   }
 }
 

@@ -151,3 +151,22 @@ export const Rectangle = (props: React.SVGProps<SVGSVGElement>) => {
     </svg>
   );
 };
+
+export const HalfEclipse = (props: React.SVGProps<SVGSVGElement>) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 60 110"
+      className="w-6"
+      {...props}
+    >
+      <path
+        fill="#C5A1FF"
+        stroke="#000"
+        strokeWidth={props?.strokeWidth || 2}
+        d="M5 4a51 51 0 0 1 0 102V84.506A29.504 29.504 0 0 0 32.26 43.71 29.505 29.505 0 0 0 5 25.494V4Z"
+      />
+    </svg>
+  );
+};

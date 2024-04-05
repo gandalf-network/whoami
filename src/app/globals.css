@@ -60,13 +60,13 @@
 
   @media (max-height: 750px) {
     .story-container {
-      min-height: 110svh;
+      min-height: 120svh;
     }
   }
 
   @media (max-height: 700px) {
     .story-container {
-      min-height: 120svh;
+      min-height: 125svh;
     }
   }
 

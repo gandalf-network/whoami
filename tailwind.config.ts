@@ -23,6 +23,10 @@ const config = {
           yellow: "var(--primary-yellow)",
           pink: "var(--primary-pink)",
           orange: "var(--primary-orange)",
+          lavender: "var(--primary-lavender)",
+          purple: "var(--primary-purple)",
+          blue: "var(--primary-blue)",
+          tomatoe: "var(--primary-tomatoe)",
         },
       },
       borderRadius: {

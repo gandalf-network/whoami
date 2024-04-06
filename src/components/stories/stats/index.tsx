@@ -13,7 +13,7 @@ export const statsStories: Story[] = [
   { content: (props) => <TVStatDetails storyProps={props} /> },
   { content: (props) => <FirstTVShowStory storyProps={props} /> },
   { content: (props) => <MostRewatchTVShowStory storyProps={props} /> },
-  { content: (props) => <CrossOverStarStory storyProps={props} /> },
   { content: (props) => <TotalTVShowStory storyProps={props} /> },
+  { content: (props) => <CrossOverStarStory storyProps={props} /> },
   { content: (props) => <GenreDistributionStory storyProps={props} /> },
 ];

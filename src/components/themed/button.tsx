@@ -43,10 +43,15 @@ export const Button = ({
 };
 
 export const ShareButton = (props: ButtonProps) => {
+  const onClick = () => {
+    console.log("share");
+  };
+
   return (
     <Button
       className="py-4 bg-transparent hover:bg-transparent text-base uppercase"
       size="sm"
+      onClick={onClick}
       {...props}
     >
       Share

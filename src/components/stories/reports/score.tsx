@@ -3,7 +3,10 @@ import { Circle } from "@/components/icon";
 import { PageHeader, ShareButton, Text } from "@/components/themed";
 import { VerticalSlider } from "@/components/themed/slider";
 import { ReportsCardMockedData } from "@/helpers/mocked";
-import { getRottenTomatoeScoreText } from "@/helpers/story";
+import {
+  getRottenTomatoeScoreText,
+  rottenTomatoeImages,
+} from "@/helpers/story";
 import { cn } from "@/helpers/utils";
 
 import { StoryContentProps } from "../base";
@@ -46,7 +49,7 @@ export const RottenTomatoeStory = ({
                   content: (
                     <div className="flex-center-y gap-x-1">
                       <img
-                        src="https://res.cloudinary.com/dmsic9qmj/image/upload/v1712387315/gandalf/whoami/icons8-tomato-100-2_ezrhu9.png"
+                        src={rottenTomatoeImages["certified fresh"]}
                         alt="icon"
                         className="w-[74px]"
                       />
@@ -59,7 +62,7 @@ export const RottenTomatoeStory = ({
                   content: (
                     <div className="flex-center-y gap-x-1">
                       <img
-                        src="https://res.cloudinary.com/dmsic9qmj/image/upload/v1712387316/gandalf/whoami/icons8-tomato-100_xjuhq0.png"
+                        src={rottenTomatoeImages.fresh}
                         alt="icon"
                         className="w-[74px]"
                       />
@@ -72,7 +75,7 @@ export const RottenTomatoeStory = ({
                   content: (
                     <div className="flex-center-y gap-x-1">
                       <img
-                        src="https://res.cloudinary.com/dmsic9qmj/image/upload/v1712387317/gandalf/whoami/icons8-tomato-100-1_ubnrdh.png"
+                        src={rottenTomatoeImages.rotten}
                         alt="icon"
                         className="w-[74px]"
                       />

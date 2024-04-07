@@ -1,3 +1,12 @@
+export const rottenTomatoeImages = {
+  rotten:
+    "https://res.cloudinary.com/dmsic9qmj/image/upload/v1712387317/gandalf/whoami/icons8-tomato-100-1_ubnrdh.png",
+  fresh:
+    "https://res.cloudinary.com/dmsic9qmj/image/upload/v1712387316/gandalf/whoami/icons8-tomato-100_xjuhq0.png",
+  "certified fresh":
+    "https://res.cloudinary.com/dmsic9qmj/image/upload/v1712387315/gandalf/whoami/icons8-tomato-100-2_ezrhu9.png",
+};
+
 export const rottenTomatoeScoreBar = {
   "0-40": "Rotten",
   "40-70": "Fresh",

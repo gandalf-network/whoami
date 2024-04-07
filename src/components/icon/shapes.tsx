@@ -86,7 +86,7 @@ export const PentagramStar = (props: React.SVGProps<SVGSVGElement>) => {
       {...props}
     >
       <path
-        fill="#69D3E8"
+        fill={props?.fill || "#69D3E8"}
         stroke="#000"
         strokeWidth={props?.strokeWidth || 2}
         d="m44.951 2.163 8.875 27.313a3 3 0 0 0 2.853 2.073h28.718c.97 0 1.372 1.24.588 1.81l-23.234 16.88a3 3 0 0 0-1.09 3.354l8.875 27.313c.3.921-.755 1.687-1.539 1.118l-23.234-16.88a3 3 0 0 0-3.526 0l-23.234 16.88c-.784.57-1.838-.197-1.54-1.118l8.875-27.313a3 3 0 0 0-1.09-3.354L2.016 33.359c-.784-.57-.381-1.81.588-1.81H31.32a3 3 0 0 0 2.853-2.073L43.05 2.163c.3-.921 1.603-.921 1.902 0Z"
@@ -233,6 +233,30 @@ export const Cross = ({ ...props }: React.SVGProps<SVGSVGElement>) => {
       <path
         fill="#000"
         d="M121.81 82.826v1-1Zm79.508 2h1-1Zm-2-2v-1 1Zm0 36.984v-1 1Zm2-2h-1 1Zm-79.508 2v1-1Zm-4 81.508v-1 1Zm-32.983 0v1-1ZM3.318 82.826v1-1Zm79.509-2h1-1Zm-2 2v-1 1Zm2-79.508h-1 1Zm2-1h32.983v-2H84.827v2Zm-1 78.508V3.318h-2v77.508h2Zm-80.509 3h77.509v-2H3.318v2Zm-1 33.984V84.826h-2v32.984h2Zm78.509 1H3.318v2h77.509v-2Zm3 80.508V121.81h-2v77.508h2Zm33.983 1H84.827v2h32.983v-2Zm1-78.508v77.508h2V121.81h-2Zm80.508-3H121.81v2h77.508v-2Zm1-33.984v32.984h2V84.826h-2Zm-78.508-1h77.508v-2H121.81v2Zm-3-80.508v77.508h2V3.318h-2Zm3 78.508a1 1 0 0 1-1-1h-2a3 3 0 0 0 3 3v-2Zm80.508 3a3 3 0 0 0-3-3v2a1 1 0 0 1 1 1h2Zm-3 35.984a3 3 0 0 0 3-3h-2a1 1 0 0 1-1 1v2Zm-78.508 1a1 1 0 0 1 1-1v-2a3 3 0 0 0-3 3h2Zm-3 80.508a3 3 0 0 0 3-3h-2a1 1 0 0 1-1 1v2Zm-35.983-3a3 3 0 0 0 3 3v-2a1 1 0 0 1-1-1h-2Zm-1-78.508a1 1 0 0 1 1 1h2a3 3 0 0 0-3-3v2Zm-80.509-3a3 3 0 0 0 3 3v-2a1 1 0 0 1-1-1h-2Zm3-35.984a3 3 0 0 0-3 3h2a1 1 0 0 1 1-1v-2Zm78.509-1a1 1 0 0 1-1 1v2a3 3 0 0 0 3-3h-2ZM117.81 2.318a1 1 0 0 1 1 1h2a3 3 0 0 0-3-3v2Zm-32.983-2a3 3 0 0 0-3 3h2a1 1 0 0 1 1-1v-2Z"
+      />
+    </svg>
+  );
+};
+
+export const UpArrow = ({
+  strokeWidth = 2,
+  ...props
+}: React.SVGProps<SVGSVGElement>) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 48 48"
+      className="w-10"
+      fill="none"
+      {...props}
+    >
+      <path
+        fill="#91C59F"
+        stroke="#000"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={strokeWidth}
+        d="m24 9.5 12.5 13h-8v14a2 2 0 0 1-2 2h-5a2 2 0 0 1-2-2v-14h-8L24 9.5Z"
       />
     </svg>
   );

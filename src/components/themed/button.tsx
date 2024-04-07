@@ -49,7 +49,7 @@ export const ShareButton = (props: ButtonProps) => {
 
   return (
     <Button
-      className="py-4 bg-transparent hover:bg-transparent text-base uppercase"
+      className="absolute z-[999999999] bottom-8 py-4 bg-transparent hover:bg-transparent text-base uppercase"
       size="sm"
       onClick={onClick}
       {...props}

@@ -1,4 +1,4 @@
-import { Story } from "react-insta-stories/dist/interfaces";
+import { Story } from "@enipx/react-insta-stories/dist/interfaces";
 
 import { TVStatDetails } from "./details";
 import { GenreDistributionStory } from "./genre";

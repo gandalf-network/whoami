@@ -19,6 +19,11 @@
   dependencies:
     regenerator-runtime "^0.14.0"
 
+"@enipx/react-insta-stories@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@enipx/react-insta-stories/-/react-insta-stories-1.0.0.tgz#a8e1924fbfd779d29efc43fda22ad34a501ce740"
+  integrity sha512-UVL43IcQ8eGav+euQwWxPTrE6zi5WnOjArTpQzP6dbkhZQRk/edIkcDl71iK1W+g2w2BUERhAO7IUfzAf2iCiA==
+
 "@eslint-community/eslint-utils@^4.2.0", "@eslint-community/eslint-utils@^4.4.0":
   version "4.4.0"
   resolved "https://registry.yarnpkg.com/@eslint-community/eslint-utils/-/eslint-utils-4.4.0.tgz#a23514e8fb9af1269d5f7788aa556798d61c6b59"
@@ -2253,11 +2258,6 @@ react-dom@^18:
   dependencies:
     loose-envify "^1.1.0"
     scheduler "^0.23.0"
-
-react-insta-stories@^2.6.2:
-  version "2.6.2"
-  resolved "https://registry.yarnpkg.com/react-insta-stories/-/react-insta-stories-2.6.2.tgz#b421ac351d69a841cac4923a3508c661287858a8"
-  integrity sha512-eM1YHr92bV7WK5h9sECjyYnqZtPxnzJrZFr9IaoDcaZaAEOHVRav+pST513DIG8Hk8QjSTHtdvHHZ0Ka5HwH8w==
 
 react-is@^16.13.1:
   version "16.13.1"

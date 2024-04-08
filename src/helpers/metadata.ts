@@ -3,12 +3,16 @@ import type { Metadata } from "next";
 import { getEnvDetails, isProduction } from "./utils";
 
 // this is the og image urls for the project
-const ogImageUrls = {
+export const ogImageUrls = {
   default: `${getEnvDetails().url}/api/og`,
 };
 
+export const ogImageStlyingUrls = {
+  grid: "https://res.cloudinary.com/dmsic9qmj/image/upload/v1712581637/gandalf/whoami/og/grid_zgutp3.png",
+};
+
 // this is the base metadata for the project
-const baseMetadataInfo = {
+export const baseMetadataInfo = {
   title: "WhoAmI",
   description:
     "A fun, sharable web application that shows users all kinds of cool facts and stats about their TV tastes.",

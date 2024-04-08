@@ -4,3 +4,4 @@ export * from "./header";
 export * from "./background";
 export * from "./text";
 export * from "./progress";
+export * from "./share-button";

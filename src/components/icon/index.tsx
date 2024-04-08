@@ -6,3 +6,7 @@ export * from "./gridline";
 export * from "./wave";
 export * from "./shapes";
 export * from "./sign/";
+export * from "./copy";
+export * from "./download";
+export * from "./instagram";
+export * from "./tiktok";

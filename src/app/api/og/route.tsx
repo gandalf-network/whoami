@@ -3,6 +3,7 @@ import { ImageResponse } from "next/og";
 // No need to install it.
 
 import OGImage from "@/components/images/opengraph";
+import { AllStoryIds } from "@/types";
 
 export const runtime = "edge";
 
@@ -26,7 +27,10 @@ export async function GET(request: Request) {
 
     const { searchParams } = new URL(request.url);
 
-    return new ImageResponse(<OGImage />, {
+    const id = (searchParams.get("id") || "") as AllStoryIds;
+    const data = searchParams.get("data") || "";
+
+    return new ImageResponse(<OGImage id={id} data={data} />, {
       width: 1200,
       height: 675,
       fonts: [

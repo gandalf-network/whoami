@@ -6,6 +6,7 @@ import { ReportsCardMockedData } from "@/helpers/mocked";
 import {
   getRottenTomatoeScoreText,
   rottenTomatoeImages,
+  rottenTomatoeTexts,
 } from "@/helpers/story";
 import { cn } from "@/helpers/utils";
 
@@ -53,7 +54,9 @@ export const RottenTomatoeStory = ({
                         alt="icon"
                         className="w-[74px]"
                       />
-                      <p className="font-semibold uppercase">Certified Fresh</p>
+                      <p className="font-semibold uppercase">
+                        {rottenTomatoeTexts["certified fresh"]}
+                      </p>
                     </div>
                   ),
                 },
@@ -66,7 +69,9 @@ export const RottenTomatoeStory = ({
                         alt="icon"
                         className="w-[74px]"
                       />
-                      <p className="font-semibold uppercase">Fresh</p>
+                      <p className="font-semibold uppercase">
+                        {rottenTomatoeTexts.fresh}
+                      </p>
                     </div>
                   ),
                 },
@@ -79,7 +84,9 @@ export const RottenTomatoeStory = ({
                         alt="icon"
                         className="w-[74px]"
                       />
-                      <p className="font-semibold uppercase">Rotten</p>
+                      <p className="font-semibold uppercase">
+                        {rottenTomatoeTexts.rotten}
+                      </p>
                     </div>
                   ),
                 },

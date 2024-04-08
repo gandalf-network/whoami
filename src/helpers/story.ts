@@ -7,10 +7,16 @@ export const rottenTomatoeImages = {
     "https://res.cloudinary.com/dmsic9qmj/image/upload/v1712387315/gandalf/whoami/icons8-tomato-100-2_ezrhu9.png",
 };
 
+export const rottenTomatoeTexts = {
+  rotten: "Rotten",
+  fresh: "Fresh",
+  "certified fresh": "Certified Fresh",
+};
+
 export const rottenTomatoeScoreBar = {
-  "0-40": "Rotten",
-  "40-70": "Fresh",
-  "70-100": "Certified Fresh",
+  "0-40": rottenTomatoeTexts.rotten,
+  "40-70": rottenTomatoeTexts.fresh,
+  "70-100": rottenTomatoeTexts["certified fresh"],
 };
 
 export const getRottenTomatoeScoreText = (score: number) => {

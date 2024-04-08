@@ -1,7 +1,21 @@
 export type ShareMediumType = "download" | "tiktok" | "instagram" | "copy";
 
+export type AllStoryIds =
+  | "firstTvShow"
+  | "mostWatchedTvShow"
+  | "totalShows"
+  | "crossoverStar"
+  | "tvGenre"
+  | "rottenTomatoesScore"
+  | "tvBff"
+  | "starSign"
+  | "overview";
+
 export interface OpenGraphImageProps
-  extends React.HTMLAttributes<HTMLDivElement> {}
+  extends React.HTMLAttributes<HTMLDivElement> {
+  id?: AllStoryIds;
+  data?: string;
+}
 
 export interface OpenGraphTextProps
   extends React.HTMLAttributes<HTMLParagraphElement> {

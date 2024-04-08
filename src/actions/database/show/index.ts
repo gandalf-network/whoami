@@ -41,7 +41,7 @@ export async function createAndConnectShowToUser(
 
     if (!show) {
       return {
-        show: null,
+        episode: null,
         error: new Error(
           `could not find or update this show: ${createShowInput.title}`,
         ),
@@ -58,8 +58,8 @@ export async function createAndConnectShowToUser(
       },
       update: {},
       create: {
+        showID: show.id,
         ...(createShowInput.season && { season: createShowInput.season }),
-        ...(createShowInput.genre && { genre: createShowInput.genre }),
         ...(createShowInput.episode && { episode: createShowInput.episode }),
       },
     });
@@ -85,7 +85,7 @@ export async function createAndConnectShowToUser(
       },
       update: {},
     });
-
+    episode.showID = show.id;
     return { episode, error: null };
   } catch (error: any) {
     return { episode: null, error };
@@ -107,7 +107,7 @@ export async function updateShow(updateShowInput: UpdateShowInput) {
       data: {
         ...(updateShowInput.imageURL && { imageURL: updateShowInput.imageURL }),
         ...(updateShowInput.numberOfEpisodes && {
-          season: updateShowInput.numberOfEpisodes,
+          numberOfEpisodes: updateShowInput.numberOfEpisodes,
         }),
       },
     });
@@ -119,24 +119,23 @@ export async function updateShow(updateShowInput: UpdateShowInput) {
 
 type UpdateEpisodeInput = {
   id: string;
-  genre?: string;
   season?: number;
   episode?: number;
 };
 
 export async function updateEpisode(updateEpisodeInput: UpdateEpisodeInput) {
   try {
-    const episode = await prisma.show.update({
+    const episode = await prisma.episode.upsert({
       where: {
         id: updateEpisodeInput.id,
       },
-      data: {
+      update: {
         ...(updateEpisodeInput.season && { season: updateEpisodeInput.season }),
-        ...(updateEpisodeInput.genre && { genre: updateEpisodeInput.genre }),
         ...(updateEpisodeInput.episode && {
           episode: updateEpisodeInput.episode,
         }),
       },
+      create: {},
     });
     return { episode, error: null };
   } catch (error: any) {
@@ -255,21 +254,21 @@ export async function getUsersMostWatchedEpisodeByShow(
   }
 }
 
-async function getUsersMostWatchedActor(userID: string) {
+export async function getUsersMostWatchedActor(userID: string) {
   try {
     const mostWatchedActor: any = await prisma.$queryRaw`
       SELECT 
         a.id, a.name, a."imageURL", COUNT(DISTINCT sa."B") AS shows_count
       FROM 
-        "user_episode" us
+        "user_show" us
       INNER JOIN 
         "show" s ON us."showID" = s.id
       INNER JOIN 
-        "_ActorToShow" sa ON s.id = sa."B"
+        "_actorToshow" sa ON s.id = sa."B"
       INNER JOIN 
         "actor" a ON sa."A" = a.id
       WHERE 
-        us."userId" = ${userID}
+        us."userID" = ${userID}
       GROUP BY 
         a.id
       ORDER BY 
@@ -291,7 +290,7 @@ export async function getUsersTopShowsByActor(userID: string) {
 
     const topShowsForActorByUserRes: any = await prisma.$queryRaw`
       SELECT 
-        s.id AS "showId",
+        s.id AS "showID",
         s.title,
         COUNT(DISTINCT ue."episodeID") AS "episodesWatched"
       FROM 
@@ -301,9 +300,9 @@ export async function getUsersTopShowsByActor(userID: string) {
       INNER JOIN 
         "show" s ON e."showID" = s.id
       INNER JOIN 
-        "_ActorToShow" sa ON s.id = sa."B"
+        "_actorToshow" sa ON s.id = sa."B"
       WHERE 
-        ue."userId" = ${userID} AND sa."A" = ${mostWatchedActor.id}
+        ue."userID" = ${userID} AND sa."A" = ${mostWatchedActor[0].id}
       GROUP BY 
         s.id
       ORDER BY 
@@ -322,8 +321,8 @@ export async function getUsersTopShowsByActor(userID: string) {
     );
     const topShowsForActorByUser: YourCrossoverStar = {
       topShows: actorsTop5,
-      name: mostWatchedActor.name,
-      imageURL: mostWatchedActor.imageURL,
+      name: mostWatchedActor[0].name,
+      imageURL: mostWatchedActor[0].imageURL,
     };
 
     return { topShowsForActorByUser, error: null };

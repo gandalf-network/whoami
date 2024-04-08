@@ -19,105 +19,56 @@ import {
 
 const OGImage = ({ id, data }: OpenGraphImageProps) => {
   // convert data from string to object
-  const parsedData = data ? JSON.parse(data) : undefined;
+  const parsedData = data ? JSON.parse(decodeURIComponent(data)) : undefined;
 
   // rotten tomatoe score data
-  const scoreData =
-    id === "rottenTomatoesScore"
-      ? parsedData
-      : {
-          score: ReportsCardMockedData.rottenTomatoeScore.score,
-        };
+  const scoreData = id === "rottenTomatoesScore" ? parsedData : undefined;
   if (scoreData) {
     return <RottenTomatoeOGImage {...scoreData} />;
   }
 
   // report overview data
-  const reportOverviewData =
-    id === "overview"
-      ? parsedData
-      : {
-          score: ReportsCardMockedData.rottenTomatoeScore.score,
-          tvBff: ReportsCardMockedData.tvBFF.name,
-          star: ReportsCardMockedData.realStarSign.name,
-          title: ReportsCardMockedData.overview.title,
-        };
+  const reportOverviewData = id === "overview" ? parsedData : undefined;
 
   if (reportOverviewData) {
     return <ReportOverviewOGImage {...reportOverviewData} />;
   }
 
   // star sign data
-  const starSignData =
-    id === "starSign"
-      ? parsedData
-      : {
-          name: ReportsCardMockedData.realStarSign.name,
-        };
+  const starSignData = id === "starSign" ? parsedData : undefined;
 
   if (starSignData) {
     return <StarSignOGImage {...starSignData} />;
   }
 
   // tv bff data
-  const tvBFFData =
-    id === "tvBff"
-      ? parsedData
-      : {
-          name: ReportsCardMockedData.tvBFF.name,
-          imageUrl: ReportsCardMockedData.tvBFF.imageURL,
-          show: ReportsCardMockedData.tvBFF.show,
-        };
+  const tvBFFData = id === "tvBff" ? parsedData : undefined;
   if (tvBFFData) {
     return <TvBFFOGImage {...tvBFFData} />;
   }
 
-  // most watched tv show data
-  const crossoverStar =
-    id === "crossoverStar"
-      ? parsedData
-      : {
-          name: TVStatsMockedData.yourCrossoverStar.name,
-          imageUrl: TVStatsMockedData.yourCrossoverStar.imageURL,
-        };
+  // crossover star data
+  const crossoverStar = id === "crossoverStar" ? parsedData : undefined;
 
   if (crossoverStar) {
     return <CrossOverStarOGImage {...crossoverStar} />;
   }
 
   // total shows data
-  const totalShows =
-    id === "totalShows"
-      ? parsedData
-      : {
-          count: TVStatsMockedData.totalShows.length,
-          images: TVStatsMockedData.totalShows.top.map((show) => show.imageUrl),
-        };
+  const totalShows = id === "totalShows" ? parsedData : undefined;
   if (totalShows) {
     return <TotalShowOGImage {...totalShows} />;
   }
 
   // most watched tv show data
-  const mostWatched =
-    id === "mostWatchedTvShow"
-      ? parsedData
-      : {
-          name: TVStatsMockedData.mostWatchedTvShow.title,
-          imageUrl: TVStatsMockedData.mostWatchedTvShow.imageURL,
-        };
+  const mostWatched = id === "mostWatchedTvShow" ? parsedData : undefined;
 
   if (mostWatched) {
     return <MostWatchedOGImage {...mostWatched} />;
   }
 
   // first tv show data
-  const firstTVShow =
-    id === "firstTvShow"
-      ? parsedData
-      : {
-          name: TVStatsMockedData.firstTvShow.title,
-          imageUrl: TVStatsMockedData.firstTvShow.imageURL,
-        };
+  const firstTVShow = id === "firstTvShow" ? parsedData : undefined;
   if (firstTVShow) {
     return <FirstTVShowOGImage {...firstTVShow} />;
   }

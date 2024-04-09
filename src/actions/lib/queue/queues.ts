@@ -37,7 +37,7 @@
  * and ratings, enriching the dataset neccessary information likes .
  *
  * This layered, queue-based approach ensures that data is processed efficiently in 
- * the face of edge function constraints.
+ * the face of edge/serverless function constraints.
  * 
  * | Start                  | Processing Queue             | Next Steps                    |
  * |------------------------|------------------------------|-------------------------------|
@@ -57,42 +57,54 @@
  * | starSignPickerQueue    | Astrological recommendations | (Ends after processing)       |
  */
 
-import { redisClient } from '@/actions/store/redis';
+import { vercelKVClient } from '../../store/vercelkv';
 import { Queue } from 'bullmq';
 
-const queueOptions = { connection: redisClient }
+
+const queueOptions = { connection: vercelKVClient }
+
+export const queueNames = {
+    QueryActivities: "queryActivities",
+    QueryShowActors: "queryShowActors",
+    QueryShowData: "queryShowData",
+    CrawlRottenTomatoe: "crawlRottenTomatoe",
+    GenreDistribution: "genreDistribution",
+    TVBFF: "tvBFF",
+    StarSignPicker: "starSignPicker",
+}
+
 /** 
  * Queue for querying activities data from Gandalf API.
  */
-export const queryActivitiesQueue: Queue = new Queue('QueryActivitiesQueue', queueOptions);
+export const queryActivitiesQueue: Queue = new Queue(queueNames.QueryActivities, queueOptions);
 
 /** 
  * Dedicated to fetching actors' information for TV shows or movies.
  * This queue enhances media data with detailed cast information.
- */
-export const queryShowActorsQueue: Queue = new Queue('QueryShowActorsQueue', queueOptions);
+*/
+export const queryShowActorsQueue: Queue = new Queue(queueNames.QueryShowActors, queueOptions);
 
 /** 
  * Handles querying detailed information about shows from sources like IMDB or TMDB.
  * This queue is focused on enriching the database with comprehensive show data.
  */
-export const queryShowDataQueue: Queue = new Queue('QueryShowDataQueue', queueOptions);
+export const queryShowDataQueue: Queue = new Queue(queueNames.QueryShowData, queueOptions);
 
 /** 
  * Aimed at crawling Rotten Tomatoes for reviews and ratings, aggregating critical 
  * and audience reception data.
  */
-export const crawlRottenTomatoeQueue: Queue = new Queue('CrawlRottenTomatoeQueue', queueOptions);
+export const crawlRottenTomatoeQueue: Queue = new Queue(queueNames.CrawlRottenTomatoe, queueOptions);
 
 /** 
  * Analyzes and distributes activties based on genre leveraging openAI API
  */
-export const genreDistributionQueue: Queue = new Queue('GenreDistributionQueue', queueOptions);
+export const genreDistributionQueue: Queue = new Queue(queueNames.GenreDistribution, queueOptions);
 
 /** 
  * Processes user viewing habits to determine "TV Best Friends Forever" (BFF)
  */
-export const tvBFFQueue: Queue = new Queue('TvBFFQueue', queueOptions);
+export const tvBFFQueue: Queue = new Queue(queueNames.TVBFF, queueOptions);
 
 /** 
  * Engages in fun task of matching activities real star signs, 

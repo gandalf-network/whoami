@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "ts-node server.ts",
     "build": "next build",
     "start": "npm run db-migrate && next start",
     "lint": "next lint",
@@ -17,6 +17,7 @@
     "axios": "^1.6.8",
     "bottleneck": "^2.19.5",
     "cheerio": "^1.0.0-rc.12",
+    "@vercel/kv": "^1.0.1",
     "@vercel/node": "^3.0.26",
     "bullmq": "^5.5.1",
     "class-variance-authority": "^0.7.0",

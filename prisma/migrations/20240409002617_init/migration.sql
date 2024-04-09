@@ -38,21 +38,21 @@ CREATE TABLE "show" (
 );
 
 -- CreateTable
-CREATE TABLE "user_episode" (
+CREATE TABLE "userEpisode" (
     "id" TEXT NOT NULL,
     "userID" TEXT NOT NULL,
     "episodeID" TEXT NOT NULL,
     "datePlayed" TIMESTAMP(3) NOT NULL,
 
-    CONSTRAINT "user_episode_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "userEpisode_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
-CREATE TABLE "user_show" (
+CREATE TABLE "userShow" (
     "userID" TEXT NOT NULL,
     "showID" TEXT NOT NULL,
 
-    CONSTRAINT "user_show_pkey" PRIMARY KEY ("userID","showID")
+    CONSTRAINT "userShow_pkey" PRIMARY KEY ("userID","showID")
 );
 
 -- CreateTable
@@ -85,10 +85,10 @@ CREATE UNIQUE INDEX "episode_showID_season_episode_key" ON "episode"("showID", "
 CREATE UNIQUE INDEX "show_title_key" ON "show"("title");
 
 -- CreateIndex
-CREATE INDEX "user_episode_userID_idx" ON "user_episode"("userID");
+CREATE INDEX "userEpisode_userID_idx" ON "userEpisode"("userID");
 
 -- CreateIndex
-CREATE INDEX "user_episode_episodeID_idx" ON "user_episode"("episodeID");
+CREATE INDEX "userEpisode_episodeID_idx" ON "userEpisode"("episodeID");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "actor_name_key" ON "actor"("name");
@@ -103,16 +103,16 @@ CREATE INDEX "_actorToshow_B_index" ON "_actorToshow"("B");
 ALTER TABLE "episode" ADD CONSTRAINT "episode_showID_fkey" FOREIGN KEY ("showID") REFERENCES "show"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "user_episode" ADD CONSTRAINT "user_episode_userID_fkey" FOREIGN KEY ("userID") REFERENCES "user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "userEpisode" ADD CONSTRAINT "userEpisode_userID_fkey" FOREIGN KEY ("userID") REFERENCES "user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "user_episode" ADD CONSTRAINT "user_episode_episodeID_fkey" FOREIGN KEY ("episodeID") REFERENCES "episode"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "userEpisode" ADD CONSTRAINT "userEpisode_episodeID_fkey" FOREIGN KEY ("episodeID") REFERENCES "episode"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "user_show" ADD CONSTRAINT "user_show_userID_fkey" FOREIGN KEY ("userID") REFERENCES "user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "userShow" ADD CONSTRAINT "userShow_userID_fkey" FOREIGN KEY ("userID") REFERENCES "user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "user_show" ADD CONSTRAINT "user_show_showID_fkey" FOREIGN KEY ("showID") REFERENCES "show"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "userShow" ADD CONSTRAINT "userShow_showID_fkey" FOREIGN KEY ("showID") REFERENCES "show"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_actorToshow" ADD CONSTRAINT "_actorToshow_A_fkey" FOREIGN KEY ("A") REFERENCES "actor"("id") ON DELETE CASCADE ON UPDATE CASCADE;

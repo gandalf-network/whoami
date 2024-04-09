@@ -50,7 +50,7 @@ export async function createAndConnectShowToUser(
 
     const episode = await prisma.episode.upsert({
       where: {
-        unique_show_season_episode: {
+        uniqueShowSeasonEpisode: {
           showID: show.id,
           episode: createShowInput.episode || 0,
           season: createShowInput.season || 0,
@@ -64,7 +64,7 @@ export async function createAndConnectShowToUser(
       },
     });
 
-    await prisma.user_episode.create({
+    await prisma.userEpisode.create({
       data: {
         userID: createShowInput.userID,
         episodeID: episode.id,
@@ -72,9 +72,9 @@ export async function createAndConnectShowToUser(
       },
     });
 
-    await prisma.user_show.upsert({
+    await prisma.userShow.upsert({
       where: {
-        user_show_id: {
+        userShowID: {
           userID: createShowInput.userID,
           showID: show.id,
         },
@@ -145,7 +145,7 @@ export async function updateEpisode(updateEpisodeInput: UpdateEpisodeInput) {
 
 export async function getTotalNumberOfShowsWatchedByUser(userID: string) {
   try {
-    const watchCount = await prisma.user_show.count({
+    const watchCount = await prisma.userShow.count({
       where: {
         userID,
       },
@@ -195,7 +195,42 @@ export async function getUsersFirstShow(userID: string) {
   }
 }
 
-export async function getTop5ShowsByUser(userID: string) {
+export async function getTop5ShowsByUser(
+  userID: string,
+  lastOneYear: boolean = false,
+) {
+  try {
+    const topShows: Show[] = await prisma.$queryRaw`
+      SELECT 
+        s.id AS id, 
+        s.title AS title, 
+        s."imageURL",
+      COUNT(ue.id) AS watchCount,
+      COUNT(ue.id)::FLOAT / s."numberOfEpisodes" AS score
+      FROM 
+        "user_episode" ue
+      INNER JOIN 
+        "episode" e ON ue."episodeID" = e.id
+      INNER JOIN 
+        "show" s ON e."showID" = s.id
+      WHERE 
+        ue."userID" = ${userID}
+        AND
+          ${lastOneYear} = false
+          OR ue."datePlayed" > CURRENT_DATE - INTERVAL '1 year'
+      GROUP BY 
+        s.id
+      ORDER BY 
+        score DESC
+      LIMIT 5;
+    `;
+    return { topShows, error: null };
+  } catch (error) {
+    return { topShows: null, error };
+  }
+}
+
+export async function getTop5ShowsByUserByDuration(userID: string) {
   try {
     const topShows: Show[] = await prisma.$queryRaw`
       SELECT 

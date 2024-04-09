@@ -32,3 +32,15 @@ export type UserStats = {
   mostWatchedTvShow: MostWatchedTvShowWithEpisode;
   yourCrossoverStar: YourCrossoverStar;
 };
+
+export type Actors = {
+  name: string;
+  imageURL: string;
+};
+
+export type TVDBSearchReturn = {
+  episodeCount: number;
+  imageURL: string;
+  genres: string[];
+  actors: Actors[];
+};

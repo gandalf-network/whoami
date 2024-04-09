@@ -4,24 +4,14 @@ import type {
   Action,
 } from "@enipx/react-insta-stories/dist/interfaces";
 
-import { ButtonProps } from "@/components/themed";
-
 // --- types
-export type { Story };
+export type { Story, Action };
 
 export interface StoriesProps extends ReactInstaStoriesProps {}
 
 export interface StoryContentProps
   extends React.HTMLAttributes<HTMLDivElement> {
   storyProps: {
-    action?: Action;
-    isPaused?: boolean;
-  };
-}
-
-export interface ShareButtonProps extends ButtonProps {
-  storyProps: {
-    id: AllStoryIds;
     action?: Action;
     isPaused?: boolean;
   };

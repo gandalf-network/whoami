@@ -1,10 +1,7 @@
 import { cn } from "@/helpers/utils";
+import { BackgroundProps } from "@/types";
 
 import { BluePinkWave, BlueWave, GridLineIcon, PinkWave } from "../icon";
-
-interface BackgroundProps extends React.HTMLAttributes<HTMLDivElement> {
-  iconClassName?: string;
-}
 
 export const GridLineBackground = ({
   iconClassName,

@@ -3,13 +3,7 @@
 import { useEffect, useState } from "react";
 
 import { cn } from "@/helpers/utils";
-
-export interface ProgressProps
-  extends React.ProgressHTMLAttributes<HTMLProgressElement> {
-  label?: string;
-  labelClassName?: string;
-  containerClassName?: string;
-}
+import { ProgressProps } from "@/types";
 
 export const Progress = ({
   label,

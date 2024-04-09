@@ -1,9 +1,5 @@
 import { cn } from "@/helpers/utils";
-
-export interface ButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
-  variant?: "primary" | "link";
-  size?: "sm" | "md" | "lg" | "icon";
-}
+import { ButtonProps } from "@/types";
 
 export const Button = ({
   children,

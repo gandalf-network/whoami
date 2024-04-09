@@ -1,6 +1,4 @@
 /* eslint-disable @next/next/no-img-element */
-
-import { ReportsCardMockedData, TVStatsMockedData } from "@/helpers/mocked";
 import { OpenGraphImageProps } from "@/types";
 
 import { BaseOGImage } from "./base";

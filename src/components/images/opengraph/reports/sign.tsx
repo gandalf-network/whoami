@@ -23,8 +23,11 @@ export const StarSignOGImage = ({
 
       <OGGridLayout>
         <OGText size="2rem">My real star sign is </OGText>
-        <OGText size="2rem" style={{ fontWeight: 600 }}>
-          {name}{" "}
+        <OGText
+          size="2rem"
+          style={{ fontWeight: 600, textTransform: "capitalize" }}
+        >
+          {name}
         </OGText>
       </OGGridLayout>
     </OGContainer>

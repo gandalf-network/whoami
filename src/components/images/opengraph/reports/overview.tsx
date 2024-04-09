@@ -195,7 +195,7 @@ export const ReportOverviewOGImage = ({
       <OGGridLayout>
         <OGText size="2rem">My TV show persona is </OGText>
         <OGText size="2rem" style={{ fontWeight: 600 }}>
-          {title}{" "}
+          {title}
         </OGText>
       </OGGridLayout>
     </OGContainer>

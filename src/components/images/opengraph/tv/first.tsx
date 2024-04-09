@@ -34,7 +34,7 @@ export const FirstTVShowOGImage = ({
       <OGGridLayout>
         <OGText size="2rem">My first TV show was</OGText>
         <OGText size="2rem" style={{ fontWeight: 600 }}>
-          {name}{" "}
+          {name}
         </OGText>
       </OGGridLayout>
     </OGContainer>

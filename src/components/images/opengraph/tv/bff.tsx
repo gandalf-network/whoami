@@ -39,17 +39,19 @@ export const TvBFFOGImage = ({
       </OGVisualLayout>
 
       <OGGridLayout>
-        <div style={{ display: "flex" }}>
-          <OGText size="2rem" style={{ paddingRight: "0.375rem" }}>
-            My TV BFF is{" "}
-          </OGText>
+        <div style={{ display: "flex", gap: "0.5rem" }}>
+          <OGText size="2rem">My TV BFF is </OGText>
           <OGText size="2rem" style={{ fontWeight: 600 }}>
             {name}
           </OGText>
         </div>
-        <OGText size="2rem" style={{ fontWeight: 600 }}>
-          from “{show}”
-        </OGText>
+        <div style={{ display: "flex", gap: "0.5rem" }}>
+          <OGText size="2rem">from</OGText>
+          <OGText size="2rem" style={{ fontWeight: 600 }}>
+            {" "}
+            “{show}”
+          </OGText>
+        </div>
       </OGGridLayout>
     </OGContainer>
   );

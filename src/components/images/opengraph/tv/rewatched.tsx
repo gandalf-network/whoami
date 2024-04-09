@@ -38,9 +38,13 @@ export const MostWatchedOGImage = ({
 
       <OGGridLayout>
         <OGText size="2rem">My most rewatched TV</OGText>
-        <OGText size="2rem" style={{ fontWeight: 600 }}>
-          show is {name}{" "}
-        </OGText>
+        <div style={{ display: "flex", gap: "0.5rem" }}>
+          <OGText size="2rem">show is</OGText>
+          <OGText size="2rem" style={{ fontWeight: 600 }}>
+            {" "}
+            {name}
+          </OGText>
+        </div>
       </OGGridLayout>
     </OGContainer>
   );

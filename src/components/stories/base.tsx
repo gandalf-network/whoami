@@ -1,11 +1,11 @@
 "use client";
 
-import DefaultStories from "react-insta-stories";
+import DefaultStories from "@enipx/react-insta-stories";
 import type {
   ReactInstaStoriesProps,
   Story,
   Action,
-} from "react-insta-stories/dist/interfaces";
+} from "@enipx/react-insta-stories/dist/interfaces";
 
 // --- types
 export type { Story };
@@ -49,6 +49,9 @@ export const Stories = ({ ...props }: StoriesProps) => {
         padding: progressStyleConfig.padding,
         marginTop: "4rem",
         filter: "none",
+      }}
+      pauseDivStyles={{
+        flex: 1,
       }}
       {...props}
     />

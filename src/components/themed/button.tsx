@@ -1,8 +1,6 @@
-import { ShareIcon } from "lucide-react";
-
 import { cn } from "@/helpers/utils";
 
-interface ButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
+export interface ButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
   variant?: "primary" | "link";
   size?: "sm" | "md" | "lg" | "icon";
 }
@@ -39,18 +37,5 @@ export const Button = ({
     >
       {children}
     </button>
-  );
-};
-
-export const ShareButton = (props: ButtonProps) => {
-  return (
-    <Button
-      className="py-4 bg-transparent hover:bg-transparent text-base uppercase"
-      size="sm"
-      {...props}
-    >
-      Share
-      <ShareIcon className="w-4" />
-    </Button>
   );
 };

@@ -1,3 +1,4 @@
+import { DialogProvider } from "./dialog";
 import { ThemeProvider } from "./theme";
 
 interface AppProviderProps {
@@ -14,7 +15,7 @@ export const AppProvider = (props: AppProviderProps) => {
       enableSystem
       disableTransitionOnChange
     >
-      {children}
+      <DialogProvider>{children}</DialogProvider>
     </ThemeProvider>
   );
 };

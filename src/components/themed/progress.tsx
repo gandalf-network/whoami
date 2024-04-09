@@ -50,7 +50,7 @@ export const Progress = ({
         </div>
       )}
       <progress
-        className={cn("custom-progress", className)}
+        className={cn("themed-progress", className)}
         value={progress}
         {...props}
       />

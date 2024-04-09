@@ -71,3 +71,33 @@ export const TVStatsMockedData = {
     ],
   },
 };
+
+export const ReportsCardMockedData = {
+  rottenTomatoeScore: {
+    score: 40,
+    summary:
+      'With shows like "Breaking Bad" and "The Crown" leading the pack, your watchlist is a certified hit factory!',
+  },
+  tvBFF: {
+    name: "Chandler Bing",
+    show: "Friends",
+    reason:
+      "His sarcastic wit and lovable charm make him perfect for you. Looks like both of you are destined for comedic adventures!",
+    imageURL:
+      "https://res.cloudinary.com/dmsic9qmj/image/upload/v1712348909/gandalf/whoami/chandler_ya1dya.png",
+  },
+  realStarSign: {
+    name: "constellation",
+    show: "The Last Kingdom fanatic",
+    reason:
+      "With a penchant for epic battles and intricate plots, Uhtred of Bebbanburg would proudly claim you as his own.",
+    imageURL: "",
+  },
+  overview: {
+    title: "The Adventurer",
+    summary:
+      "You always seek thrills and excitement, with a taste for the unexpected in every TV journey.",
+    imageUrl:
+      "https://res.cloudinary.com/dmsic9qmj/image/upload/v1712397962/gandalf/whoami/883d1a3cf3e5c533e89eb3095ffb0d8f_umcc2z.gif",
+  },
+};

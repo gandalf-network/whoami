@@ -82,3 +82,6 @@ export const formatStringArrayToJSX = ({
     });
   }
 };
+
+// this is a utility function that checks if the window is defined
+export const isWindowDefined = () => typeof window !== "undefined";

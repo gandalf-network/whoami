@@ -2,13 +2,12 @@
 /**
  * Data Processing Workflow:
  * 
- * This workflow is designed to by-pass the limitations of serverless functions, 
- * which are constrained by execution time limits (seconds to minutes). It utilizes 
- * BullMQ to manage a series of queues, enabling asynchronous, batched data processing 
- * across various stages. The system is triggered by cron jobs that invoke serverless functions 
- * at regular intervals, facilitating continuous data flow and processing without exceeding 
- * runtime limits. When done a state management system tracks the progress (not_initiated, processing, completed) across each stage, 
- * ensuring orderly and reliable data flow.
+ * This workflow is designed to by-pass the limitations of serverless functions, which are constrained by 
+ * execution time limits (seconds to minutes). It utilizes BullMQ to manage a series of queues, enabling asynchronous,
+ *  batched data processing in chunks. Serverless/edge functions are activated through API requests from workers initialized 
+ * at application startup. These workers, upon detecting new events (pushed by the producer), collate this data and dispatch them in
+ *  chunks to serverless functions via API calls. A state management system constantly tracks progress (NOT_INITIATED, PROCESSING, COMPLETED) 
+ * across each stage, ensuring an orderly and reliable data flow.
  * 
  * The workflow begins with the `queryActivitiesQueue`, serving as the entry point. This queue 
  * is responsible for making API calls to Gandalf to fetch data using `dataKey`. Given Our API's data volume limits, 

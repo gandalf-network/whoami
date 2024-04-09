@@ -29,7 +29,7 @@ CREATE TABLE "show" (
     "id" TEXT NOT NULL,
     "title" VARCHAR(255) NOT NULL,
     "numberOfEpisodes" INTEGER NOT NULL,
-    "genre" VARCHAR(255),
+    "genre" VARCHAR(255)[],
     "imageURL" VARCHAR(255),
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,

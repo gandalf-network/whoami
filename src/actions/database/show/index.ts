@@ -10,7 +10,7 @@ type CreateShowInput = {
   episodeTitle: string;
   datePlayed: string;
   userID: string;
-  genre?: string;
+  genre?: string[];
   imageURL?: string;
   season?: number;
   episode?: number;
@@ -208,7 +208,7 @@ export async function getTop5ShowsByUser(
       COUNT(ue.id) AS watchCount,
       COUNT(ue.id)::FLOAT / s."numberOfEpisodes" AS score
       FROM 
-        "user_episode" ue
+        "userEpisode" ue
       INNER JOIN 
         "episode" e ON ue."episodeID" = e.id
       INNER JOIN 
@@ -240,7 +240,7 @@ export async function getTop5ShowsByUserByDuration(userID: string) {
       COUNT(ue.id) AS watchCount,
       COUNT(ue.id)::FLOAT / s."numberOfEpisodes" AS score
       FROM 
-        "user_episode" ue
+        "userEpisode" ue
       INNER JOIN 
         "episode" e ON ue."episodeID" = e.id
       INNER JOIN 
@@ -271,7 +271,7 @@ export async function getUsersMostWatchedEpisodeByShow(
         e.episode, 
       COUNT(ue.id) AS watchCount
       FROM 
-        "user_episode" ue
+        "userEpisode" ue
       INNER JOIN 
         "episode" e ON ue."episodeID" = e.id
       WHERE 
@@ -295,7 +295,7 @@ export async function getUsersMostWatchedActor(userID: string) {
       SELECT 
         a.id, a.name, a."imageURL", COUNT(DISTINCT sa."B") AS shows_count
       FROM 
-        "user_show" us
+        "userShow" us
       INNER JOIN 
         "show" s ON us."showID" = s.id
       INNER JOIN 
@@ -329,7 +329,7 @@ export async function getUsersTopShowsByActor(userID: string) {
         s.title,
         COUNT(DISTINCT ue."episodeID") AS "episodesWatched"
       FROM 
-        "user_episode" ue
+        "userEpisode" ue
       INNER JOIN 
         "episode" e ON ue."episodeID" = e.id
       INNER JOIN 
@@ -363,5 +363,35 @@ export async function getUsersTopShowsByActor(userID: string) {
     return { topShowsForActorByUser, error: null };
   } catch (error) {
     return { topShowsForActorByUser: null, error };
+  }
+}
+
+export async function getUsersTopGenres(userID: string, count = 2) {
+  try {
+    const topGenres: any = await prisma.$queryRaw`
+      WITH GenreFrequency AS (
+        SELECT
+          UNNEST(s.genre) AS genre,
+          COUNT(*) AS frequency
+        FROM
+      "userShow" us
+        JOIN show s ON us."showID" = s.id
+        WHERE
+          us."userID" = ${userID}
+        GROUP BY
+          UNNEST(s.genre)
+      )
+      SELECT
+        genre,
+        frequency
+      FROM
+        GenreFrequency
+      ORDER BY
+        frequency DESC
+      LIMIT ${count};
+    `;
+    return { topGenres, error: null };
+  } catch (error) {
+    return { topGenres: null, error };
   }
 }

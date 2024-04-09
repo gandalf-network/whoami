@@ -48,7 +48,7 @@ model show {
   id               String    @id @default(uuid())
   title            String    @unique @db.VarChar(255)
   numberOfEpisodes Int
-  genre            String?   @db.VarChar(255)
+  genre            String[]   @db.VarChar(255)
   imageURL         String?   @db.VarChar(255)
   episodes         episode[]
   actors           actor[]

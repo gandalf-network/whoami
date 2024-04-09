@@ -75,10 +75,11 @@ export const ShareDialogContent = ({ storyId }: { storyId: AllStoryIds }) => {
           : {
               files: [imageFile],
               url: getStoryLink(storyId),
-              title: baseMetadataInfo.description,
+              title: baseMetadataInfo.title,
+              text: baseMetadataInfo.title,
             };
 
-      if (navigator.canShare(shareData)) {
+      if (navigator?.canShare?.(shareData)) {
         navigator.share(shareData);
       } else {
         console.error("Web Share API is not supported in your browser");

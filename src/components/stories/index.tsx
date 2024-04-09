@@ -1,3 +1,5 @@
+"use client";
+
 import { Stories, StoriesProps } from "./base";
 import { reportsStories } from "./reports";
 import { statsStories } from "./stats";

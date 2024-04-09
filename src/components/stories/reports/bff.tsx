@@ -49,7 +49,7 @@ export const TVBFFStory = ({
       </div>
 
       <div className="flex-center-x pb-4">
-        <ShareButton />
+        <ShareButton storyId="tvBff" />
       </div>
     </div>
   );

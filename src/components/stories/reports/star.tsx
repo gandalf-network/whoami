@@ -46,7 +46,7 @@ export const StarSignStory = ({
       <DodecagramStar className="absolute w-20 rotate-[-40deg] -left-5 -bottom-7" />
 
       <div className="flex-center-x pb-4">
-        <ShareButton />
+        <ShareButton storyId="starSign" />
       </div>
     </div>
   );

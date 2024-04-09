@@ -11,7 +11,9 @@ export const isProduction = () => process.env.NODE_ENV === "production";
 
 // this is a utility function that appends the protocol to the url
 export const appendProtocolToUrl = (url: string) => {
-  return url.startsWith("https:") ? url : `https://${url}`;
+  return url.startsWith("https:") || url.startsWith("http:")
+    ? url
+    : `https://${url}`;
 };
 
 // this is a utility function that gets the environment details

@@ -59,7 +59,7 @@ export const GenreDistributionStory = ({
       <HalfEclipse className="absolute w-16 rotate-[-40deg] -left-2 -bottom-6" />
 
       <div className="flex-center-x pb-4">
-        <ShareButton />
+        <ShareButton storyId="tvGenre" />
       </div>
     </div>
   );

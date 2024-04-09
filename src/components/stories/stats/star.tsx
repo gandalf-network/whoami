@@ -51,7 +51,7 @@ export const CrossOverStarStory = ({
       </div>
 
       <div className="flex-center-x pb-4">
-        <ShareButton />
+        <ShareButton storyId="crossoverStar" />
       </div>
     </div>
   );

@@ -57,7 +57,7 @@ export const FirstTVShowStory = ({
       </div>
 
       <div className="flex-center-x pb-4">
-        <ShareButton />
+        <ShareButton storyId="firstTvShow" />
       </div>
     </div>
   );
@@ -107,7 +107,7 @@ export const MostRewatchTVShowStory = ({
       </div>
 
       <div className="flex-center-x pb-4">
-        <ShareButton />
+        <ShareButton storyId="mostWatchedTvShow" />
       </div>
     </div>
   );
@@ -180,7 +180,7 @@ export const TotalTVShowStory = ({
       </div>
 
       <div className="flex-center-x pb-4">
-        <ShareButton />
+        <ShareButton storyId="totalShows" />
       </div>
     </div>
   );

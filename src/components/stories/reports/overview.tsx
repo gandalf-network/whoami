@@ -127,7 +127,7 @@ export const ReportOverviewStory = ({
       <GridLineBackground iconClassName="scale-110" />
 
       <div className="flex-center-x pb-4">
-        <ShareButton />
+        <ShareButton storyId="overview" />
       </div>
     </div>
   );
@@ -216,7 +216,7 @@ export const ReportOverviewGifStory = ({
       </div>
 
       <div className="flex-center-x pb-4">
-        <ShareButton />
+        <ShareButton storyId="overview" />
       </div>
     </div>
   );

@@ -2,9 +2,10 @@
 import { ShareIcon } from "lucide-react";
 
 import { Button as BaseButton } from "@/components/ui/button";
+import { getStoryLink } from "@/helpers/story";
 import { useCopyToClipboard } from "@/hooks/use-clipboard";
 import { useDialog } from "@/hooks/use-dialog";
-import { ShareMediumType } from "@/types";
+import { AllStoryIds, ShareMediumType } from "@/types";
 
 import { Button, ButtonProps } from "./button";
 import {
@@ -15,7 +16,7 @@ import {
   CopyCheckIcon,
 } from "../icon/";
 
-export const ShareDialogContent = () => {
+export const ShareDialogContent = ({ storyId }: { storyId: AllStoryIds }) => {
   const [copied, copyToClipboard] = useCopyToClipboard({ timeout: 3000 });
 
   const shareMediums = [
@@ -47,7 +48,7 @@ export const ShareDialogContent = () => {
 
   const onShareClick = (type: ShareMediumType) => {
     if (type === "copy") {
-      copyToClipboard("copy link to screen");
+      copyToClipboard(getStoryLink(storyId));
     } else {
       // ...
     }
@@ -75,14 +76,17 @@ export const ShareDialogContent = () => {
   );
 };
 
-export const ShareButton = (props: ButtonProps) => {
+export const ShareButton = ({
+  storyId,
+  ...props
+}: ButtonProps & { storyId: AllStoryIds }) => {
   const { hide, show } = useDialog();
 
   const onClick = () => {
     show({
       onOverlayClick: hide,
       contentClassName: "max-w-xs rounded-2xl",
-      children: <ShareDialogContent />,
+      children: <ShareDialogContent storyId={storyId} />,
     });
   };
 

@@ -24,8 +24,8 @@ model user {
   id         String     @id @default(uuid())
   identifier String     @unique @db.VarChar(255)
   state      UserState  @default(AWAITING_CONNECTION)
-  episodes   user_episode[]
-  shows      user_show[]
+  episodes   userEpisode[]
+  shows      userShow[]
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
 }
@@ -35,12 +35,12 @@ model episode {
   season  Int?
   episode Int?
   showID  String?
-  users   user_episode[]
+  users   userEpisode[]
   show    show?      @relation(fields: [showID], references: [id])
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 
-  @@unique([showID, season, episode], name: "unique_show_season_episode")
+  @@unique([showID, season, episode], name: "uniqueShowSeasonEpisode")
   @@index([showID])
 }
 
@@ -48,16 +48,16 @@ model show {
   id               String    @id @default(uuid())
   title            String    @unique @db.VarChar(255)
   numberOfEpisodes Int
-  genre            String?   @db.VarChar(255)
+  genre            String[]   @db.VarChar(255)
   imageURL         String?   @db.VarChar(255)
   episodes         episode[]
   actors           actor[]
-  users            user_show[]
+  users            userShow[]
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
 }
 
-model user_episode {
+model userEpisode {
   id         String    @id @default(uuid())
   userID     String  
   episodeID  String  
@@ -70,14 +70,14 @@ model user_episode {
   @@index([episodeID])
 }
 
-model user_show {
+model userShow {
   userID     String  
   showID     String  
 
   user    user    @relation(fields: [userID], references: [id])
   show    show    @relation(fields: [showID], references: [id])
 
-  @@id([userID, showID], name: "user_show_id")
+  @@id([userID, showID], name: "userShowID")
 }
 
 model actor {

@@ -68,7 +68,12 @@ export const ThemedProgress = ({
     <div className={cn("relative w-full", containerClassName)}>
       {label && (
         <div className="absolute w-full h-full left-0 flex-center">
-          <p className={cn("text-center font-bold text-xl", labelClassName)}>
+          <p
+            className={cn(
+              "text-center font-bold text-lg whitespace-nowrap",
+              labelClassName,
+            )}
+          >
             {label}
           </p>
         </div>

@@ -1,5 +1,8 @@
 import { cn } from "@/helpers/utils";
 
+import { StoryFooter } from "./footer";
+import { Text } from "./text";
+
 // A component that wraps its children in a div with a max-width of medium screen.
 export const MobileView = ({
   children,
@@ -77,5 +80,30 @@ export const BulletPoint = ({
       className={cn("w-2 h-2 rounded-full bg-black", className)}
       {...props}
     />
+  );
+};
+
+export const StoryDownloadContainer = ({
+  children,
+  className,
+  title,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement>) => {
+  return (
+    <div
+      className={cn(
+        "py-6 px-4 bg-primary-purple w-[375px] h-[770px] flex-col hidden absolute top-0 left-0 -z-10",
+        className,
+      )}
+      {...props}
+    >
+      {title && (
+        <Text className="text-2xl uppercase text-center" font="heading">
+          {title}
+        </Text>
+      )}
+      <div className="flex-1 flex">{children}</div>
+      <StoryFooter />
+    </div>
   );
 };

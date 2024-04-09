@@ -3,8 +3,7 @@ import { Circle, Rectangle } from "@/components/icon";
 import { PageHeader, ShareButton, Text } from "@/components/themed";
 import { TVStatsMockedData } from "@/helpers/mocked";
 import { cn, formatStringArrayToJSX } from "@/helpers/utils";
-
-import { StoryContentProps } from "../base";
+import { StoryContentProps } from "@/types";
 
 export const CrossOverStarStory = ({
   storyProps,
@@ -51,7 +50,12 @@ export const CrossOverStarStory = ({
       </div>
 
       <div className="flex-center-x pb-4">
-        <ShareButton storyId="crossoverStar" />
+        <ShareButton
+          storyProps={{
+            id: "crossoverStar",
+            ...storyProps,
+          }}
+        />
       </div>
     </div>
   );

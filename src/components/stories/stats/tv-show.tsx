@@ -11,8 +11,7 @@ import { PageHeader, ShareButton, Text } from "@/components/themed";
 import { getDate } from "@/helpers/date";
 import { TVStatsMockedData } from "@/helpers/mocked";
 import { cn } from "@/helpers/utils";
-
-import { StoryContentProps } from "../base";
+import { StoryContentProps } from "@/types";
 
 export const FirstTVShowStory = ({
   storyProps,
@@ -57,7 +56,12 @@ export const FirstTVShowStory = ({
       </div>
 
       <div className="flex-center-x pb-4">
-        <ShareButton storyId="firstTvShow" />
+        <ShareButton
+          storyProps={{
+            id: "firstTvShow",
+            ...storyProps,
+          }}
+        />
       </div>
     </div>
   );
@@ -107,7 +111,12 @@ export const MostRewatchTVShowStory = ({
       </div>
 
       <div className="flex-center-x pb-4">
-        <ShareButton storyId="mostWatchedTvShow" />
+        <ShareButton
+          storyProps={{
+            id: "mostWatchedTvShow",
+            ...storyProps,
+          }}
+        />
       </div>
     </div>
   );
@@ -180,7 +189,12 @@ export const TotalTVShowStory = ({
       </div>
 
       <div className="flex-center-x pb-4">
-        <ShareButton storyId="totalShows" />
+        <ShareButton
+          storyProps={{
+            id: "totalShows",
+            ...storyProps,
+          }}
+        />
       </div>
     </div>
   );

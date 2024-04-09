@@ -79,3 +79,11 @@ export const getStoryIndex = (storyId: AllStoryIds) => {
       return 0;
   }
 };
+
+export const getStoryDownloadSelector = (storyId: AllStoryIds) => {
+  const id = `${storyId}-story-download`;
+  return {
+    id,
+    selector: `#${id}`,
+  };
+};

@@ -13,8 +13,7 @@ import {
   rottenTomatoeImages,
 } from "@/helpers/story";
 import { cn } from "@/helpers/utils";
-
-import { StoryContentProps } from "../base";
+import { StoryContentProps } from "@/types";
 
 export const ReportOverviewStory = ({
   storyProps,
@@ -127,7 +126,12 @@ export const ReportOverviewStory = ({
       <GridLineBackground iconClassName="scale-110" />
 
       <div className="flex-center-x pb-4">
-        <ShareButton storyId="overview" />
+        <ShareButton
+          storyProps={{
+            id: "overview",
+            ...storyProps,
+          }}
+        />
       </div>
     </div>
   );
@@ -216,7 +220,12 @@ export const ReportOverviewGifStory = ({
       </div>
 
       <div className="flex-center-x pb-4">
-        <ShareButton storyId="overview" />
+        <ShareButton
+          storyProps={{
+            id: "overview",
+            ...storyProps,
+          }}
+        />
       </div>
     </div>
   );

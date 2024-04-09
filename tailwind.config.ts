@@ -15,6 +15,7 @@ const config = {
         border: "var(--border)",
         background: "var(--background)",
         foreground: "var(--foreground)",
+        muted: "var(--muted)",
         primary: {
           DEFAULT: "var(--primary)",
           foreground: "var(--primary-foreground)",

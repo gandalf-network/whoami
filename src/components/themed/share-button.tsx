@@ -2,12 +2,13 @@
 import { ShareIcon } from "lucide-react";
 
 import { Button as BaseButton } from "@/components/ui/button";
-import { getStoryLink } from "@/helpers/story";
+import { getStoryDownloadSelector, getStoryLink } from "@/helpers/story";
 import { useCopyToClipboard } from "@/hooks/use-clipboard";
 import { useDialog } from "@/hooks/use-dialog";
-import { AllStoryIds, ShareMediumType } from "@/types";
+import { useImage } from "@/hooks/use-image";
+import { AllStoryIds, ShareButtonProps, ShareMediumType } from "@/types";
 
-import { Button, ButtonProps } from "./button";
+import { Button } from "./button";
 import {
   InstagramIcon,
   TiktokIcon,
@@ -17,6 +18,8 @@ import {
 } from "../icon/";
 
 export const ShareDialogContent = ({ storyId }: { storyId: AllStoryIds }) => {
+  const { convertImageToBase64 } = useImage();
+
   const [copied, copyToClipboard] = useCopyToClipboard({ timeout: 3000 });
 
   const shareMediums = [
@@ -33,7 +36,7 @@ export const ShareDialogContent = ({ storyId }: { storyId: AllStoryIds }) => {
     {
       name: "Download",
       icon: <DownloadIcon className="w-10" />,
-      type: "telegram",
+      type: "download",
     },
     {
       name: "Copy link",
@@ -49,6 +52,13 @@ export const ShareDialogContent = ({ storyId }: { storyId: AllStoryIds }) => {
   const onShareClick = (type: ShareMediumType) => {
     if (type === "copy") {
       copyToClipboard(getStoryLink(storyId));
+    } else if (type === "download") {
+      // ...
+      convertImageToBase64({
+        selector: getStoryDownloadSelector(storyId).selector,
+        download: true,
+        downloadName: `${storyId.toLowerCase()}.png`,
+      });
     } else {
       // ...
     }
@@ -76,17 +86,15 @@ export const ShareDialogContent = ({ storyId }: { storyId: AllStoryIds }) => {
   );
 };
 
-export const ShareButton = ({
-  storyId,
-  ...props
-}: ButtonProps & { storyId: AllStoryIds }) => {
+export const ShareButton = ({ storyProps, ...props }: ShareButtonProps) => {
   const { hide, show } = useDialog();
 
   const onClick = () => {
+    storyProps.action?.("pause");
     show({
       onOverlayClick: hide,
       contentClassName: "max-w-xs rounded-2xl",
-      children: <ShareDialogContent storyId={storyId} />,
+      children: <ShareDialogContent storyId={storyProps.id} />,
     });
   };
 
@@ -94,8 +102,8 @@ export const ShareButton = ({
     <Button
       className="absolute z-[999999999] bottom-8 py-4 bg-transparent hover:bg-transparent text-base uppercase"
       size="sm"
-      onClick={onClick}
       {...props}
+      onClick={onClick}
     >
       Share
       <ShareIcon className="w-4" />

@@ -3,8 +3,7 @@ import { HalfEclipse, PentagramStar } from "@/components/icon";
 import { PageHeader, Progress, ShareButton, Text } from "@/components/themed";
 import { TVStatsMockedData } from "@/helpers/mocked";
 import { cn } from "@/helpers/utils";
-
-import { StoryContentProps } from "../base";
+import { StoryContentProps } from "@/types";
 
 export const GenreDistributionStory = ({
   storyProps,
@@ -59,7 +58,12 @@ export const GenreDistributionStory = ({
       <HalfEclipse className="absolute w-16 rotate-[-40deg] -left-2 -bottom-6" />
 
       <div className="flex-center-x pb-4">
-        <ShareButton storyId="tvGenre" />
+        <ShareButton
+          storyProps={{
+            id: "tvGenre",
+            ...storyProps,
+          }}
+        />
       </div>
     </div>
   );

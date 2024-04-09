@@ -9,8 +9,7 @@ import {
   rottenTomatoeTexts,
 } from "@/helpers/story";
 import { cn } from "@/helpers/utils";
-
-import { StoryContentProps } from "../base";
+import { StoryContentProps } from "@/types";
 
 export const RottenTomatoeStory = ({
   storyProps,
@@ -121,7 +120,12 @@ export const RottenTomatoeStory = ({
       />
 
       <div className="flex-center-x pb-4">
-        <ShareButton storyId="rottenTomatoesScore" />
+        <ShareButton
+          storyProps={{
+            id: "rottenTomatoesScore",
+            ...storyProps,
+          }}
+        />
       </div>
     </div>
   );

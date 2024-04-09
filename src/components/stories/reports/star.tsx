@@ -3,8 +3,7 @@ import { DodecagramStar, StarSignIcon } from "@/components/icon";
 import { PageHeader, ShareButton, Text } from "@/components/themed";
 import { ReportsCardMockedData } from "@/helpers/mocked";
 import { cn } from "@/helpers/utils";
-
-import { StoryContentProps } from "../base";
+import { StoryContentProps } from "@/types";
 
 export const StarSignStory = ({
   storyProps,
@@ -46,7 +45,12 @@ export const StarSignStory = ({
       <DodecagramStar className="absolute w-20 rotate-[-40deg] -left-5 -bottom-7" />
 
       <div className="flex-center-x pb-4">
-        <ShareButton storyId="starSign" />
+        <ShareButton
+          storyProps={{
+            id: "starSign",
+            ...storyProps,
+          }}
+        />
       </div>
     </div>
   );

@@ -19,7 +19,7 @@
  * - `value:state`: A value from `QUEUE_STATES` that represents the job's current status.
  */
 
-import { redisClient } from "@/actions/store/redis";
+import { kv } from "@vercel/kv";
 
 export const QUEUE_STATES = {
   NOT_INITIATED: 'NOT_INITIATED',
@@ -56,12 +56,10 @@ function initializeSessionStates(): QueueSessionStates {
 // getStateRecordFromStore gets the current state record from the store
 export async function getStateRecordFromStore(sessionId: string): Promise<QueueSessionStates> {
   try {
-    const stateJson = await redisClient.get(sessionId);
+    const parsedState: QueueSessionStates | null = await kv.get(sessionId);
     const initialState = initializeSessionStates();
     
-    if (!stateJson) return initialState;
-    
-    const parsedState: QueueSessionStates = JSON.parse(stateJson);
+    if (!parsedState) return initialState;
     const queueSessionStates: QueueSessionStates = { ...initialState, ...parsedState };
     
     return queueSessionStates;
@@ -74,7 +72,7 @@ export async function getStateRecordFromStore(sessionId: string): Promise<QueueS
 // saveStateRecordToStore save the updated state record back to the store
 export async function saveStateRecordToStore(sessionId: string, sessionStates: QueueSessionStates): Promise<void> {
   try {
-    await redisClient.set(sessionId, JSON.stringify(sessionStates));
+    await kv.set(sessionId, JSON.stringify(sessionStates));
   } catch (error) {
     console.error(`Error saving state for session ${sessionId}:`, error);
     throw new Error('Failed to save state to store.');

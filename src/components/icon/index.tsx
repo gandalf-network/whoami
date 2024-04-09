@@ -10,3 +10,4 @@ export * from "./copy";
 export * from "./download";
 export * from "./instagram";
 export * from "./tiktok";
+export * from "./score";

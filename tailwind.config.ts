@@ -29,6 +29,7 @@ const config = {
           blue: "var(--primary-blue)",
           tomatoe: "var(--primary-tomatoe)",
         },
+        progress: "var(--progress)",
       },
       borderRadius: {
         lg: "var(--radius)",

@@ -261,3 +261,53 @@ export const UpArrow = ({
     </svg>
   );
 };
+
+export const DownArrow = ({
+  strokeWidth = 2,
+  ...props
+}: React.SVGProps<SVGSVGElement>) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 48 48"
+      className="w-10"
+      fill="none"
+      {...props}
+    >
+      <path
+        fill="#EE3E54"
+        stroke="#000"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={strokeWidth}
+        d="m24 38.5-12.5-13h8v-14a2 2 0 0 1 2-2h5a2 2 0 0 1 2 2v14h8L24 38.5Z"
+      />
+    </svg>
+  );
+};
+
+export const MidArrow = ({
+  strokeWidth = 2,
+  ...props
+}: React.SVGProps<SVGSVGElement>) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 48 48"
+      className="w-10"
+      fill="none"
+      {...props}
+    >
+      <rect
+        width={29}
+        height={10}
+        x={9}
+        y={19}
+        fill="#FBCD59"
+        stroke="#000"
+        strokeWidth={strokeWidth}
+        rx={1}
+      />
+    </svg>
+  );
+};

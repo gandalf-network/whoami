@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import { Cross, Heart } from "@/components/icon";
+import { Cross, Heart, QuadrilateralStar } from "@/components/icon";
 import {
   StoryDownloadContainer,
   PageHeader,
@@ -53,6 +53,11 @@ export const TVBFFStory = ({
         </div>
       </div>
 
+      <QuadrilateralStar
+        className="absolute w-24 -right-8 -bottom-6"
+        strokeWidth={1.5}
+      />
+
       <div className="flex-center-x pb-4">
         <ShareButton
           storyProps={{
@@ -73,6 +78,7 @@ export const TVBFFDownloadStory = ({ ...props }: StoryDownloadContentProps) => {
   return (
     <StoryDownloadContainer
       id={getStoryDownloadSelector("tvBff").id}
+      className="bg-primary-purple"
       title="TV BFF"
       {...props}
     >
@@ -93,6 +99,11 @@ export const TVBFFDownloadStory = ({ ...props }: StoryDownloadContentProps) => {
             From &quot;<span className="capitalize">{tvBFF.show}</span>&quot;
           </Text>
         </div>
+
+        <QuadrilateralStar
+          className="absolute w-24 -right-8 bottom-2"
+          strokeWidth={1}
+        />
       </div>
     </StoryDownloadContainer>
   );

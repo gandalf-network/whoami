@@ -15,8 +15,8 @@ export const StoryFooter = ({ name, className, ...props }: HeaderProps) => {
       {...props}
     >
       <div className="flex items-center gap-x-1">
-        <LogoIcon />
-        <LogoMarkIcon strokeWidth={1.2} />
+        <LogoIcon className="w-8" />
+        <LogoMarkIcon className="w-28" strokeWidth={1} />
       </div>
       <p className="flex-center-y underline gap-x-0.5">
         <Link className="w-4" />

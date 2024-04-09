@@ -44,7 +44,7 @@ export const Progress = ({
     <div className={cn("relative w-full", containerClassName)}>
       {label && (
         <div className="absolute w-full h-full left-0 flex-center">
-          <p className={cn("text-center font-bold text-xl", className)}>
+          <p className={cn("text-center font-bold text-xl", labelClassName)}>
             {label}
           </p>
         </div>
@@ -54,6 +54,42 @@ export const Progress = ({
         value={progress}
         {...props}
       />
+    </div>
+  );
+};
+
+/**
+ * @note this progress was specifically created for the download story components
+ * because the html-to-image component does not support the progress element
+ */
+export const ThemedProgress = ({
+  label,
+  className,
+  containerClassName,
+  labelClassName,
+  value,
+  ...props
+}: ProgressProps) => {
+  return (
+    <div className={cn("relative w-full", containerClassName)}>
+      {label && (
+        <div className="absolute w-full h-full left-0 flex-center">
+          <p className={cn("text-center font-bold text-xl", labelClassName)}>
+            {label}
+          </p>
+        </div>
+      )}
+      <div
+        className={cn(
+          "border-2 border-black rounded-full h-14 bg-background overflow-hidden",
+          className,
+        )}
+      >
+        <div
+          className="h-full bg-progress border-r-2 border-r-black"
+          style={{ width: `${value}%` }}
+        />
+      </div>
     </div>
   );
 };

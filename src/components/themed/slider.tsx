@@ -3,15 +3,9 @@
 import { useEffect, useState } from "react";
 
 import { cn } from "@/helpers/utils";
+import { VerticalSliderProps } from "@/types";
 
 import { Circle } from "./container";
-
-export interface VerticalSliderProps {
-  options: { value: string; content: React.ReactNode }[];
-  value?: string;
-  containerClassName?: string;
-  className?: string;
-}
 
 export const VerticalSlider = ({
   className,

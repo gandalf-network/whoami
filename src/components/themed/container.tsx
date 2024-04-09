@@ -98,12 +98,15 @@ export const StoryDownloadContainer = ({
       {...props}
     >
       {title && (
-        <Text className="text-2xl uppercase text-center" font="heading">
+        <Text
+          className="text-2xl uppercase text-center max-w-[80%] mx-auto"
+          font="heading"
+        >
           {title}
         </Text>
       )}
       <div className="flex-1 flex">{children}</div>
-      <StoryFooter />
+      <StoryFooter className="relative z-50" />
     </div>
   );
 };

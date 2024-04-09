@@ -2,7 +2,9 @@
 import { ShareIcon } from "lucide-react";
 
 import { Button as BaseButton } from "@/components/ui/button";
+import { baseMetadataInfo } from "@/helpers/metadata";
 import { getStoryDownloadSelector, getStoryLink } from "@/helpers/story";
+import { dataURLtoFile } from "@/helpers/utils";
 import { useCopyToClipboard } from "@/hooks/use-clipboard";
 import { useDialog } from "@/hooks/use-dialog";
 import { useImage } from "@/hooks/use-image";
@@ -49,7 +51,7 @@ export const ShareDialogContent = ({ storyId }: { storyId: AllStoryIds }) => {
     },
   ];
 
-  const onShareClick = (type: ShareMediumType) => {
+  const onShareClick = async (type: ShareMediumType) => {
     if (type === "copy") {
       copyToClipboard(getStoryLink(storyId));
     } else if (type === "download") {
@@ -61,6 +63,26 @@ export const ShareDialogContent = ({ storyId }: { storyId: AllStoryIds }) => {
       });
     } else {
       // ...
+      const image = await convertImageToBase64({
+        selector: getStoryDownloadSelector(storyId).selector,
+      });
+
+      const imageFile = dataURLtoFile(image, `${storyId.toLowerCase()}.png`);
+
+      const shareData =
+        type === "instagram"
+          ? { files: [imageFile] }
+          : {
+              files: [imageFile],
+              url: getStoryLink(storyId),
+              title: baseMetadataInfo.description,
+            };
+
+      if (navigator.canShare(shareData)) {
+        navigator.share(shareData);
+      } else {
+        console.error("Web Share API is not supported in your browser");
+      }
     }
   };
 

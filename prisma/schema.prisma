@@ -20,6 +20,12 @@ enum UserState {
   COMPLETED
 }
 
+enum AssistantName {
+  TV_BFF
+  FIRST_AND_MOST_REWATCHED_SHOW_QUIPS
+  TOP_GENRES_STAR_SIGN
+}
+
 model user {
   id         String     @id @default(uuid())
   identifier String     @unique @db.VarChar(255)
@@ -50,6 +56,7 @@ model show {
   numberOfEpisodes Int
   genre            String[]   @db.VarChar(255)
   imageURL         String?   @db.VarChar(255)
+  summary          String?   @db.VarChar(255)
   episodes         episode[]
   actors           actor[]
   users            userShow[]
@@ -87,4 +94,14 @@ model actor {
   shows     show[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+}
+
+model assistant {
+  id          String           @id @default(uuid())
+  name        AssistantName    @unique
+  assistantID String
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  @@index([name])
 }

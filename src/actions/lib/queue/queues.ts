@@ -33,7 +33,7 @@
  * 
  * 3. `crawlRottenTomatoeQueue`: This operates independently of the show-related 
  * data queues. It focuses on web crawling Rotten Tomatoes for the latest show and movie reviews 
- * and ratings, enriching the dataset neccessary information likes .
+ * and ratings, enriching the dataset with neccessary information.
  *
  * This layered, queue-based approach ensures that data is processed efficiently in 
  * the face of edge/serverless function constraints.

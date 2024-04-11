@@ -1,13 +1,10 @@
 "use client";
-import { ShareIcon } from "lucide-react";
+import { Check, Copy, ShareIcon, XIcon } from "lucide-react";
 
 import { Button as BaseButton } from "@/components/ui/button";
-import { baseMetadataInfo } from "@/helpers/metadata";
-import { getStoryDownloadSelector, getStoryLink } from "@/helpers/story";
-import { dataURLtoFile } from "@/helpers/utils";
-import { useCopyToClipboard } from "@/hooks/use-clipboard";
+import { cn } from "@/helpers/utils";
 import { useDialog } from "@/hooks/use-dialog";
-import { useImage } from "@/hooks/use-image";
+import { useShare } from "@/hooks/use-share";
 import { AllStoryIds, ShareButtonProps, ShareMediumType } from "@/types";
 
 import { Button } from "./button";
@@ -16,13 +13,13 @@ import {
   TiktokIcon,
   CopyIcon,
   DownloadIcon,
-  CopyCheckIcon,
+  XSocialIcon,
+  WhatsAppIcon,
 } from "../icon/";
+import { AlertDialogCancel } from "../ui/alert-dialog";
 
 export const ShareDialogContent = ({ storyId }: { storyId: AllStoryIds }) => {
-  const { convertImageToBase64 } = useImage();
-
-  const [copied, copyToClipboard] = useCopyToClipboard({ timeout: 3000 });
+  const [share, { loading, copied, storyLink }] = useShare({ storyId });
 
   const shareMediums = [
     {
@@ -36,67 +33,53 @@ export const ShareDialogContent = ({ storyId }: { storyId: AllStoryIds }) => {
       icon: <TiktokIcon className="w-10" />,
     },
     {
+      name: "x",
+      type: "x",
+      icon: <XSocialIcon className="w-10" />,
+    },
+    {
+      name: "WhatsApp",
+      type: "whatsapp",
+      icon: <WhatsAppIcon className="w-10" />,
+    },
+    {
       name: "Download",
       icon: <DownloadIcon className="w-10" />,
       type: "download",
     },
     {
-      name: "Copy link",
-      icon: copied ? (
-        <CopyCheckIcon className="w-10" />
-      ) : (
-        <CopyIcon className="w-10" />
-      ),
-      type: "copy",
+      name: "Share link",
+      icon: <CopyIcon className="w-10" />,
+      type: "share",
+      className: "md:hidden",
     },
   ];
 
-  const onShareClick = async (type: ShareMediumType) => {
-    if (type === "copy") {
-      copyToClipboard(getStoryLink(storyId));
-    } else if (type === "download") {
-      // ...
-      convertImageToBase64({
-        selector: getStoryDownloadSelector(storyId).selector,
-        download: true,
-        downloadName: `${storyId.toLowerCase()}.png`,
-      });
-    } else {
-      // ...
-      const image = await convertImageToBase64({
-        selector: getStoryDownloadSelector(storyId).selector,
-      });
-
-      const imageFile = dataURLtoFile(image, `${storyId.toLowerCase()}.png`);
-
-      const shareData =
-        type === "instagram"
-          ? { files: [imageFile] }
-          : {
-              files: [imageFile],
-              url: getStoryLink(storyId),
-              title: baseMetadataInfo.title,
-              text: baseMetadataInfo.title,
-            };
-
-      if (navigator?.canShare?.(shareData)) {
-        navigator.share(shareData);
-      } else {
-        console.error("Web Share API is not supported in your browser");
-      }
-    }
+  const onShareClick = (type: ShareMediumType) => {
+    share({ type });
   };
 
   return (
     <div className="flex flex-col gap-3">
-      <p className="text-center text-xl">Share to:</p>
-      <div className="grid grid-cols-3 gap-3 justify-between">
+      <div className="flex justify-between mb-3 items-center">
+        <p className="text-center text-xl">Share to:</p>
+        <AlertDialogCancel className="w-6 h-6 md:w-7 md:h-7 shadow-[1px_2px] rounded-full flex-center p-0">
+          <div>
+            <XIcon className="w-4 md:w-6" />
+          </div>
+        </AlertDialogCancel>
+      </div>
+      <div className="grid grid-cols-3 md:grid-cols-5 gap-3 justify-between">
         {shareMediums.map((medium) => (
           <BaseButton
             key={medium.name}
             variant="link"
             onClick={() => onShareClick(medium.type as ShareMediumType)}
-            className="text-foreground flex-col flex-center text-sm gap-y-1.5 h-auto px-0"
+            className={cn(
+              "text-foreground flex-col flex-center text-sm gap-y-1.5 h-auto px-0",
+              medium?.className,
+            )}
+            disabled={loading}
           >
             <span className="flex-shrink-0 flex justify-center">
               {medium.icon}
@@ -104,6 +87,20 @@ export const ShareDialogContent = ({ storyId }: { storyId: AllStoryIds }) => {
             {medium.name}
           </BaseButton>
         ))}
+      </div>
+
+      <div className="hidden md:flex mt-2 border-2 rounded-lg bg-muted-gray h-11 items-center overflow-hidden">
+        <p className="mx-4 text-sm text-center flex-1 truncate w-28">
+          {storyLink}
+        </p>
+        <BaseButton
+          variant="link"
+          onClick={() => onShareClick("copy")}
+          className="flex flex-center gap-x-2 border-l-2 h-full rounded-none w-32 flex-shrink-0 bg-primary-amber"
+        >
+          {!copied ? <Copy /> : <Check />}
+          Copy link
+        </BaseButton>
       </div>
     </div>
   );
@@ -116,7 +113,7 @@ export const ShareButton = ({ storyProps, ...props }: ShareButtonProps) => {
     storyProps.action?.("pause");
     show({
       onOverlayClick: hide,
-      contentClassName: "max-w-xs rounded-2xl",
+      contentClassName: "max-w-xs md:max-w-lg rounded-2xl",
       children: <ShareDialogContent storyId={storyProps.id} />,
     });
   };

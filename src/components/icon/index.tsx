@@ -11,3 +11,5 @@ export * from "./download";
 export * from "./instagram";
 export * from "./tiktok";
 export * from "./score";
+export * from "./x";
+export * from "./whatsapp";

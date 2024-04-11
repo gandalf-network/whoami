@@ -15,13 +15,17 @@ const config = {
         border: "var(--border)",
         background: "var(--background)",
         foreground: "var(--foreground)",
-        muted: "var(--muted)",
+        muted: {
+          DEFAULT: "var(--muted)",
+          gray: "var(--muted-gray)",
+        },
         primary: {
           DEFAULT: "var(--primary)",
           foreground: "var(--primary-foreground)",
           cyan: "var(--primary-cyan)",
           green: "var(--primary-green)",
           yellow: "var(--primary-yellow)",
+          amber: "var(--primary-amber)",
           pink: "var(--primary-pink)",
           orange: "var(--primary-orange)",
           lavender: "var(--primary-lavender)",

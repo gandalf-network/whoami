@@ -1,15 +1,19 @@
+import { redirect } from "next/navigation";
+
 import { Loader } from "@/components/loader";
 import { UserStories } from "@/components/stories";
 import { Container } from "@/components/themed";
-import { getStoryIndex } from "@/helpers/story";
 
 export default async function Page({ searchParams }: { searchParams: any }) {
-  const storyIndex = getStoryIndex(searchParams.id);
+  // redirect to home if id is present
+  if (searchParams.id) {
+    redirect("/");
+  }
 
   return (
     <Container className="flex flex-col">
       <Loader>
-        <UserStories currentIndex={storyIndex} />
+        <UserStories />
       </Loader>
     </Container>
   );

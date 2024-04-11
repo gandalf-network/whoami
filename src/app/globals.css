@@ -8,6 +8,7 @@
     --foreground: #000;
 
     --muted: #4C4C4C;
+    --muted-gray: #f0f0f0;
 
     --primary: #FBFE93;
     --primary-foreground: #000;
@@ -15,6 +16,7 @@
     --primary-cyan: #C4F5EC;
     --primary-green: #B3D3AB;
     --primary-yellow: #FFE581;
+    --primary-amber: #febf10;
     --primary-pink: #FDC1C9;
     --primary-orange: #FFA17B;
     --primary-lavender: #FFB3EF;

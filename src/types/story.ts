@@ -31,4 +31,11 @@ export type AllStoryIds =
   | "starSign"
   | "overview";
 
-export type ShareMediumType = "download" | "tiktok" | "instagram" | "copy";
+export type ShareMediumType =
+  | "download"
+  | "tiktok"
+  | "instagram"
+  | "copy"
+  | "x"
+  | "whatsapp"
+  | "share";

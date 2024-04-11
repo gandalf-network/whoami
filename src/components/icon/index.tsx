@@ -13,3 +13,4 @@ export * from "./tiktok";
 export * from "./score";
 export * from "./x";
 export * from "./whatsapp";
+export * from "./netflix";

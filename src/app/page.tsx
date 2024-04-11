@@ -13,6 +13,7 @@ import {
   Container,
   GridLineBackground,
 } from "@/components/themed";
+import { StartButton } from "@/components/themed/start-button";
 import { appInfo } from "@/helpers/utils";
 
 export default function Home() {
@@ -33,26 +34,23 @@ export default function Home() {
           <p className="text-lg text-center max-w-72">
             Connect your Netflix profile and we will tell you who you are
           </p>
-          <a href={appInfo.connectUrl} target="_blank">
-            <Button className="mt-8">Start</Button>
-          </a>
+          <StartButton className="mt-8">Start</StartButton>
         </div>
 
-        <Box className="flex-center-y gap-x-2 h-9 border shadow-[0px_4px] mb-8">
+        <div className="flex-center-y gap-x-2 mb-8">
           <a target="_blank" href={appInfo.repoUrl}>
-            <Button variant="link" className="text-xs gap-x-1 px-0">
+            <Button className="text-xs gap-x-1 h-8 border shadow-[0px_4px] bg-background hover:bg-background rounded-full px-4">
               <GithubIcon className="w-5" />
               See source code
             </Button>
           </a>
-          <BulletPoint className="w-1 h-1" />
           <a target="_blank" href={appInfo.deployUrl}>
-            <Button variant="link" className="text-xs gap-x-1 px-0">
+            <Button className="text-xs gap-x-1 h-8 border shadow-[0px_4px] bg-background hover:bg-background rounded-full px-4">
               <VercelIcon className="w-5" />
               Deploy to Vercel
             </Button>
           </a>
-        </Box>
+        </div>
       </div>
 
       <BluePinkWaveBackground className="justify-end z-10" />

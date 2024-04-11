@@ -1,7 +1,13 @@
 import { cn } from "@/helpers/utils";
 import { BackgroundProps } from "@/types";
 
-import { BluePinkWave, BlueWave, GridLineIcon, PinkWave } from "../icon";
+import {
+  BluePinkWave,
+  BluePinkWave1,
+  BlueWave,
+  GridLineIcon,
+  PinkWave,
+} from "../icon";
 
 export const GridLineBackground = ({
   iconClassName,
@@ -56,6 +62,21 @@ export const BluePinkWaveBackground = ({
       {...props}
     >
       <BluePinkWave className={cn("w-full", iconClassName)} />
+    </div>
+  );
+};
+
+export const BluePinkWave1Background = ({
+  iconClassName,
+  className,
+  ...props
+}: BackgroundProps) => {
+  return (
+    <div
+      className={cn("inset-background flex flex-col items-center", className)}
+      {...props}
+    >
+      <BluePinkWave1 className={cn("w-full", iconClassName)} />
     </div>
   );
 };

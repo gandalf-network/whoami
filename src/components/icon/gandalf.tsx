@@ -39,3 +39,37 @@ export const PoweredByGandalfIcon = (props: React.SVGProps<SVGSVGElement>) => {
     </svg>
   );
 };
+
+export const GandalfIcon = (props: React.SVGProps<SVGSVGElement>) => {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 41 40"
+      className="w-10"
+      {...props}
+    >
+      <g clipPath="url(#a)">
+        <path
+          fill="#6610F2"
+          d="M40.5 20c0 11.046-8.954 20-20 20S.5 31.046.5 20s8.954-20 20-20 20 8.954 20 20Z"
+        />
+        <path
+          fill="#fff"
+          d="m15.863 48.983-.537 7.263.9.123 1.437-7.14-1.8-.246ZM15.925 48.532l1.708-15.815 2.7.37-2.608 15.692-1.8-.247ZM20.395 32.637l-2.7-.37.271-8.675 6.98-4.088-1.818-3.46-4.298 1.246-.123.9.9.124.777 1.023-1.72 2.516-3.028-1.332.352-5.913 8.145-2.552 4.414 7.941-7.226 5.889-.926 6.751Z"
+        />
+        <path
+          fill="#fff"
+          fillRule="evenodd"
+          d="M20.5 37.822c9.843 0 17.822-7.98 17.822-17.822 0-9.843-7.98-17.822-17.822-17.822-9.843 0-17.822 7.98-17.822 17.822 0 9.843 7.98 17.822 17.822 17.822Zm0 2.178c11.046 0 20-8.954 20-20s-8.954-20-20-20S.5 8.954.5 20s8.954 20 20 20Z"
+          clipRule="evenodd"
+        />
+      </g>
+      <defs>
+        <clipPath id="a">
+          <rect width={40} height={40} x={0.5} fill="#fff" rx={20} />
+        </clipPath>
+      </defs>
+    </svg>
+  );
+};

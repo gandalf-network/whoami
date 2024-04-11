@@ -26,7 +26,10 @@ const config = {
           green: "var(--primary-green)",
           yellow: "var(--primary-yellow)",
           amber: "var(--primary-amber)",
-          pink: "var(--primary-pink)",
+          pink: {
+            DEFAULT: "var(--primary-pink)",
+            shade: "var(--primary-pink-shade)",
+          },
           orange: "var(--primary-orange)",
           lavender: "var(--primary-lavender)",
           purple: "var(--primary-purple)",

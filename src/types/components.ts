@@ -1,3 +1,5 @@
+import { type Options } from "qr-code-styling";
+
 import { AlertDialog } from "@/components/ui/alert-dialog";
 
 import { Action, AllStoryIds } from "./story";
@@ -58,4 +60,9 @@ export interface DialogProps
 
   /**class name */
   contentClassName?: string;
+}
+
+export interface QRCodeProps extends React.HTMLAttributes<HTMLDivElement> {
+  value: string;
+  options?: Options;
 }

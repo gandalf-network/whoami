@@ -44,7 +44,7 @@ export const LoadingScreen = ({
         />
 
         <Text className="text-lg">{title}</Text>
-        <TextAnimation texts={description} className="text-lg" />
+        <TextAnimation texts={description} className="text-lg font-medium" />
       </div>
 
       <QuadrilateralStar

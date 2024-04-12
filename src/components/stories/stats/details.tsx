@@ -1,7 +1,6 @@
 import { Circle, Nonagram1Star } from "@/components/icon";
 import { BlueWaveBackground, PageHeader, Text } from "@/components/themed";
 import { cn } from "@/helpers/utils";
-
 import { StoryContentProps } from "@/types";
 
 export const TVStatDetails = ({

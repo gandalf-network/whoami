@@ -3,7 +3,6 @@ import { PageHeader, PinkWaveBackground, Text } from "@/components/themed";
 import { cn } from "@/helpers/utils";
 import { StoryContentProps } from "@/types";
 
-
 export const ReportstDetails = ({
   storyProps,
   className,
@@ -24,7 +23,8 @@ export const ReportstDetails = ({
             Your TV Report Card
           </Text>
           <Text className="text-xl max-w-sm" font="caption">
-            Find out your Rotten Tomatoes <br />Score, your TV BFF and more.
+            Find out your Rotten Tomatoes <br />
+            Score, your TV BFF and more.
           </Text>
         </div>
       </div>

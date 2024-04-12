@@ -164,7 +164,9 @@ export const RottenTomatoeScoreDownloadStory = ({
         </div>
 
         <div>
-          <Text className="text-2xl font-bold">{rottenTomatoeScore.score}%</Text>
+          <Text className="text-2xl font-bold">
+            {rottenTomatoeScore.score}%
+          </Text>
           <Text className="text-xl my-3 font-medium">
             My taste is{" "}
             <strong>

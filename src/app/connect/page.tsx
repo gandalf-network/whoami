@@ -10,7 +10,7 @@ import {
 const getConnectUrl = async () => {
   const connect = new Connect({
     publicKey: process.env.NEXT_PUBLIC_GANDALF_PUBLIC_KEY as string,
-    redirectURL: "https://yourapp.com/connect-success",
+    redirectURL: process.env.NEXT_PUBLIC_GANDALF_REDIRECT_URL as string,
     services: { netflix: true },
   });
 
@@ -19,7 +19,7 @@ const getConnectUrl = async () => {
   return connectUrl;
 };
 
-export default async function Home() {
+export default async function Page() {
   const connectUrl = await getConnectUrl();
 
   return (

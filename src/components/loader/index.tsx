@@ -2,7 +2,12 @@
 import { cn } from "@/helpers/utils";
 
 import { HalfEclipse, QuadrilateralStar } from "../icon";
-import { BluePinkWaveBackground, PageHeader, Text, TextAnimation } from "../themed";
+import {
+  BluePinkWaveBackground,
+  PageHeader,
+  Text,
+  TextAnimation,
+} from "../themed";
 
 export interface LoadingScreenProps
   extends React.HTMLAttributes<HTMLDivElement> {
@@ -17,7 +22,7 @@ export const LoadingScreen = ({
     "Decoding your Netflix habits",
     "Crunching numbers for your TV Stats",
     "Crafting your TV Report Card",
-    "Unveiling your binge persona soon"
+    "Unveiling your binge persona soon",
   ],
   ...props
 }: LoadingScreenProps) => {

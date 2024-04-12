@@ -29,7 +29,8 @@ export const TotalTVShowStory = ({
 
       <div className="gap-y-10 story-content">
         <Text className="text-xl uppercase" font="heading">
-          You have watched a total of <br />{totalShows.length} show
+          You have watched a total of <br />
+          {totalShows.length} show
           {totalShows.length > 1 ? "s" : ""}
         </Text>
 

@@ -76,8 +76,7 @@ export const formatStringArrayToJSX = ({
         <>
           {isLastItem && <>and </>}
           <span className={className}>
-            {str}
-            {isLastItem ? "" : ", "}
+            “{str}”{isLastItem ? "" : ", "}
           </span>
         </>
       );

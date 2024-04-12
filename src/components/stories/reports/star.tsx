@@ -27,7 +27,7 @@ export const StarSignStory = ({
     >
       <PageHeader storyProps={storyProps} name="tv Report Card" />
 
-      <div className="gap-y-10 flex-1 flex-col flex-center text-center">
+      <div className="gap-y-10 story-content">
         <Text className="text-2xl uppercase" font="heading">
           Real Star Sign
         </Text>

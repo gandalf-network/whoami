@@ -27,7 +27,7 @@ export const TVBFFStory = ({
     >
       <PageHeader name="tv Report Card" storyProps={storyProps} />
 
-      <div className="gap-y-10 flex-1 flex-col flex-center text-center">
+      <div className="gap-y-10 story-content">
         <Text className="text-2xl uppercase" font="heading">
           TV BFF
         </Text>
@@ -54,8 +54,8 @@ export const TVBFFStory = ({
       </div>
 
       <QuadrilateralStar
-        className="absolute w-24 -right-8 -bottom-6"
-        strokeWidth={1.5}
+        className="absolute w-28 -right-8 -bottom-8"
+        strokeWidth={1}
       />
 
       <div className="flex-center-x pb-4">

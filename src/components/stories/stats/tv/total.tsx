@@ -21,15 +21,15 @@ export const TotalTVShowStory = ({
   return (
     <div
       className={cn(
-        "py-6 px-4 bg-primary-green w-full h-full flex flex-col",
+        "py-6 px-4 bg-primary-pink w-full h-full flex flex-col",
         className,
       )}
     >
       <PageHeader storyProps={storyProps} name="tv Stats" />
 
-      <div className="gap-y-10 flex-1 flex-col flex-center text-center">
+      <div className="gap-y-10 story-content">
         <Text className="text-xl uppercase" font="heading">
-          You have watched a total of {totalShows.length} show
+          You have watched a total of <br />{totalShows.length} show
           {totalShows.length > 1 ? "s" : ""}
         </Text>
 
@@ -99,7 +99,7 @@ export const TotalTVShowDownloadStory = ({
   return (
     <StoryDownloadContainer
       id={getStoryDownloadSelector("totalShows").id}
-      className="bg-primary-green"
+      className="bg-primary-pink"
       title={`I have watched a total of ${totalShows.length} show${totalShows.length > 1 ? "s" : ""}`}
       {...props}
     >

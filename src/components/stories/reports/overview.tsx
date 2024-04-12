@@ -36,8 +36,8 @@ export const getOverviewSummary = ({
       value: `${score}%`,
       className: "bg-primary-pink",
       icon: (
-        <div className="absolute w-full -top-6 -left-4 flex">
-          <RottenTomatoeScoreIcon score={score} className="w-14" />
+        <div className="absolute w-full -top-5 -left-4 flex">
+          <RottenTomatoeScoreIcon score={score} className="w-12" />
         </div>
       ),
     },
@@ -48,7 +48,7 @@ export const getOverviewSummary = ({
       icon: (
         <div className="absolute w-full -top-4 -right-4 flex justify-end">
           <img
-            className="w-[3.25rem] rotate-[16deg]"
+            className="w-12 rotate-[16deg]"
             src={
               rottenTomatoeImages[
                 getRottenTomatoeScoreText(
@@ -67,7 +67,7 @@ export const getOverviewSummary = ({
       className: "bg-primary-purple",
       icon: (
         <div className="absolute w-full -top-2 -left-2 flex">
-          <Heart className="w-9" />
+          <Heart className="w-8" />
         </div>
       ),
     },
@@ -76,9 +76,9 @@ export const getOverviewSummary = ({
       value: sign,
       className: "bg-primary-blue",
       icon: (
-        <div className="absolute w-full -top-3 -right-5 flex justify-end">
+        <div className="absolute w-full -top-3 -right-4 flex justify-end">
           <PentagramStar
-            className="w-12 rotate-[15deg]"
+            className="w-10 rotate-[15deg]"
             fill="#BBFCA2"
             strokeWidth={4}
           />
@@ -112,7 +112,7 @@ export const ReportOverviewStory = ({
       <div className="flex-1 flex flex-col relative z-10">
         <PageHeader storyProps={storyProps} name="tv Report Card" />
 
-        <div className="gap-y-3 flex-1 flex-col flex-center text-center">
+        <div className="gap-y-3 story-content">
           <div>
             <Text className="text-2xl uppercase mb-1.5" font="heading">
               {overview.title}
@@ -123,7 +123,7 @@ export const ReportOverviewStory = ({
             </Text>
           </div>
 
-          <div className="w-full mt-8 grid grid-cols-1 gap-4">
+          <div className="w-full mt-8 grid grid-cols-1 gap-5">
             {overviewSummary.map((summary, index) => {
               return (
                 <Box
@@ -185,7 +185,7 @@ export const ReportOverviewDownloadStory = ({
           {overview.summary}
         </Text>
 
-        <div className="w-full -translate-y-4 grid grid-cols-1 gap-4">
+        <div className="w-full -translate-y-4 grid grid-cols-1 gap-5">
           {overviewSummary.map((summary, index) => {
             return (
               <Box

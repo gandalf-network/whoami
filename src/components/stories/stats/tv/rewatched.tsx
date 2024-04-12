@@ -27,13 +27,13 @@ export const MostRewatchTVShowStory = ({
     >
       <PageHeader storyProps={storyProps} name="tv Stats" />
 
-      <div className="gap-y-10 flex-1 flex-col flex-center text-center">
+      <div className="gap-y-10 story-content">
         <Text className="text-2xl uppercase" font="heading">
           Most Rewatched TV Show
         </Text>
 
         <div className="relative p-0 w-52 h-72">
-          <NonagramStar className="absolute w-10 -top-5 -right-5" />
+          <NonagramStar className="absolute w-12 -top-4 -right-8 z-30" />
           <PentagramStar className="absolute w-24 -bottom-10 -left-12 z-10" />
           <img
             src={mostWatchedTvShow.imageURL}
@@ -45,8 +45,8 @@ export const MostRewatchTVShowStory = ({
         <div>
           <Text className="text-xl font-bold">{mostWatchedTvShow.title}</Text>
           <Text className="text-base my-3">
-            You have played S{mostWatchedTvShow.season}:E
-            {mostWatchedTvShow.episode} {mostWatchedTvShow.numberOfTimes} times
+            You have played <strong>S{mostWatchedTvShow.season}:E
+            {mostWatchedTvShow.episode}</strong> {mostWatchedTvShow.numberOfTimes} times
           </Text>
           <Text className="text-base" font="caption">
             {mostWatchedTvShow.summary}
@@ -82,7 +82,7 @@ export const MostRewatchTVShowDownloadStory = ({
     >
       <div className="gap-y-10 flex-1 flex-col flex-center text-center">
         <div className="relative p-0 w-52 h-72">
-          <NonagramStar className="absolute w-10 -top-5 -right-5" />
+          <NonagramStar className="absolute w-12 -top-4 -right-8 z-30" />
           <PentagramStar className="absolute w-24 -bottom-10 -left-12 z-10" />
           <img
             src={mostWatchedTvShow.imageURL}

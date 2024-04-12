@@ -24,12 +24,14 @@ export const ReportstDetails = ({
             Your TV Report Card
           </Text>
           <Text className="text-xl max-w-sm" font="caption">
-            Find out your Rotten Tomatoes Score, your TV BFF and more.
+            Find out your Rotten Tomatoes <br />Score, your TV BFF and more.
           </Text>
         </div>
       </div>
 
-      <Flash className="absolute left-2/4 top-[10%] pointer-events-none opacity-50 w-20" />
+      <div className="overflow-hidden absolute left-2/4 top-[8.7%] pointer-events-none opacity-50 w-20">
+        <Flash className="w-20 -translate-y-6" />
+      </div>
 
       <PinkWaveBackground className="justify-end" />
     </div>

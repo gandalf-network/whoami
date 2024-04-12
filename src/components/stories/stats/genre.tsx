@@ -30,13 +30,13 @@ export const GenreDistributionStory = ({
       <div className="offset-content flex-1 flex-col flex-center">
         <PageHeader storyProps={storyProps} name="tv Stats" />
 
-        <div className="gap-y-10 flex-1 flex-col flex-center text-center">
+        <div className="gap-y-8 story-content">
           <Text className="text-2xl uppercase" font="heading">
             Genre Distribution
           </Text>
 
           <div className="max-w-96 px-8">
-            <Text className="text-lg mb-2">
+            <Text className="text-lg mb-2.5">
               Your top {genreDistribution.top.length} TV genres include:
             </Text>
             <div className="my-3 flex flex-col gap-y-0.5">
@@ -61,7 +61,7 @@ export const GenreDistributionStory = ({
         </div>
       </div>
 
-      <PentagramStar className="absolute w-24 right-8 top-[32%]" />
+      <PentagramStar className="absolute w-24 right-4 top-[23%]" />
 
       <HalfEclipse className="absolute w-16 rotate-[-40deg] -left-2 -bottom-6" />
 

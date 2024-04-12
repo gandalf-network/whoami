@@ -29,7 +29,7 @@ const sliderOptions: SliderOptionType[] = [
         <img
           src={rottenTomatoeImages["certified fresh"]}
           alt="icon"
-          className="w-[74px]"
+          className="w-14"
         />
         <p className="font-semibold uppercase">
           {rottenTomatoeTexts["certified fresh"]}
@@ -41,7 +41,7 @@ const sliderOptions: SliderOptionType[] = [
     value: "fresh",
     content: (
       <div className="flex-center-y gap-x-1">
-        <img src={rottenTomatoeImages.fresh} alt="icon" className="w-[74px]" />
+        <img src={rottenTomatoeImages.fresh} alt="icon" className="w-14" />
         <p className="font-semibold uppercase">{rottenTomatoeTexts.fresh}</p>
       </div>
     ),
@@ -50,7 +50,7 @@ const sliderOptions: SliderOptionType[] = [
     value: "rotten",
     content: (
       <div className="flex-center-y gap-x-1">
-        <img src={rottenTomatoeImages.rotten} alt="icon" className="w-[74px]" />
+        <img src={rottenTomatoeImages.rotten} alt="icon" className="w-14" />
         <p className="font-semibold uppercase">{rottenTomatoeTexts.rotten}</p>
       </div>
     ),
@@ -74,7 +74,7 @@ export const RottenTomatoeStory = ({
       <div className="offset-content flex-1 flex-col flex-center">
         <PageHeader storyProps={storyProps} name="tv Report Card" />
 
-        <div className="gap-y-10 flex-1 flex-col flex-center text-center">
+        <div className="gap-y-10 story-content">
           <Text className="text-2xl uppercase" font="heading">
             Rotten Tomatoes Score
           </Text>
@@ -96,7 +96,7 @@ export const RottenTomatoeStory = ({
             />
           </div>
 
-          <div>
+          <div className="pt-4">
             <Text className="text-xl font-bold">
               {rottenTomatoeScore.score}%
             </Text>
@@ -115,7 +115,7 @@ export const RottenTomatoeStory = ({
       </div>
 
       <Circle
-        className="absolute top-[10%] -left-[85%] w-[60vh] h-[60vh] pointer-events-none"
+        className="absolute top-[7%] -left-[85%] w-[65vh] h-[60vh] pointer-events-none"
         strokeWidth={0.2}
       />
 

@@ -14,3 +14,5 @@ export * from "./score";
 export * from "./x";
 export * from "./whatsapp";
 export * from "./netflix";
+export * from "./pause";
+export * from "./play";

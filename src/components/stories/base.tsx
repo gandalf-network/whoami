@@ -34,9 +34,6 @@ export const Stories = ({ ...props }: StoriesProps) => {
         marginTop: "4rem",
         filter: "none",
       }}
-      pauseDivStyles={{
-        flex: 1,
-      }}
       {...props}
     />
   );

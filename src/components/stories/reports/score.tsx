@@ -72,7 +72,7 @@ export const RottenTomatoeStory = ({
       )}
     >
       <div className="offset-content flex-1 flex-col flex-center">
-        <PageHeader name="tv Report Card" />
+        <PageHeader storyProps={storyProps} name="tv Report Card" />
 
         <div className="gap-y-10 flex-1 flex-col flex-center text-center">
           <Text className="text-2xl uppercase" font="heading">

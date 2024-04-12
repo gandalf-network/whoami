@@ -1,8 +1,8 @@
 import { Flash } from "@/components/icon";
 import { PageHeader, PinkWaveBackground, Text } from "@/components/themed";
 import { cn } from "@/helpers/utils";
+import { StoryContentProps } from "@/types";
 
-import { StoryContentProps } from "../base";
 
 export const ReportstDetails = ({
   storyProps,
@@ -17,7 +17,7 @@ export const ReportstDetails = ({
       )}
     >
       <div className="offset-content flex-1 flex flex-col">
-        <PageHeader />
+        <PageHeader storyProps={storyProps} />
 
         <div className="gap-y-4 flex-1 flex-col flex-center text-center">
           <Text className="text-3xl" font="heading">

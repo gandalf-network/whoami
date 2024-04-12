@@ -110,7 +110,7 @@ export const ReportOverviewStory = ({
       )}
     >
       <div className="flex-1 flex flex-col relative z-10">
-        <PageHeader name="tv Report Card" />
+        <PageHeader storyProps={storyProps} name="tv Report Card" />
 
         <div className="gap-y-3 flex-1 flex-col flex-center text-center">
           <div>

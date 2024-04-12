@@ -11,7 +11,7 @@ export const Button = ({
   // extends this variable to add multiple button styles
   const variants = {
     primary: "bg-primary text-primary-foreground hover:bg-primary-cyan",
-    link: "bg-transparent text-black underline border-none rounded-none shadow-none",
+    link: "bg-transparent text-black underline border-0 rounded-none shadow-none",
   };
 
   const sizes = {

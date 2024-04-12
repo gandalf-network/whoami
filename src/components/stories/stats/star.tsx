@@ -25,7 +25,7 @@ export const CrossOverStarStory = ({
         className,
       )}
     >
-      <PageHeader name="tv Stats" />
+      <PageHeader storyProps={storyProps} name="tv Stats" />
 
       <div className="gap-y-10 flex-1 flex-col flex-center text-center">
         <Text className="text-2xl uppercase" font="heading">

@@ -39,6 +39,10 @@ export interface ShareButtonProps extends ButtonProps {
 
 export interface PageHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
   name?: string;
+  storyProps?: {
+    action?: Action;
+    isPaused?: boolean;
+  };
 }
 
 export interface ProgressProps

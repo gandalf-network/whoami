@@ -25,7 +25,7 @@ export const TVBFFStory = ({
         className,
       )}
     >
-      <PageHeader name="tv Report Card" />
+      <PageHeader name="tv Report Card" storyProps={storyProps} />
 
       <div className="gap-y-10 flex-1 flex-col flex-center text-center">
         <Text className="text-2xl uppercase" font="heading">

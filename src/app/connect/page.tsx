@@ -1,4 +1,6 @@
-import Connect from "@gandalf-network/connect";
+"use client";
+
+import { Loader2 } from "lucide-react";
 
 import { GandalfIcon, LogoIcon, NetflixIcon } from "@/components/icon";
 import {
@@ -6,21 +8,10 @@ import {
   Container,
   QRCode,
 } from "@/components/themed";
+import { useGandalfConnect } from "@/hooks/use-connect";
 
-const getConnectUrl = async () => {
-  const connect = new Connect({
-    publicKey: process.env.NEXT_PUBLIC_GANDALF_PUBLIC_KEY as string,
-    redirectURL: process.env.NEXT_PUBLIC_GANDALF_REDIRECT_URL as string,
-    services: { netflix: true },
-  });
-
-  const connectUrl = await connect.generateURL();
-
-  return connectUrl;
-};
-
-export default async function Page() {
-  const connectUrl = await getConnectUrl();
+export default function Page() {
+  const { url: connectUrl, loading } = useGandalfConnect();
 
   return (
     <Container className="relative bg-primary-pink-shade">
@@ -46,8 +37,12 @@ export default async function Page() {
           </p>
         </div>
 
-        <div className="w-80 h-80 bg-background flex-center">
-          <QRCode value={connectUrl} />
+        <div className="w-72 h-72 bg-background flex-center">
+          {loading ? (
+            <Loader2 className="w-8 h-8 animate-spin" />
+          ) : (
+            <QRCode value={connectUrl} />
+          )}
         </div>
       </div>
 

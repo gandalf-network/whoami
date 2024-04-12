@@ -1,4 +1,4 @@
-import QRCodeStyling, { type Options } from "qr-code-styling";
+import type { Options } from "qr-code-styling";
 import { useEffect, useState } from "react";
 
 interface QrCodeOptions {
@@ -40,13 +40,24 @@ export const useQrCode = (options: QrCodeOptions) => {
     ...options?.qrOptions,
   });
 
-  const [qrCode] = useState<QRCodeStyling>(new QRCodeStyling(qrOptions));
+  const [qrCode, setQrCode] = useState<any | undefined>(undefined);
+
+  const init = async () => {
+    if (!qrCode) {
+      // lazy load using the next dynamic
+      // ref: https://nextjs.org/docs/app/building-your-application/optimizing/lazy-loading#loading-external-libraries
+      const QRCodeStyling = (await import("qr-code-styling")).default;
+      setQrCode(new QRCodeStyling(qrOptions));
+    }
+
+    if (ref.current) {
+      qrCode?.append?.(ref.current);
+    }
+  };
 
   // check if ref exist and append the qr code to the ref
   useEffect(() => {
-    if (ref.current) {
-      qrCode.append(ref.current);
-    }
+    init();
   }, [qrCode, ref, refetch]);
 
   // update the qr code when the qrOptions change

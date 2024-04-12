@@ -1,4 +1,3 @@
-import Connect from "@gandalf-network/connect";
 import { useEffect, useState } from "react";
 
 export const useGandalfConnect = () => {
@@ -6,16 +5,22 @@ export const useGandalfConnect = () => {
 
   const [loading, setLoading] = useState(false);
 
-  const init = new Connect({
-    publicKey: process.env.NEXT_PUBLIC_GANDALF_PUBLIC_KEY as string,
-    redirectURL: "https://yourapp.com/connect-success",
-    services: { netflix: true },
-  });
+  const init = async () => {
+    // lazy load the gandalf next import
+    // ref: https://nextjs.org/docs/app/building-your-application/optimizing/lazy-loading#loading-external-libraries
+    const Connect = (await import("@gandalf-network/connect")).default;
+    const res = new Connect({
+      publicKey: process.env.NEXT_PUBLIC_GANDALF_PUBLIC_KEY as string,
+      redirectURL: process.env.NEXT_PUBLIC_GANDALF_REDIRECT_URL as string,
+      services: { netflix: true },
+    });
+    return res;
+  };
 
   const generateURL = async () => {
     try {
       setLoading(true);
-      const connectUrl = await init.generateURL();
+      const connectUrl = await (await init()).generateURL();
       setUrl(connectUrl);
     } finally {
       setLoading(false);

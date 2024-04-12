@@ -24,7 +24,7 @@ export const StartButton = (props: ButtonProps) => {
     }
   };
 
-  if (url) {
+  if (url && isMobile) {
     return (
       <a href={url} target="_blank" rel="noreferrer">
         <Button {...props} loading={loading}>

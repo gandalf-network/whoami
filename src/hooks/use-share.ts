@@ -58,12 +58,15 @@ export const useShare = ({ storyId }: { storyId: AllStoryIds }) => {
 
         const imageFile = dataURLtoFile(image, `${storyId.toLowerCase()}.png`);
 
-        const shareData = {
-          files: [imageFile],
-          url: storyLink,
-          title: baseMetadataInfo.title,
-          text: baseMetadataInfo.title,
-        };
+        const shareData =
+          type === "instagram"
+            ? { files: [imageFile] }
+            : {
+                files: [imageFile],
+                url: storyLink,
+                title: baseMetadataInfo.title,
+                text: baseMetadataInfo.title,
+              };
 
         if (navigator?.canShare?.(shareData)) {
           await navigator.share(shareData);

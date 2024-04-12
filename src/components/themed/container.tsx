@@ -12,7 +12,7 @@ export const MobileView = ({
   return (
     <div
       className={cn(
-        "w-full md:max-w-md md:rounded-xl bg-background outline-none overflow-x-auto",
+        "w-full md:max-w-[420px] md:rounded-xl bg-background outline-none overflow-x-auto",
         className,
       )}
       {...props}

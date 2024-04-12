@@ -66,17 +66,17 @@
 
 @layer utilities {
   .story-container {
-    @apply min-h-svh;
-  }
-
-  @media screen and (max-height: 750px) {
-    .story-container {
-      min-height: 115svh;
-    }
+    @apply min-h-screen;
   }
   
   .story-content {
     @apply flex flex-col items-center flex-1 text-center pt-20;
+  }
+
+  @media screen and (max-height: 750px) {
+    .story-content {
+      @apply scale-[0.90] origin-top;
+    }
   }
 
   .inset-background {

@@ -24,7 +24,7 @@ export const Button = ({
   return (
     <button
       className={cn(
-        "inline-flex items-center justify-center gap-x-2 whitespace-nowrap transition-colors disabled:pointer-events-none disabled:opacity-50 focus-visible:outline-none border rounded-[50%] shadow-black",
+        "font-medium inline-flex items-center justify-center gap-x-2 whitespace-nowrap transition-colors disabled:pointer-events-none disabled:opacity-50 focus-visible:outline-none border rounded-[50%] shadow-black",
         sizes[size],
         variants[variant],
         className,

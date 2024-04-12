@@ -31,10 +31,12 @@ export default function Home() {
             <LogoIcon className="w-14" />
             <LogoMarkOutlinedIcon className="w-64" />
           </div>
-          <p className="text-lg text-center max-w-72">
+          <p className="text-lg text-center max-w-72 font-medium">
             Connect your Netflix profile and we will tell you who you are
           </p>
-          <StartButton className="mt-8">Start</StartButton>
+          <StartButton className="mt-8 uppercase font-semibold">
+            Start
+          </StartButton>
         </div>
 
         <div className="flex-center-y gap-x-2 mb-8">

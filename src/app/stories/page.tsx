@@ -12,7 +12,7 @@ export default async function Page({ searchParams }: { searchParams: any }) {
 
   return (
     <Container className="flex flex-col">
-      <Loader>
+      <Loader loading>
         <UserStories />
       </Loader>
     </Container>

@@ -2,18 +2,23 @@
 import { cn } from "@/helpers/utils";
 
 import { HalfEclipse, QuadrilateralStar } from "../icon";
-import { BluePinkWaveBackground, PageHeader, Text } from "../themed";
+import { BluePinkWaveBackground, PageHeader, Text, TextAnimation } from "../themed";
 
 export interface LoadingScreenProps
   extends React.HTMLAttributes<HTMLDivElement> {
   title?: string;
-  description?: string;
+  description?: string[];
 }
 
 export const LoadingScreen = ({
   className,
   title = "Hold tight...",
-  description = "Decoding your Netflix habits",
+  description = [
+    "Decoding your Netflix habits",
+    "Crunching numbers for your TV Stats",
+    "Crafting your TV Report Card",
+    "Unveiling your binge persona soon"
+  ],
   ...props
 }: LoadingScreenProps) => {
   return (
@@ -26,15 +31,15 @@ export const LoadingScreen = ({
     >
       <PageHeader />
 
-      <div className="flex-1 flex-center flex-col gap-3 mb-10 ">
+      <div className="flex-1 flex-center flex-col gap-2.5 mb-10 ">
         <img
           src="/loading.gif"
-          className="w-14 h-14 object-cover"
+          className="w-16 h-16 object-cover"
           alt="loading animation"
         />
 
         <Text className="text-lg">{title}</Text>
-        <Text className="text-lg">{description}</Text>
+        <TextAnimation texts={description} className="text-lg" />
       </div>
 
       <QuadrilateralStar

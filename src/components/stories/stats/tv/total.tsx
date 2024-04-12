@@ -38,20 +38,20 @@ export const TotalTVShowStory = ({
           <img
             src={totalShows.top[0].imageUrl}
             alt="image"
-            className="w-full h-64 rounded-lg object-cover border-2 shadow-black shadow-[4px_4px]"
+            className="w-full h-64 rounded-lg object-cover border-2 shadow-black shadow-[4px_4px] bg-background"
           />
 
           <div className="flex flex-col gap-y-4 w-32 h-72 flex-shrink-0 relative z-10">
             <img
               src={totalShows.top[1].imageUrl}
               alt="image"
-              className="w-full h-[48%] rounded-lg object-cover border-2 shadow-black shadow-[4px_4px]"
+              className="w-full h-[48%] rounded-lg object-cover border-2 shadow-black shadow-[4px_4px] bg-background"
             />
 
             <img
               src={totalShows.top[2].imageUrl}
               alt="image"
-              className="w-full h-[48%] rounded-lg object-cover border-2 shadow-black shadow-[4px_4px]"
+              className="w-full h-[48%] rounded-lg object-cover border-2 shadow-black shadow-[4px_4px] bg-background"
             />
           </div>
 

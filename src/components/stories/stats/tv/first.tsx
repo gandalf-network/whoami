@@ -39,7 +39,7 @@ export const FirstTVShowStory = ({
           <img
             src={firstTvShow.imageURL}
             alt="image"
-            className="rounded-lg w-full h-full object-cover border-2 shadow-black shadow-[4px_4px] relative z-20"
+            className="rounded-lg w-full h-full object-cover border-2 shadow-black shadow-[4px_4px] relative z-20 bg-background"
           />
         </div>
 

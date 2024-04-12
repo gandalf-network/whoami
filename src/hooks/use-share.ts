@@ -55,7 +55,7 @@ export const useShare = ({ storyId }: { storyId: AllStoryIds }) => {
 
         const shareData = {
           files: [imageFile],
-          url: getStoryLink(storyId),
+          url: storyLink,
           title: baseMetadataInfo.title,
           text: baseMetadataInfo.title,
         };

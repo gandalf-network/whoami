@@ -31,7 +31,7 @@
  * 
  *      c.) `starSignPickerQueue`: Handles designation of star sign to the user based on their taste(s)
  * 
- * 3. `crawlRottenTomatoeQueue`: This operates independently of the show-related 
+ * 3. `crawlRottenTomatoesQueue`: This operates independently of the show-related 
  * data queues. It focuses on web crawling Rotten Tomatoes for the latest show and movie reviews 
  * and ratings, enriching the dataset with neccessary information.
  *
@@ -51,7 +51,7 @@
  * | genreDistributionQueue | Genre distribution analysis  | --> tvBFFQueue                |                   
  * |                        |                              | --> starSignPickerQueue       |
  * |                        |                              |                               |
- * | crawlRottenTomatoeQueue| Rotten Tomatoes crawling     | (Ends after processing)       |                   
+ * | crawlRottenTomatoesQueue| Rotten Tomatoes crawling     | (Ends after processing)       |                   
  * | tvBFFQueue             | TV BFF logic                 | (Ends after processing)       |                 
  * | starSignPickerQueue    | Astrological recommendations | (Ends after processing)       |
  */
@@ -66,7 +66,7 @@ export const queueNames = {
     QueryActivities: "queryActivities",
     QueryShowActors: "queryShowActors",
     QueryShowData: "queryShowData",
-    CrawlRottenTomatoe: "crawlRottenTomatoe",
+    CrawlRottenTomatoes: "crawlRottenTomatoe",
     GenreDistribution: "genreDistribution",
     TVBFF: "tvBFF",
     StarSignPicker: "starSignPicker",
@@ -93,7 +93,7 @@ export const queryShowDataQueue: Queue = new Queue(queueNames.QueryShowData, que
  * Aimed at crawling Rotten Tomatoes for reviews and ratings, aggregating critical 
  * and audience reception data.
  */
-export const crawlRottenTomatoeQueue: Queue = new Queue(queueNames.CrawlRottenTomatoe, queueOptions);
+export const crawlRottenTomatoesQueue: Queue = new Queue(queueNames.CrawlRottenTomatoes, queueOptions);
 
 /** 
  * Analyzes and distributes activties based on genre leveraging openAI API
@@ -117,5 +117,5 @@ export default {
     queryShowActorsQueue,
     queryShowDataQueue,
     queryActivitiesQueue,
-    crawlRottenTomatoeQueue,
+    crawlRottenTomatoesQueue,
 };

@@ -69,21 +69,9 @@
     @apply min-h-svh;
   }
 
-  @media (max-height: 750px) {
+  @media screen and (max-height: 750px) {
     .story-container {
-      min-height: 120svh;
-    }
-  }
-
-  @media (max-height: 700px) {
-    .story-container {
-      min-height: 125svh;
-    }
-  }
-
-  @media (max-height: 640px) {
-    .story-container {
-      min-height: 135svh;
+      min-height: 115svh;
     }
   }
   

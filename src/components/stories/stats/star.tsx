@@ -35,7 +35,10 @@ export const CrossOverStarStory = ({
         <div className="relative p-0 w-64 h-64 rounded-full">
           <GridDots className="absolute w-[375px] top-[-17%] -translate-x-2/4 left-2/4" />
           <Circle className="absolute w-16 -top-0 -left-0" />
-          <Rectangle className="absolute w-8 bottom-6 right-4 z-20" strokeWidth={1.5} />
+          <Rectangle
+            className="absolute w-8 bottom-6 right-4 z-20"
+            strokeWidth={1.5}
+          />
           <img
             src={yourCrossoverStar.imageURL}
             alt="image"
@@ -46,7 +49,11 @@ export const CrossOverStarStory = ({
         <div className="mt-8">
           <Text className="text-xl font-bold">{yourCrossoverStar.name}</Text>
           <Text className="text-base my-3 font-medium">
-            Has appeared in <strong>{yourCrossoverStar.totalAppearance} show{yourCrossoverStar.totalAppearance > 1 ? "s " : " "}</strong>
+            Has appeared in{" "}
+            <strong>
+              {yourCrossoverStar.totalAppearance} show
+              {yourCrossoverStar.totalAppearance > 1 ? "s " : " "}
+            </strong>
             you&apos;ve watched, including{" "}
             {formatStringArrayToJSX({
               strings: yourCrossoverStar.topShows,

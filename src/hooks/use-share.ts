@@ -18,6 +18,10 @@ export const useShare = ({ storyId }: { storyId: AllStoryIds }) => {
 
   const [copied, copyToClipboard] = useCopyToClipboard({ timeout: 3000 });
 
+  const [selectedMedium, setSelectedMedium] = useState<
+    ShareMediumType | undefined
+  >(undefined);
+
   const [loading, setLoading] = useState(false);
 
   const storyLink = getStoryLink(storyId);
@@ -27,6 +31,7 @@ export const useShare = ({ storyId }: { storyId: AllStoryIds }) => {
 
   const share = async ({ type }: { type: ShareMediumType }) => {
     try {
+      setSelectedMedium(type);
       setLoading(true);
 
       // if the share medium type is copy then copy to clipboard
@@ -97,5 +102,5 @@ export const useShare = ({ storyId }: { storyId: AllStoryIds }) => {
     }
   };
 
-  return [share, { loading, copied, storyLink }] as const;
+  return [share, { loading, copied, storyLink, selectedMedium }] as const;
 };

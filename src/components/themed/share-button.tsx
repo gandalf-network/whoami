@@ -19,7 +19,9 @@ import {
 import { AlertDialogCancel } from "../ui/alert-dialog";
 
 export const ShareDialogContent = ({ storyId }: { storyId: AllStoryIds }) => {
-  const [share, { loading, copied, storyLink }] = useShare({ storyId });
+  const [share, { loading, copied, storyLink, selectedMedium }] = useShare({
+    storyId,
+  });
 
   const shareMediums = [
     {
@@ -79,7 +81,7 @@ export const ShareDialogContent = ({ storyId }: { storyId: AllStoryIds }) => {
               "text-foreground flex-col flex-center text-sm gap-y-1.5 h-auto px-0 font-normal",
               medium?.className,
             )}
-            disabled={loading}
+            disabled={selectedMedium === medium.type ? loading : undefined}
           >
             <span className="flex-shrink-0 flex justify-center">
               {medium.icon}

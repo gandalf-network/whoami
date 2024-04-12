@@ -15,7 +15,7 @@ export default function Page() {
 
   return (
     <Container className="relative bg-primary-pink-shade">
-      <div className="py-10 flex-col flex items-center h-full offset-content">
+      <div className="py-10 flex-col flex items-center h-full offset-content story-content">
         <div className="flex-center-x">
           <div className="w-10 h-10 rounded-full bg-background flex-center">
             <LogoIcon />
@@ -24,7 +24,7 @@ export default function Page() {
         </div>
 
         <div className="mt-10 mb-8 text-center px-8">
-          <p className="text-2xl max-w-sm mx-auto mb-4">
+          <p className="text-2xl max-w-sm mx-auto mb-4 font-medium">
             whoami.tv uses Gandalf <br /> to link your
             <span className="inline-flex translate-y-0.5">
               <NetflixIcon className="w-5 " />

@@ -44,7 +44,7 @@ export const MostRewatchTVShowStory = ({
 
         <div>
           <Text className="text-xl font-bold">{mostWatchedTvShow.title}</Text>
-          <Text className="text-base my-3">
+          <Text className="text-base my-3 font-medium">
             You have played <strong>S{mostWatchedTvShow.season}:E
             {mostWatchedTvShow.episode}</strong> {mostWatchedTvShow.numberOfTimes} times
           </Text>
@@ -95,13 +95,13 @@ export const MostRewatchTVShowDownloadStory = ({
           <Text className="text-2xl font-bold mt-2 mb-4">
             {mostWatchedTvShow.title}
           </Text>
-          <Text className="text-muted text-base">Most played episode</Text>
+          <Text className="text-muted text-base font-medium">Most played episode</Text>
           <Text className="text-xl font-bold">
             S{mostWatchedTvShow.season}:E
             {mostWatchedTvShow.episode}
           </Text>
 
-          <Text className="mt-6 text-lg">
+          <Text className="mt-6 text-lg font-medium">
             Played {mostWatchedTvShow.numberOfTimes} times
           </Text>
         </div>

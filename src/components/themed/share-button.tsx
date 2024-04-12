@@ -62,7 +62,7 @@ export const ShareDialogContent = ({ storyId }: { storyId: AllStoryIds }) => {
   return (
     <div className="flex flex-col gap-3">
       <div className="flex justify-between mb-3 items-center">
-        <p className="text-center text-xl">Share to:</p>
+        <p className="text-center text-xl font-medium">Share to:</p>
         <AlertDialogCancel className="w-6 h-6 md:w-7 md:h-7 shadow-[1px_2px] rounded-full flex-center p-0">
           <div>
             <XIcon className="w-4 md:w-6" />
@@ -76,7 +76,7 @@ export const ShareDialogContent = ({ storyId }: { storyId: AllStoryIds }) => {
             variant="link"
             onClick={() => onShareClick(medium.type as ShareMediumType)}
             className={cn(
-              "text-foreground flex-col flex-center text-sm gap-y-1.5 h-auto px-0",
+              "text-foreground flex-col flex-center text-sm gap-y-1.5 h-auto px-0 font-normal",
               medium?.className,
             )}
             disabled={loading}
@@ -106,7 +106,11 @@ export const ShareDialogContent = ({ storyId }: { storyId: AllStoryIds }) => {
   );
 };
 
-export const ShareButton = ({ storyProps, ...props }: ShareButtonProps) => {
+export const ShareButton = ({
+  storyProps,
+  className,
+  ...props
+}: ShareButtonProps) => {
   const { hide, show } = useDialog();
 
   const onClick = () => {
@@ -120,7 +124,10 @@ export const ShareButton = ({ storyProps, ...props }: ShareButtonProps) => {
 
   return (
     <Button
-      className="absolute z-[999999999] bottom-8 py-4 bg-transparent hover:bg-transparent text-base uppercase"
+      className={cn(
+        "absolute z-[999999999] bottom-8 py-4 bg-transparent hover:bg-transparent text-base uppercase font-semibold",
+        className,
+      )}
       size="sm"
       {...props}
       onClick={onClick}

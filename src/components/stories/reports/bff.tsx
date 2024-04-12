@@ -44,7 +44,7 @@ export const TVBFFStory = ({
 
         <div>
           <Text className="text-xl font-bold">{tvBFF.name}</Text>
-          <Text className="text-base my-3">
+          <Text className="text-base my-3 font-medium">
             From &quot;<span className="capitalize">{tvBFF.show}</span>&quot;
           </Text>
           <Text className="max-w-xs text-base" font="caption">
@@ -95,14 +95,14 @@ export const TVBFFDownloadStory = ({ ...props }: StoryDownloadContentProps) => {
 
         <div>
           <Text className="text-2xl font-bold mb-3">{tvBFF.name}</Text>
-          <Text className="text-xl font-medium">
+          <Text className="text-xl font-semibold">
             From &quot;<span className="capitalize">{tvBFF.show}</span>&quot;
           </Text>
         </div>
 
         <QuadrilateralStar
-          className="absolute w-24 -right-8 bottom-2"
-          strokeWidth={1}
+          className="absolute w-28 -right-8 bottom-2"
+          strokeWidth={0.8}
         />
       </div>
     </StoryDownloadContainer>

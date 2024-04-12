@@ -87,8 +87,13 @@ export const StoryDownloadContainer = ({
   children,
   className,
   title,
+  titleClassName,
+  description,
   ...props
-}: React.HTMLAttributes<HTMLDivElement>) => {
+}: React.HTMLAttributes<HTMLDivElement> & {
+  titleClassName?: string;
+  description?: string;
+}) => {
   return (
     <div
       className={cn(
@@ -98,12 +103,19 @@ export const StoryDownloadContainer = ({
       {...props}
     >
       {title && (
-        <Text
-          className="text-2xl uppercase text-center max-w-[80%] mx-auto"
-          font="heading"
+        <div
+          className={cn(
+            "text-2xl text-center max-w-[80%] mx-auto",
+            titleClassName,
+          )}
         >
-          {title}
-        </Text>
+          <Text font="heading" className="uppercase">
+            {title}
+          </Text>
+          {description && (
+            <Text className="text-lg mt-8 font-medium">{description}</Text>
+          )}
+        </div>
       )}
       <div className="flex-1 flex">{children}</div>
       <StoryFooter className="relative z-50" />

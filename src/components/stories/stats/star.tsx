@@ -45,7 +45,7 @@ export const CrossOverStarStory = ({
 
         <div className="mt-8">
           <Text className="text-xl font-bold">{yourCrossoverStar.name}</Text>
-          <Text className="text-base my-3">
+          <Text className="text-base my-3 font-medium">
             Has appeared in <strong>{yourCrossoverStar.totalAppearance} show{yourCrossoverStar.totalAppearance > 1 ? "s " : " "}</strong>
             you&apos;ve watched, including{" "}
             {formatStringArrayToJSX({
@@ -98,15 +98,15 @@ export const CrossOverStarDownloadStory = ({
           <Text className="text-2xl font-bold mt-2 mb-4">
             {yourCrossoverStar.name}
           </Text>
-          <Text className="text-muted text-base">Has appeared in</Text>
-          <Text className="text-xl font-bold">
+          <Text className="font-medium text-base">Has appeared in</Text>
+          <Text className="text-xl font-semibold">
             {yourCrossoverStar.totalAppearance} shows
           </Text>
-          <Text className="text-base mt-4">
+          <Text className="text-lg mt-4 font-medium">
             I’ve watched including{" "}
             {formatStringArrayToJSX({
               strings: yourCrossoverStar.topShows,
-              className: "font-bold",
+              className: "",
             })}
           </Text>
         </div>

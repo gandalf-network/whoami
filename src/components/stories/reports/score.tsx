@@ -100,7 +100,7 @@ export const RottenTomatoeStory = ({
             <Text className="text-xl font-bold">
               {rottenTomatoeScore.score}%
             </Text>
-            <Text className="text-base my-3">
+            <Text className="text-base my-3 font-medium">
               Your taste is{" "}
               <strong>
                 {getRottenTomatoeScoreText(rottenTomatoeScore.score)}
@@ -164,9 +164,9 @@ export const RottenTomatoeScoreDownloadStory = ({
         </div>
 
         <div>
-          <Text className="text-xl font-bold">{rottenTomatoeScore.score}%</Text>
-          <Text className="text-base my-3">
-            Your taste is{" "}
+          <Text className="text-2xl font-bold">{rottenTomatoeScore.score}%</Text>
+          <Text className="text-xl my-3 font-medium">
+            My taste is{" "}
             <strong>
               {getRottenTomatoeScoreText(rottenTomatoeScore.score)}
             </strong>
@@ -175,7 +175,7 @@ export const RottenTomatoeScoreDownloadStory = ({
         </div>
 
         <Circle
-          className="absolute top-[10%] -left-[90%] w-[55vh] h-[60vh] pointer-events-none"
+          className="absolute top-[6%] -left-[90%] w-[60vh] h-[60vh] pointer-events-none"
           strokeWidth={0.2}
         />
       </div>

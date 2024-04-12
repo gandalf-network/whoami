@@ -38,7 +38,7 @@ export const StarSignStory = ({
           <Text className="text-xl font-bold capitalize">
             {realStarSign.name}
           </Text>
-          <Text className="text-base my-3">
+          <Text className="text-base my-3 font-medium">
             From &quot;<span className="capitalize">{realStarSign.show}</span>
             &quot;
           </Text>
@@ -80,10 +80,10 @@ export const StarSignDownloadStory = ({
         <StarSignIcon sign={realStarSign.name} className="w-80" />
 
         <div>
-          <Text className="text-2xl font-bold mt-2 mb-4">
+          <Text className="text-2xl font-bold mt-2 mb-4 capitalize">
             {realStarSign.name}
           </Text>
-          <Text className="text-xl">{realStarSign.show}</Text>
+          <Text className="text-xl font-semibold">{realStarSign.show}</Text>
         </div>
 
         <DodecagramStar className="absolute w-20 rotate-[-40deg] -left-5 -bottom-7" />

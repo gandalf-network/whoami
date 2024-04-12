@@ -134,8 +134,8 @@ export const ReportOverviewStory = ({
                   )}
                 >
                   {summary.icon}
-                  <Text className="text-sm">{summary.title}</Text>
-                  <Text className="text-lg" font="heading">
+                  <Text className="text-sm font-medium">{summary.title}</Text>
+                  <Text className="text-lg capitalize" font="heading">
                     {summary.value}
                   </Text>
                 </Box>
@@ -149,6 +149,7 @@ export const ReportOverviewStory = ({
 
       <div className="flex-center-x pb-4">
         <ShareButton
+          className="bg-background"
           storyProps={{
             id: "overview",
             ...storyProps,
@@ -196,8 +197,8 @@ export const ReportOverviewDownloadStory = ({
                 )}
               >
                 {summary.icon}
-                <Text className="text-sm">{summary.title}</Text>
-                <Text className="text-lg" font="heading">
+                <Text className="text-base font-medium">{summary.title}</Text>
+                <Text className="text-xl capitalize" font="heading">
                   {summary.value}
                 </Text>
               </Box>

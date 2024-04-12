@@ -43,7 +43,7 @@ export const LoadingScreen = ({
           alt="loading animation"
         />
 
-        <Text className="text-lg">{title}</Text>
+        <Text className="text-lg font-medium">{title}</Text>
         <TextAnimation texts={description} className="text-lg font-medium" />
       </div>
 

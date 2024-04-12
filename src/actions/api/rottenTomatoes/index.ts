@@ -1,21 +1,18 @@
-import puppeteer from "puppeteer";
+import axios from "axios";
+import * as cheerio from "cheerio";
 
 import { ROTTEN_TOMATOES_BASE_URL } from "@/actions/helpers/constants";
 
 export async function getRottenTomatoScore(title: string) {
   title = title.replaceAll(" ", "_");
-  const browser = await puppeteer.launch();
-  const page = await browser.newPage();
-  await page.goto(`${ROTTEN_TOMATOES_BASE_URL}/tv/${title}`, {
-    waitUntil: "networkidle2",
-    timeout: 1000000,
-  });
+  const url = `${ROTTEN_TOMATOES_BASE_URL}/tv/${title}`;
+  const response = await axios.get(url);
 
-  const score = await page.evaluate(() => {
-    return document.querySelector("rt-text[slot='criticsScore']")?.textContent;
-  });
+  const html = response.data;
+  const $ = cheerio.load(html);
 
-  await browser.close();
-
+  const score = $("rt-text[slot='criticsScore']").first().text();
   return score;
 }
+
+getRottenTomatoScore("the big bang theory");

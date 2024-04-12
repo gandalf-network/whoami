@@ -123,5 +123,5 @@ export const openLinkInNewTab = (url: string) => {
   // note: i'm using the timeout to fix window not opening on SAFARI browsers
   setTimeout(() => {
     window.open(url, "_blank");
-  }, 10);
+  }, 100);
 };

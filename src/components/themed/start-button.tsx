@@ -1,39 +1,41 @@
 "use client";
 
-import Connect from "@gandalf-network/connect";
 import { useRouter } from "next/navigation";
 
 import { openLinkInNewTab } from "@/helpers/utils";
+import { useGandalfConnect } from "@/hooks/use-connect";
 import { useIsMobile } from "@/hooks/use-is-mobile";
 import { ButtonProps } from "@/types";
 
 import { Button } from "./button";
 
 export const StartButton = (props: ButtonProps) => {
+  const { url, loading } = useGandalfConnect();
+
   const isMobile = useIsMobile();
 
   const router = useRouter();
 
-  const onClick = async () => {
-    // if user is not on mobile, goto the connect screen
+  const onClick = () => {
     if (isMobile) {
-      // Initialize Connect
-      const connect = new Connect({
-        publicKey: process.env.NEXT_PUBLIC_GANDALF_PUBLIC_KEY as string,
-        redirectURL: "https://yourapp.com/connect-success",
-        services: { netflix: true },
-      });
-
-      const connectUrl = await connect.generateURL();
-
-      openLinkInNewTab(connectUrl);
+      openLinkInNewTab(url);
     } else {
       router.push("/connect");
     }
   };
 
+  if (url) {
+    return (
+      <a href={url} target="_blank" rel="noreferrer">
+        <Button {...props} loading={loading}>
+          Start
+        </Button>
+      </a>
+    );
+  }
+
   return (
-    <Button {...props} onClick={onClick}>
+    <Button {...props} onClick={onClick} loading={isMobile && loading}>
       Start
     </Button>
   );

@@ -27,6 +27,7 @@ export interface BackgroundProps extends React.HTMLAttributes<HTMLDivElement> {
 export interface ButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
   variant?: "primary" | "link";
   size?: "sm" | "md" | "lg" | "icon";
+  loading?: boolean;
 }
 
 export interface ShareButtonProps extends ButtonProps {

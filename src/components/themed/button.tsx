@@ -1,3 +1,5 @@
+import { Loader2 } from "lucide-react";
+
 import { cn } from "@/helpers/utils";
 import { ButtonProps } from "@/types";
 
@@ -6,6 +8,7 @@ export const Button = ({
   className,
   variant = "primary",
   size = "md",
+  loading,
   ...props
 }: ButtonProps) => {
   // extends this variable to add multiple button styles
@@ -31,7 +34,7 @@ export const Button = ({
       )}
       {...props}
     >
-      {children}
+      {loading ? <Loader2 className="h-6 w-6 animate-spin" /> : children}
     </button>
   );
 };

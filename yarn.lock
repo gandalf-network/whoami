@@ -26,10 +26,10 @@
   dependencies:
     regenerator-runtime "^0.14.0"
 
-"@enipx/react-insta-stories@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@enipx/react-insta-stories/-/react-insta-stories-1.0.0.tgz#a8e1924fbfd779d29efc43fda22ad34a501ce740"
-  integrity sha512-UVL43IcQ8eGav+euQwWxPTrE6zi5WnOjArTpQzP6dbkhZQRk/edIkcDl71iK1W+g2w2BUERhAO7IUfzAf2iCiA==
+"@enipx/react-insta-stories@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@enipx/react-insta-stories/-/react-insta-stories-1.0.2.tgz#2eade031db1fc4f4244bad5666bf9d4ecab740b0"
+  integrity sha512-9dYudT2lPdr6lToJ8SKrC4Pag036/FI6NBxluOozfTJk2EJnUG2vhksXYDPThPcY0HyuC215OrW6tVzgCllb3A==
 
 "@eslint-community/eslint-utils@^4.2.0", "@eslint-community/eslint-utils@^4.4.0":
   version "4.4.0"

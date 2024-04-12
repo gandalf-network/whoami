@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@enipx/react-insta-stories": "^1.0.0",
+    "@enipx/react-insta-stories": "^1.0.2",
     "@gandalf-network/connect": "^1.0.5",
     "@radix-ui/react-alert-dialog": "^1.0.5",
     "@radix-ui/react-slot": "^1.0.2",

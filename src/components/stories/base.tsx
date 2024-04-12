@@ -34,6 +34,10 @@ export const Stories = ({ ...props }: StoriesProps) => {
         marginTop: "4rem",
         filter: "none",
       }}
+      overlayStyles={{
+        bottom: "0",
+        height: "calc(100% - 4rem)",
+      }}
       {...props}
     />
   );

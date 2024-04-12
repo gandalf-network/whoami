@@ -26,6 +26,9 @@ export const PageHeader = ({
           <Button
             variant="link"
             className="p-0 w-6 h-6 rounded-full border shadow-[1px_2px]"
+            onClick={() => {
+              storyProps.action?.(storyProps.isPaused ? "play" : "pause");
+            }}
           >
             {storyProps.isPaused ? <PlayIcon /> : <PauseIcon />}
           </Button>

@@ -32,6 +32,7 @@ CREATE TABLE "show" (
     "id" TEXT NOT NULL,
     "title" VARCHAR(255) NOT NULL,
     "numberOfEpisodes" INTEGER NOT NULL,
+    "rottenTomatoScore" INTEGER,
     "genre" VARCHAR(255)[],
     "imageURL" VARCHAR(255),
     "summary" VARCHAR(255),

@@ -10,6 +10,7 @@ type CreateShowInput = {
   episodeTitle: string;
   datePlayed: string;
   userID: string;
+  rottenTomatoScore?: number;
   genre?: string[];
   imageURL?: string;
   summary?: string;
@@ -37,6 +38,9 @@ export async function createAndConnectShowToUser(
           }),
           ...(createShowInput.genre && { genre: createShowInput.genre }),
           ...(createShowInput.summary && { summary: createShowInput.summary }),
+          ...(createShowInput.rottenTomatoScore && {
+            rottenTomatoScore: createShowInput.rottenTomatoScore,
+          }),
         },
       });
     }
@@ -98,7 +102,8 @@ type UpdateShowInput = {
   id: string;
   imageURL?: string;
   summary?: string;
-  numberOfEpisodes: number;
+  rottenTomatoScore?: number;
+  numberOfEpisodes?: number;
 };
 
 export async function updateShow(updateShowInput: UpdateShowInput) {
@@ -110,6 +115,9 @@ export async function updateShow(updateShowInput: UpdateShowInput) {
       data: {
         ...(updateShowInput.imageURL && { imageURL: updateShowInput.imageURL }),
         ...(updateShowInput.summary && { summary: updateShowInput.summary }),
+        ...(updateShowInput.rottenTomatoScore && {
+          rottenTomatoScore: updateShowInput.rottenTomatoScore,
+        }),
         ...(updateShowInput.numberOfEpisodes && {
           numberOfEpisodes: updateShowInput.numberOfEpisodes,
         }),
@@ -379,4 +387,15 @@ export async function getUsersTopGenres(userID: string, count = 2) {
     };
   });
   return topGenres;
+}
+
+export async function getUserAverageRottenTomatoScore(userID: string) {
+  const result: any = await prisma.$queryRaw`
+    SELECT AVG(s.rottenTomatoScore) as averageScore
+    FROM "userShow" us
+    JOIN "show" s ON us."showID" = s.id
+    WHERE us."userID" = ${userID}
+  `;
+
+  return result[0].averageScore as number;
 }

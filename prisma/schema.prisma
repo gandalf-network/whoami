@@ -51,17 +51,18 @@ model episode {
 }
 
 model show {
-  id               String    @id @default(uuid())
-  title            String    @unique @db.VarChar(255)
-  numberOfEpisodes Int
-  genre            String[]   @db.VarChar(255)
-  imageURL         String?   @db.VarChar(255)
-  summary          String?   @db.VarChar(255)
-  episodes         episode[]
-  actors           actor[]
-  users            userShow[]
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
+  id                String    @id @default(uuid())
+  title             String    @unique @db.VarChar(255)
+  numberOfEpisodes  Int
+  rottenTomatoScore Int?   
+  genre             String[]   @db.VarChar(255)
+  imageURL          String?   @db.VarChar(255)
+  summary           String?   @db.VarChar(255)
+  episodes          episode[]
+  actors            actor[]
+  users             userShow[]
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
 }
 
 model userEpisode {

@@ -37,7 +37,6 @@ export default class TVDBClient {
     const { data } = await this.doRequest(
       `${TVDB_BASE_URL}/series/${imdbID}/extended?meta=episodes`,
     );
-
     const episodeCount = data.episodes.length as number;
     const genres = data.genres.map((genre: any) => genre.name);
 
@@ -58,6 +57,7 @@ export default class TVDBClient {
     const returnObject: TVDBSearchReturn = {
       imageURL: data.image,
       genres,
+      summary: data.overview,
       episodeCount,
       actors,
     };

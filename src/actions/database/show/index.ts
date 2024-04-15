@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 
-import { Episode, Show, YourCrossoverStar } from "@/types";
+import { Episode, Show, TopGenres, YourCrossoverStar } from "@/types";
 
 const prisma = new PrismaClient();
 
@@ -10,8 +10,10 @@ type CreateShowInput = {
   episodeTitle: string;
   datePlayed: string;
   userID: string;
+  rottenTomatoScore?: number;
   genre?: string[];
   imageURL?: string;
+  summary?: string;
   season?: number;
   episode?: number;
 };
@@ -35,6 +37,10 @@ export async function createAndConnectShowToUser(
             imageURL: createShowInput.imageURL,
           }),
           ...(createShowInput.genre && { genre: createShowInput.genre }),
+          ...(createShowInput.summary && { summary: createShowInput.summary }),
+          ...(createShowInput.rottenTomatoScore && {
+            rottenTomatoScore: createShowInput.rottenTomatoScore,
+          }),
         },
       });
     }
@@ -95,7 +101,9 @@ export async function createAndConnectShowToUser(
 type UpdateShowInput = {
   id: string;
   imageURL?: string;
-  numberOfEpisodes: number;
+  summary?: string;
+  rottenTomatoScore?: number;
+  numberOfEpisodes?: number;
 };
 
 export async function updateShow(updateShowInput: UpdateShowInput) {
@@ -106,6 +114,10 @@ export async function updateShow(updateShowInput: UpdateShowInput) {
       },
       data: {
         ...(updateShowInput.imageURL && { imageURL: updateShowInput.imageURL }),
+        ...(updateShowInput.summary && { summary: updateShowInput.summary }),
+        ...(updateShowInput.rottenTomatoScore && {
+          rottenTomatoScore: updateShowInput.rottenTomatoScore,
+        }),
         ...(updateShowInput.numberOfEpisodes && {
           numberOfEpisodes: updateShowInput.numberOfEpisodes,
         }),
@@ -186,6 +198,8 @@ export async function getUsersFirstShow(userID: string) {
       id: usersFirstShowRes.episodes[0].episode.show?.id as string,
       dateFirstPlayed: usersFirstShowRes.episodes[0].datePlayed.toString(),
       title: usersFirstShowRes.episodes[0].episode.show?.title as string,
+      summary: usersFirstShowRes.episodes[0].episode.show?.summary as string,
+      genres: usersFirstShowRes.episodes[0].episode.show?.genre as string[],
       imageURL: usersFirstShowRes.episodes[0].episode.show?.imageURL as string,
     };
 
@@ -204,6 +218,8 @@ export async function getTop5ShowsByUser(
       SELECT 
         s.id AS id, 
         s.title AS title, 
+        s.summary as summary,
+        s.genre as genres,
         s."imageURL",
       COUNT(ue.id) AS watchCount,
       COUNT(ue.id)::FLOAT / s."numberOfEpisodes" AS score
@@ -218,35 +234,6 @@ export async function getTop5ShowsByUser(
         AND
           ${lastOneYear} = false
           OR ue."datePlayed" > CURRENT_DATE - INTERVAL '1 year'
-      GROUP BY 
-        s.id
-      ORDER BY 
-        score DESC
-      LIMIT 5;
-    `;
-    return { topShows, error: null };
-  } catch (error) {
-    return { topShows: null, error };
-  }
-}
-
-export async function getTop5ShowsByUserByDuration(userID: string) {
-  try {
-    const topShows: Show[] = await prisma.$queryRaw`
-      SELECT 
-        s.id AS id, 
-        s.title AS title, 
-        s."imageURL",
-      COUNT(ue.id) AS watchCount,
-      COUNT(ue.id)::FLOAT / s."numberOfEpisodes" AS score
-      FROM 
-        "userEpisode" ue
-      INNER JOIN 
-        "episode" e ON ue."episodeID" = e.id
-      INNER JOIN 
-        "show" s ON e."showID" = s.id
-      WHERE 
-        ue."userID" = ${userID}
       GROUP BY 
         s.id
       ORDER BY 
@@ -367,31 +354,48 @@ export async function getUsersTopShowsByActor(userID: string) {
 }
 
 export async function getUsersTopGenres(userID: string, count = 2) {
-  try {
-    const topGenres: any = await prisma.$queryRaw`
-      WITH GenreFrequency AS (
-        SELECT
-          UNNEST(s.genre) AS genre,
-          COUNT(*) AS frequency
-        FROM
-      "userShow" us
-        JOIN show s ON us."showID" = s.id
-        WHERE
-          us."userID" = ${userID}
-        GROUP BY
-          UNNEST(s.genre)
-      )
+  const topGenresRes: any = await prisma.$queryRaw`
+    WITH GenreFrequency AS (
       SELECT
-        genre,
-        frequency
+        UNNEST(s.genre) AS genre,
+        COUNT(*) AS frequency
+      FROM
+        "userShow" us
+      JOIN "show" s ON us."showID" = s.id
+      WHERE
+        us."userID" = ${userID}
+      GROUP BY
+        UNNEST(s.genre)
+    ), TotalGenres AS (
+      SELECT
+        SUM(frequency) AS total
       FROM
         GenreFrequency
-      ORDER BY
-        frequency DESC
-      LIMIT ${count};
+    )
+    SELECT
+      gf.genre,
+      ROUND((gf.frequency::DECIMAL / tg.total) * 100, 2) AS percentage
+    FROM
+      GenreFrequency gf, TotalGenres tg
+    ORDER BY
+      percentage DESC
+    LIMIT ${count};
     `;
-    return { topGenres, error: null };
-  } catch (error) {
-    return { topGenres: null, error };
-  }
+  const topGenres: TopGenres = topGenresRes.map((genre: any) => {
+    return {
+      [genre.genre]: genre.percentage,
+    };
+  });
+  return topGenres;
+}
+
+export async function getUserAverageRottenTomatoScore(userID: string) {
+  const result: any = await prisma.$queryRaw`
+    SELECT AVG(s.rottenTomatoScore) as averageScore
+    FROM "userShow" us
+    JOIN "show" s ON us."showID" = s.id
+    WHERE us."userID" = ${userID}
+  `;
+
+  return result[0].averageScore as number;
 }

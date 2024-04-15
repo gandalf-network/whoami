@@ -1,6 +1,9 @@
 -- CreateEnum
 CREATE TYPE "UserState" AS ENUM ('AWAITING_CONNECTION', 'CONNECTED', 'CRUNCHING_DATA', 'COMPLETED');
 
+-- CreateEnum
+CREATE TYPE "AssistantName" AS ENUM ('TV_BFF', 'FIRST_AND_MOST_REWATCHED_SHOW_QUIPS', 'TOP_GENRES_STAR_SIGN');
+
 -- CreateTable
 CREATE TABLE "user" (
     "id" TEXT NOT NULL,
@@ -29,8 +32,10 @@ CREATE TABLE "show" (
     "id" TEXT NOT NULL,
     "title" VARCHAR(255) NOT NULL,
     "numberOfEpisodes" INTEGER NOT NULL,
+    "rottenTomatoScore" INTEGER,
     "genre" VARCHAR(255)[],
     "imageURL" VARCHAR(255),
+    "summary" VARCHAR(255),
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -67,6 +72,17 @@ CREATE TABLE "actor" (
 );
 
 -- CreateTable
+CREATE TABLE "assistant" (
+    "id" TEXT NOT NULL,
+    "name" "AssistantName" NOT NULL,
+    "assistantID" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "assistant_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "_actorToshow" (
     "A" TEXT NOT NULL,
     "B" TEXT NOT NULL
@@ -92,6 +108,12 @@ CREATE INDEX "userEpisode_episodeID_idx" ON "userEpisode"("episodeID");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "actor_name_key" ON "actor"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "assistant_name_key" ON "assistant"("name");
+
+-- CreateIndex
+CREATE INDEX "assistant_name_idx" ON "assistant"("name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "_actorToshow_AB_unique" ON "_actorToshow"("A", "B");

@@ -80,20 +80,21 @@ async function callOpenAI(
 
   let assistantID: string;
 
-  const { assistant: savedAssistant, error } =
-    await getAssistantByName(assistantName);
+  try {
+    const savedAssistant = await getAssistantByName(assistantName);
+    assistantID = savedAssistant.assistantID;
+  } catch (error: any) {
+    console.log(error);
 
-  if (!savedAssistant || error) {
     const assistant = await openai.beta.assistants.create(
       assistantCreateParams,
     );
     assistantID = assistant.id;
+
     await createAssistant({
       assistantID,
       name: assistantName,
     });
-  } else {
-    assistantID = savedAssistant.assistantID;
   }
 
   let res: string = "";

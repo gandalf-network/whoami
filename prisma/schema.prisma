@@ -34,6 +34,7 @@ model user {
   shows      userShow[]
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
+  aiResponse aiResponse?
 }
 
 model episode {
@@ -105,4 +106,20 @@ model assistant {
   updatedAt   DateTime         @updatedAt
 
   @@index([name])
+}
+
+model aiResponse {
+  id               String @id @default(uuid())
+  topGenresQuip    String?
+  starSign         String?
+  starSignQuip     String?
+  rtScoreQuip      String?
+  personality      String?
+  personalityQuip  String?
+  firstTVShowQuip  String?
+  mostRewatchedTVShowQuip String?
+  bff              String?
+  bffQuip          String?
+  user             user   @relation(fields: [userID], references: [id])
+  userID           String    @unique
 }

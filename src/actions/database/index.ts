@@ -1,82 +1,95 @@
 import { MostWatchedTvShowWithEpisode, UserStats } from "@/types";
 
+import { createOrUpdateUsersAIResponse } from "./aiResponses";
 import {
-  getTop5ShowsByUser,
-  getTotalNumberOfShowsWatchedByUser,
   getUsersFirstShow,
+  getTop5ShowsByUser,
   getUsersMostWatchedEpisodeByShow,
   getUsersTopShowsByActor,
+  getTotalNumberOfShowsWatchedByUser,
+  getUsersTopGenres,
+  getUserAverageRottenTomatoScore,
 } from "./show";
 import { findOrCreateUserBySessionID } from "./user";
 
-export async function getStats(sessionID: string) {
-  const { user, error } = await findOrCreateUserBySessionID(sessionID);
-  if (error || !user) {
-    return { stats: null, error };
+export async function getStatsResponse(sessionID: string) {
+  const user = await findOrCreateUserBySessionID(sessionID);
+  if (user.state !== "COMPLETED") {
+    throw new Error("users data has not been fetched yet");
   }
 
-  const { usersFirstShow, error: usersFirstShowError } =
-    await getUsersFirstShow(user.id);
-  if (usersFirstShowError || !usersFirstShow) {
-    return { stats: null, error };
-  }
-
-  const { topShows, error: topShowsError } = await getTop5ShowsByUser(user.id);
-  if (topShowsError || !topShows) {
-    return { stats: null, error };
-  }
-
-  const { topEpisode, error: topEpisodeError } =
-    await getUsersMostWatchedEpisodeByShow(user.id, topShows[0].id);
-  if (topEpisodeError || !topEpisode) {
-    return { stats: null, error };
-  }
-
-  const { watchCount, error: watchCountError } =
-    await getTotalNumberOfShowsWatchedByUser(user.id);
-  if (watchCountError || !watchCount) {
-    return { stats: null, error };
-  }
-
-  const { topShowsForActorByUser, error: topShowsForActorByUserError } =
-    await getUsersTopShowsByActor(user.id);
-  if (topShowsForActorByUserError || !topShowsForActorByUser) {
-    return { stats: null, error };
-  }
+  const usersFirstShow = await getUsersFirstShow(user.id);
+  const usersMostWatchedTVShows = await getTop5ShowsByUser(user.id);
+  const usersMostWatchedTVShow = usersMostWatchedTVShows[0];
+  const mostWatchedEpisode = await getUsersMostWatchedEpisodeByShow(
+    user.id,
+    usersMostWatchedTVShow.id,
+  );
+  const topShowsByActor = await getUsersTopShowsByActor(user.id);
+  const watchCount = await getTotalNumberOfShowsWatchedByUser(user.id);
+  const topGenres = await getUsersTopGenres(user.id);
+  const aiResponses = await createOrUpdateUsersAIResponse({ userID: user.id });
 
   const mostWatchedTvShow: MostWatchedTvShowWithEpisode = {
-    ...topShows[0],
-    ...topEpisode,
+    ...usersMostWatchedTVShow,
+    ...mostWatchedEpisode,
   };
 
   const stats: UserStats = {
-    firstTvShow: usersFirstShow,
-    mostWatchedTvShow,
-    yourCrossoverStar: topShowsForActorByUser,
+    firstTvShow: {
+      show: usersFirstShow,
+      quip: aiResponses.firstTVShowQuip as string,
+    },
+    mostWatchedTvShow: {
+      show: mostWatchedTvShow,
+      quip: aiResponses.mostRewatchedTVShowQuip as string,
+    },
+    yourCrossoverStar: topShowsByActor,
     watchHistory: {
       totalShowsWatched: watchCount,
-      topShows,
+      topShows: usersMostWatchedTVShows,
+    },
+    genreDistribution: {
+      genres: topGenres,
+      quip: aiResponses.topGenresQuip as string,
     },
   };
 
-  return { stats, error: null };
+  return stats;
 }
 
-export async function getReportCard(sessionID: string) {}
-
-// Use Redis
-export async function getSession(sessionID: string) {
-  const { user, error } = await findOrCreateUserBySessionID(sessionID);
-  if (user) {
-    return {
-      session: {
-        state: user.state,
-      },
-      error: null,
-    };
+export async function getReportCardResponse(sessionID: string) {
+  const user = await findOrCreateUserBySessionID(sessionID);
+  if (user.state !== "COMPLETED") {
+    throw new Error("users data has not been fetched yet");
   }
 
-  return { session: null, error };
-}
+  const aiResponses = await createOrUpdateUsersAIResponse({ userID: user.id });
+  const topShows = await getTop5ShowsByUser(user.id);
+  const topShow = topShows[0];
+  const rtScore = await getUserAverageRottenTomatoScore(user.id);
 
-export async function startSession(sessionID: string) {}
+  const tvBFF = {
+    show: topShow.title,
+    name: aiResponses.bff,
+    reason: aiResponses.bffQuip,
+    imageURL: "",
+  };
+
+  const starSign = {
+    name: aiResponses.starSign,
+    reason: aiResponses.starSignQuip,
+  };
+
+  const personality = {
+    rtScore,
+    personality: aiResponses.personality,
+    reason: aiResponses.personalityQuip,
+  };
+
+  return {
+    tvBFF,
+    starSign,
+    personality,
+  };
+}

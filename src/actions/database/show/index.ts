@@ -362,10 +362,10 @@ export async function getUserAverageRottenTomatoScore(userID: string) {
         s.id, s."rottenTomatoScore", s."numberOfEpisodes"
     )
     SELECT 
-      SUM((CAST(episodesWatched AS FLOAT) / CAST(totalEpisodes AS FLOAT)) * score) AS weightedScore
+      SUM((CAST(episodesWatched AS FLOAT) / CAST(totalEpisodes AS FLOAT)) * score) AS "weightedScore"
     FROM 
       EpisodeCounts
     `;
-
-  return result[0].weightedScore as number;
+  const weightedScore = result[0].weightedScore as number;
+  return Number(weightedScore.toPrecision(3));
 }

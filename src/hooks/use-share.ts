@@ -72,6 +72,14 @@ export const useShare = ({ storyId }: { storyId: AllStoryIds }) => {
           await navigator.share(shareData);
         } else {
           console.error("Web Share API is not supported in your browser");
+
+          if (type === "instagram") {
+            openLinkInNewTab("https://instagram.com/");
+          }
+
+          if (type === "tiktok") {
+            openLinkInNewTab("https://tiktok.com/");
+          }
         }
       }
 

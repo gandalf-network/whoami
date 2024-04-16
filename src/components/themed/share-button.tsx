@@ -127,7 +127,7 @@ export const ShareButton = ({
   return (
     <Button
       className={cn(
-        "absolute z-[999999999] bottom-6 py-3.5 bg-transparent hover:bg-transparent text-base uppercase font-semibold",
+        "absolute z-[9999] bottom-6 py-3.5 bg-transparent hover:bg-transparent text-base uppercase font-semibold",
         className,
       )}
       size="sm"

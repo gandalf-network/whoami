@@ -26,7 +26,7 @@ export type WatchHistory = {
   topShows: Show[];
 };
 
-export type MostWatchedTvShowWithEpisode = Show & Episode;
+export type MostWatchedTvShowWithEpisode = Show;
 
 export type UserStats = {
   firstTvShow: { show: Show; quip: string };

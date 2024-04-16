@@ -4,7 +4,6 @@ import { createOrUpdateUsersAIResponse } from "./aiResponses";
 import {
   getUsersFirstShow,
   getTop5ShowsByUser,
-  getUsersMostWatchedEpisodeByShow,
   getUsersTopShowsByActor,
   getTotalNumberOfShowsWatchedByUser,
   getUsersTopGenres,
@@ -21,10 +20,6 @@ export async function getStatsResponse(sessionID: string) {
   const usersFirstShow = await getUsersFirstShow(user.id);
   const usersMostWatchedTVShows = await getTop5ShowsByUser(user.id);
   const usersMostWatchedTVShow = usersMostWatchedTVShows[0];
-  const mostWatchedEpisode = await getUsersMostWatchedEpisodeByShow(
-    user.id,
-    usersMostWatchedTVShow.id,
-  );
   const topShowsByActor = await getUsersTopShowsByActor(user.id);
   const watchCount = await getTotalNumberOfShowsWatchedByUser(user.id);
   const topGenres = await getUsersTopGenres(user.id);
@@ -32,7 +27,6 @@ export async function getStatsResponse(sessionID: string) {
 
   const mostWatchedTvShow: MostWatchedTvShowWithEpisode = {
     ...usersMostWatchedTVShow,
-    ...mostWatchedEpisode,
   };
 
   const stats: UserStats = {

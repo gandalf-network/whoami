@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "npm run db-migrate && next start",
     "lint": "next lint",
     "db-migrate": "npx prisma migrate dev --name",
     "prisma-generate": "npx prisma generate"

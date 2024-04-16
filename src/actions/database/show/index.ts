@@ -1,95 +1,67 @@
 import { PrismaClient } from "@prisma/client";
 
-import { Episode, Show, TopGenres, YourCrossoverStar } from "@/types";
+import { Show, TopGenres, YourCrossoverStar } from "@/types";
 
 const prisma = new PrismaClient();
 
+type insertEpisodeInput = {
+  title: string;
+  datePlayed: string;
+  userShowID: string;
+  season: number;
+  episode: number;
+};
+
+export async function batchInertEpisodes(input: insertEpisodeInput[]) {
+  await prisma.userEpisode.createMany({
+    data: input,
+    skipDuplicates: true,
+  });
+}
+
 type CreateShowInput = {
   title: string;
-  numberOfEpisodes: number;
-  episodeTitle: string;
-  datePlayed: string;
   userID: string;
-  rottenTomatoScore?: number;
-  genre?: string[];
-  imageURL?: string;
-  summary?: string;
-  season?: number;
-  episode?: number;
 };
 
 export async function createAndConnectShowToUser(
   createShowInput: CreateShowInput,
 ) {
-  let show = await prisma.show.findUnique({
+  const showRes = await prisma.show.upsert({
     where: {
       title: createShowInput.title,
     },
+    create: {
+      title: createShowInput.title,
+    },
+    update: {},
   });
 
-  if (!show) {
-    show = await prisma.show.create({
-      data: {
-        title: createShowInput.title,
-        numberOfEpisodes: createShowInput.numberOfEpisodes,
-        ...(createShowInput.imageURL && {
-          imageURL: createShowInput.imageURL,
-        }),
-        ...(createShowInput.genre && { genre: createShowInput.genre }),
-        ...(createShowInput.summary && { summary: createShowInput.summary }),
-        ...(createShowInput.rottenTomatoScore && {
-          rottenTomatoScore: createShowInput.rottenTomatoScore,
-        }),
-      },
-    });
-  }
-
-  if (!show)
+  if (!showRes)
     throw new Error(
       `could not find or update this show: ${createShowInput.title}`,
     );
 
-  const episode = await prisma.episode.upsert({
-    where: {
-      uniqueShowSeasonEpisode: {
-        showID: show.id,
-        episode: createShowInput.episode || 0,
-        season: createShowInput.season || 0,
-      },
-    },
-    update: {},
-    create: {
-      showID: show.id,
-      ...(createShowInput.season && { season: createShowInput.season }),
-      ...(createShowInput.episode && { episode: createShowInput.episode }),
-    },
-  });
-
-  await prisma.userEpisode.create({
-    data: {
-      userID: createShowInput.userID,
-      episodeID: episode.id,
-      datePlayed: createShowInput.datePlayed,
-    },
-  });
-
-  await prisma.userShow.upsert({
+  const userShow = await prisma.userShow.upsert({
     where: {
       userShowID: {
         userID: createShowInput.userID,
-        showID: show.id,
+        showID: showRes.id,
       },
     },
     create: {
       userID: createShowInput.userID,
-      showID: show.id,
+      showID: showRes.id,
     },
     update: {},
   });
 
-  episode.showID = show.id;
+  const show = {
+    ...showRes,
+    userShowID: userShow.id,
+  };
 
-  return episode;
+  return show;
 }
 
 type UpdateShowInput = {
@@ -119,28 +91,6 @@ export async function updateShow(updateShowInput: UpdateShowInput) {
   return show;
 }
 
-type UpdateEpisodeInput = {
-  id: string;
-  season?: number;
-  episode?: number;
-};
-
-export async function updateEpisode(updateEpisodeInput: UpdateEpisodeInput) {
-  const episode = await prisma.episode.upsert({
-    where: {
-      id: updateEpisodeInput.id,
-    },
-    update: {
-      ...(updateEpisodeInput.season && { season: updateEpisodeInput.season }),
-      ...(updateEpisodeInput.episode && {
-        episode: updateEpisodeInput.episode,
-      }),
-    },
-    create: {},
-  });
-  return episode;
-}
-
 export async function getTotalNumberOfShowsWatchedByUser(userID: string) {
   const watchCount = await prisma.userShow.count({
     where: {
@@ -150,23 +100,20 @@ export async function getTotalNumberOfShowsWatchedByUser(userID: string) {
   return watchCount;
 }
 
-export async function getUsersFirstShow(userID: string) {
-  const usersFirstShowRes = await prisma.user.findUnique({
-    where: { id: userID },
-    select: {
-      episodes: {
-        orderBy: {
-          datePlayed: "asc",
-        },
-        take: 1,
-        select: {
-          datePlayed: true,
-          episode: {
-            select: {
-              id: true,
-              show: true,
-            },
-          },
+export async function getUsersFirstShow(userID: string): Promise<Show> {
+  const usersFirstShowRes = await prisma.userEpisode.findFirst({
+    where: {
+      userShow: {
+        userID,
+      },
+    },
+    orderBy: {
+      datePlayed: "asc",
+    },
+    include: {
+      userShow: {
+        include: {
+          show: true,
         },
       },
     },
@@ -175,12 +122,12 @@ export async function getUsersFirstShow(userID: string) {
   if (!usersFirstShowRes) throw new Error("show not found`");
 
   const usersFirstShow: Show = {
-    id: usersFirstShowRes.episodes[0].episode.show?.id as string,
-    dateFirstPlayed: usersFirstShowRes.episodes[0].datePlayed.toString(),
-    title: usersFirstShowRes.episodes[0].episode.show?.title as string,
-    summary: usersFirstShowRes.episodes[0].episode.show?.summary as string,
-    genres: usersFirstShowRes.episodes[0].episode.show?.genre as string[],
-    imageURL: usersFirstShowRes.episodes[0].episode.show?.imageURL as string,
+    id: usersFirstShowRes.userShow?.show.id as string,
+    dateFirstPlayed: usersFirstShowRes.datePlayed.toString(),
+    title: usersFirstShowRes.userShow?.show.title as string,
+    summary: usersFirstShowRes.userShow?.show.summary as string,
+    genres: usersFirstShowRes.userShow?.show.genre as string[],
+    imageURL: usersFirstShowRes.userShow?.show.imageURL as string,
   };
 
   return usersFirstShow;
@@ -202,11 +149,11 @@ export async function getTop5ShowsByUser(
       FROM 
         "userEpisode" ue
       INNER JOIN 
-        "episode" e ON ue."episodeID" = e.id
+        "userShow" us ON ue."userShowID" = us.id
       INNER JOIN 
-        "show" s ON e."showID" = s.id
+        "show" s ON us."showID" = s.id
       WHERE 
-        ue."userID" = ${userID}
+        us."userID" = ${userID}
         AND
           ${lastOneYear} = false
           OR ue."datePlayed" > CURRENT_DATE - INTERVAL '1 year'
@@ -217,32 +164,6 @@ export async function getTop5ShowsByUser(
       LIMIT 5;
     `;
   return topShows;
-}
-
-export async function getUsersMostWatchedEpisodeByShow(
-  userID: string,
-  showID: string,
-) {
-  const topEpisodes: Episode[] = await prisma.$queryRaw`
-      SELECT 
-        e.id, 
-        e.season, 
-        e.episode, 
-      COUNT(ue.id) AS watchCount
-      FROM 
-        "userEpisode" ue
-      INNER JOIN 
-        "episode" e ON ue."episodeID" = e.id
-      WHERE 
-        ue."userID" = ${userID}
-        AND e."showID" = ${showID}
-      GROUP BY 
-        e.id
-      ORDER BY 
-        watchCount DESC
-      LIMIT 1;
-    `;
-  return topEpisodes[0];
 }
 
 export async function getUsersMostWatchedActor(userID: string) {
@@ -275,17 +196,17 @@ export async function getUsersTopShowsByActor(userID: string) {
       SELECT 
         s.id AS "showID",
         s.title,
-        COUNT(DISTINCT ue."episodeID") AS "episodesWatched"
+        COUNT(DISTINCT ue."id") AS "episodesWatched"
       FROM 
         "userEpisode" ue
       INNER JOIN 
-        "episode" e ON ue."episodeID" = e.id
+        "userShow" us ON ue."userShowID" = us.id
       INNER JOIN 
-        "show" s ON e."showID" = s.id
+        "show" s ON us."showID" = s.id
       INNER JOIN 
         "_actorToshow" sa ON s.id = sa."B"
       WHERE 
-        ue."userID" = ${userID} AND sa."A" = ${mostWatchedActor[0].id}
+        us."userID" = ${userID} AND sa."A" = ${mostWatchedActor[0].id}
       GROUP BY 
         s.id
       ORDER BY 
@@ -347,24 +268,26 @@ export async function getUsersTopGenres(userID: string, count = 2) {
 export async function getUserAverageRottenTomatoScore(userID: string) {
   const result: any = await prisma.$queryRaw`
     WITH EpisodeCounts AS (
-      SELECT 
-        s.id AS showId,
-        s."rottenTomatoScore" AS score,
+      SELECT
+        us."showID" AS showId,
+        COUNT(ue.id) AS episodesWatched,
         s."numberOfEpisodes" AS totalEpisodes,
-        COUNT(DISTINCT ue."episodeID") AS episodesWatched
-      FROM 
+        s."rottenTomatoScore" AS score
+      FROM
         "userEpisode" ue
-        INNER JOIN episode e ON ue."episodeID" = e.id
-        INNER JOIN show s ON e."showID" = s.id
-      WHERE 
-        ue."userID" = ${userID}
-      GROUP BY 
-        s.id, s."rottenTomatoScore", s."numberOfEpisodes"
+        INNER JOIN "userShow" us ON ue."userShowID" = us.id
+        INNER JOIN "show" s ON us."showID" = s.id
+      WHERE
+        us."userID" = ${userID}
+      GROUP BY
+        us."showID", s."numberOfEpisodes", s."rottenTomatoScore"
     )
-    SELECT 
-      SUM((CAST(episodesWatched AS FLOAT) / CAST(totalEpisodes AS FLOAT)) * score) AS "weightedScore"
-    FROM 
-      EpisodeCounts
+    SELECT
+      SUM(
+        (CAST(episodesWatched AS FLOAT) / CAST(totalEpisodes AS FLOAT)) * score
+      ) AS "weightedScore"
+    FROM
+      EpisodeCounts;
     `;
   const weightedScore = result[0].weightedScore as number;
   return Number(weightedScore.toPrecision(3));

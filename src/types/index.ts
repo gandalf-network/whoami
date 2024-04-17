@@ -26,13 +26,14 @@ export type WatchHistory = {
   topShows: Show[];
 };
 
-export type MostWatchedTvShowWithEpisode = Show & Episode;
+export type MostWatchedTvShowWithEpisode = Show;
 
 export type UserStats = {
-  firstTvShow: Show;
+  firstTvShow: { show: Show; quip: string };
   watchHistory: WatchHistory;
-  mostWatchedTvShow: MostWatchedTvShowWithEpisode;
+  mostWatchedTvShow: { show: MostWatchedTvShowWithEpisode; quip: string };
   yourCrossoverStar: YourCrossoverStar;
+  genreDistribution: { genres: TopGenres; quip: string };
 };
 
 export type Actors = {
@@ -48,7 +49,12 @@ export type TVDBSearchReturn = {
   actors: Actors[];
 };
 
-export type TopGenres = object[];
+type Genre = {
+  genre: string;
+  percentage: number;
+};
+
+export type TopGenres = Genre[];
 
 export type BFF = {
   BFF: string;

@@ -30,62 +30,51 @@ model user {
   id         String     @id @default(uuid())
   identifier String     @unique @db.VarChar(255)
   state      UserState  @default(AWAITING_CONNECTION)
-  episodes   userEpisode[]
   shows      userShow[]
   createdAt  DateTime   @default(now())
   updatedAt  DateTime   @updatedAt
-}
-
-model episode {
-  id      String     @id @default(uuid())
-  season  Int?
-  episode Int?
-  showID  String?
-  users   userEpisode[]
-  show    show?      @relation(fields: [showID], references: [id])
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-
-  @@unique([showID, season, episode], name: "uniqueShowSeasonEpisode")
-  @@index([showID])
+  aiResponse aiResponse?
 }
 
 model show {
   id                String    @id @default(uuid())
   title             String    @unique @db.VarChar(255)
-  numberOfEpisodes  Int
+  numberOfEpisodes  Int?
   rottenTomatoScore Int?   
   genre             String[]   @db.VarChar(255)
   imageURL          String?   @db.VarChar(255)
   summary           String?   @db.VarChar(255)
-  episodes          episode[]
   actors            actor[]
   users             userShow[]
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
 }
 
-model userEpisode {
-  id         String    @id @default(uuid())
-  userID     String  
-  episodeID  String  
-  datePlayed DateTime
-
-  user    user    @relation(fields: [userID], references: [id])
-  episode episode @relation(fields: [episodeID], references: [id])
-
-  @@index([userID])
-  @@index([episodeID])
-}
-
 model userShow {
+  id         String     @id @default(uuid())
   userID     String  
   showID     String  
 
-  user    user    @relation(fields: [userID], references: [id])
-  show    show    @relation(fields: [showID], references: [id])
+  user       user    @relation(fields: [userID], references: [id])
+  show       show    @relation(fields: [showID], references: [id])
+  episodes   userEpisode[]
 
-  @@id([userID, showID], name: "userShowID")
+  @@unique([userID, showID], name: "userShowID")
+}
+
+model userEpisode {
+  id          String     @id @default(uuid())
+  title       String
+  season      Int
+  episode     Int
+  datePlayed  DateTime
+  userShowID  String
+  userShow    userShow?      @relation(fields: [userShowID], references: [id])
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@unique([userShowID, title, episode, season], name: "uniqueShowSeasonEpisode")
+  @@index([userShowID])
 }
 
 model actor {
@@ -105,4 +94,20 @@ model assistant {
   updatedAt   DateTime         @updatedAt
 
   @@index([name])
+}
+
+model aiResponse {
+  id               String @id @default(uuid())
+  topGenresQuip    String?
+  starSign         String?
+  starSignQuip     String?
+  rtScoreQuip      String?
+  personality      String?
+  personalityQuip  String?
+  firstTVShowQuip  String?
+  mostRewatchedTVShowQuip String?
+  bff              String?
+  bffQuip          String?
+  user             user   @relation(fields: [userID], references: [id])
+  userID           String    @unique
 }

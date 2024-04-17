@@ -61,7 +61,7 @@ export type BFF = {
   BFFQuip: string;
 };
 
-export type StarSign = {
+export type TopGenresPersonalityAndStarSignAIResults = {
   topGenresQuip: string;
   starSign: string;
   starSignQuip: string;

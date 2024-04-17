@@ -31,7 +31,12 @@ export const QUEUE_STATES = {
 export type QueueName = keyof QueueSessionStates;
 export type QueueState = typeof QUEUE_STATES[keyof typeof QUEUE_STATES];
 
-interface QueueSessionStates {
+type QueueSession = {
+  States: QueueSessionStates
+  Payload: any
+}
+
+type QueueSessionStates = {
   queryActivitiesQueue: QueueState;
   queryShowActorsQueue: QueueState;
   queryShowDataQueue: QueueState;

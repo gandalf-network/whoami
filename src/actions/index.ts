@@ -1,7 +1,11 @@
+import { ParsedActivity, Show } from "../types";
 import { getReportCardResponse, getStatsResponse } from "./database";
+import { batchInsertEpisodes, insertEpisodeInput, upsertShow, upsertUserShow } from "./database/show";
 import { findOrCreateUserBySessionID } from "./database/user";
 import Eye, { Source } from "./eyeofsauron";
 import {  NetflixActivityMetadata } from "./eyeofsauron/gql/__generated__";
+import { parseActivityInput, extractEpisodeNumberFromTitle, parseDate } from "./helpers/parser";
+import {  ShowPayload, enqueueRottenTomatoes, enqueueShowActorsQueue, enqueueShowData } from "./lib/queue/producers";
 
 
 const eye = new Eye({
@@ -21,26 +25,16 @@ export async function getReportCard(sessionID: string) {
   return getReportCardResponse(sessionID);
 }
 
-interface Episode {
-    ActivityID: string;
-    Season: number | null;
-    Episode: number | null;
-    EpisodeTitle: string | null;
-}
-
-interface Show {
-    Title: string;
-    OriginalTitle: string;
-    Episodes: Episode[];
-}
-
-export async function processUserActivities(sessionID: string, dataKey: string): Promise<void> {
+export async function queryAndDumpActivities(sessionID: string, dataKey: string): Promise<void> {
     let page = 1;
     const limit = 300;
+    let total: number = 0;
     
     try {
         const user = await findOrCreateUserBySessionID(sessionID)
-
+        const seenShows: Record<string, boolean>  = {}
+        const shows: Show[] = []
+        const episodes: insertEpisodeInput[] = []
         while (true) {
             const activityResponse = await eye.getActivity({
                 dataKey: dataKey,
@@ -49,6 +43,7 @@ export async function processUserActivities(sessionID: string, dataKey: string):
                 page: page,
             });
 
+            total = total != 0 ? total : activityResponse.total;
             if (activityResponse.data.length === 0) {
                 console.log('No more data to fetch.');
                 break; 
@@ -59,15 +54,52 @@ export async function processUserActivities(sessionID: string, dataKey: string):
                 const metadata = activity?.metadata as NetflixActivityMetadata;
                 const originalTitle = metadata.title;
                 const originalTitleSplit = originalTitle.split(":");
+                const title = originalTitleSplit[0];
         
                 if (originalTitleSplit.length >= 3) {
+                    const parsedActivity: ParsedActivity | null = parseActivityInput(originalTitle);
+                    if (!parsedActivity) continue;
+
+                    let updatedTitle = parsedActivity.movieTitle ? parsedActivity.movieTitle : title;
+                    let updatedEpisodeNumber = parsedActivity.episodeNumber;
+                    let updatedEpisodeTitle = parsedActivity.episodeTitle;
+
+                    if (!parsedActivity.episodeNumber && parsedActivity.episodeTitle ) {
+                        [updatedEpisodeNumber, updatedEpisodeTitle] = extractEpisodeNumberFromTitle( parsedActivity.episodeTitle);
+                    }
                     
+                    let show = await upsertShow(title)
+                    let userShow = await upsertUserShow(user.id, show.id)
+                    let episode = {
+                        title: updatedEpisodeTitle || "",
+                        datePlayed: parseDate(metadata.date),
+                        userShowID: userShow.id,
+                        season: parsedActivity.seasonNumber,
+                        episode: updatedEpisodeNumber,
+                    }
+                    episodes.push(episode)
+
+                    if (!seenShows[title]) {
+                        seenShows[title] = true
+                        shows.push({id: show.id, title: show.title})
+                    }
                 }
             }
-            // Bulk Insert...
             
-            // Move to Next Workflow for this chunk (300)...
-            page++; 
+            await batchInsertEpisodes(episodes)
+
+            total = total - (limit - shows.length)
+            const showPayload: ShowPayload = {
+                SessionID: sessionID,
+                ChunksTotal: total,
+                Shows: shows
+            };
+
+            await enqueueShowActorsQueue(showPayload)
+            await enqueueRottenTomatoes(showPayload)
+            await enqueueShowData(showPayload)
+
+            page++;
         }
     } catch (error) {
         console.error('Failed to fetch data', error);

@@ -1,11 +1,13 @@
 import { Worker, Job } from 'bullmq';
 import { queueNames } from '../lib/queue/queues';
 import { vercelKVClient } from '../store/vercelkv';
+import { getStateRecordFromStore } from '../lib/queue/state';
 
 const queryActivitiesWorker  = () => {
   new Worker(queueNames.QueryActivities, async (job: Job) => {
     try {
       console.log(`Processing job ${job.id}`);
+      await getStateRecordFromStore(job.data.sessionID)
       
     } catch (error) {
       console.error('Error processing job:', error);

@@ -1,67 +1,48 @@
 import { PrismaClient } from "@prisma/client";
 
-import { Show, TopGenres, YourCrossoverStar } from "@/types";
+import { Show, TopGenres, YourCrossoverStar } from "../../../types";
 
 const prisma = new PrismaClient();
 
-type insertEpisodeInput = {
+export type insertEpisodeInput = {
   title: string;
-  datePlayed: string;
+  datePlayed: Date;
   userShowID: string;
-  season: number;
-  episode: number;
+  season: number | null;
+  episode: number | null;
 };
 
-export async function batchInertEpisodes(input: insertEpisodeInput[]) {
+export async function batchInsertEpisodes(input: insertEpisodeInput[]) {
   await prisma.userEpisode.createMany({
     data: input,
     skipDuplicates: true,
   });
 }
 
-type CreateShowInput = {
-  title: string;
-  userID: string;
-};
-
-export async function createAndConnectShowToUser(
-  createShowInput: CreateShowInput,
-) {
-  const showRes = await prisma.show.upsert({
-    where: {
-      title: createShowInput.title,
-    },
-    create: {
-      title: createShowInput.title,
-    },
-    update: {},
+export async function upsertShow(title: string) {
+  const show = await prisma.show.upsert({
+    where: { title },
+    create: { title },
+    update: { },
   });
 
-  if (!showRes)
+  if (!show){
     throw new Error(
-      `could not find or update this show: ${createShowInput.title}`,
+      `could not upsert this show: ${title}`,
     );
+  }
+  return show;
+}
 
+export async function upsertUserShow(userID: string, showID: string) {
   const userShow = await prisma.userShow.upsert({
     where: {
-      userShowID: {
-        userID: createShowInput.userID,
-        showID: showRes.id,
-      },
+      userShowID: {userID, showID},
     },
-    create: {
-      userID: createShowInput.userID,
-      showID: showRes.id,
-    },
+    create: {userID, showID},
     update: {},
   });
-
-  const show = {
-    ...showRes,
-    userShowID: userShow.id,
-  };
-
-  return show;
+  return userShow;
 }
 
 type UpdateShowInput = {

@@ -65,11 +65,11 @@ model userShow {
 model userEpisode {
   id          String     @id @default(uuid())
   title       String
-  season      Int
-  episode     Int
+  season      Int?
+  episode     Int?
   datePlayed  DateTime
   userShowID  String
-  userShow    userShow?      @relation(fields: [userShowID], references: [id])
+  userShow    userShow? @relation(fields: [userShowID], references: [id])
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 

@@ -6,7 +6,7 @@ const queryActivitiesWorker  = () => {
   new Worker(queueNames.QueryActivities, async (job: Job) => {
     try {
       console.log(`Processing job ${job.id}`);
-     
+      
     } catch (error) {
       console.error('Error processing job:', error);
     }
@@ -14,7 +14,7 @@ const queryActivitiesWorker  = () => {
 };
 
 const crawlRottenTomatoeWorker  = () => {
-  new Worker(queueNames.CrawlRottenTomatoe, async (job: Job) => {
+  new Worker(queueNames.CrawlRottenTomatoes, async (job: Job) => {
     try {
       console.log(`Processing job ${job.id}`);
       

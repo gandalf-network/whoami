@@ -342,25 +342,26 @@ export const GetAppByPublicKeyDocument = gql`
 
 export type SdkFunctionWrapper = <T>(action: (requestHeaders?:Record<string, string>) => Promise<T>, operationName: string, operationType?: string, variables?: any) => Promise<T>;
 
-  export type EyeInput = {
-    privateKey: string;
-  };
-
+export type EyeOptions = {
+  privateKey: string;
+  baseURL: string;
+};
 
 const GetActivityDocumentString = print(GetActivityDocument);
 const LookupActivityDocumentString = print(LookupActivityDocument);
 const GetAppByPublicKeyDocumentString = print(GetAppByPublicKeyDocument);
 const ec = new EC('secp256k1');
 export default class Eye {
-  private client: GraphQLClient = new GQLClient('https://sauron.gandalf.network/public/gql');
+  private client: GraphQLClient;
   private withWrapper: SdkFunctionWrapper = (action) => action();
   privateKey: string;
 
-  constructor(input: EyeInput) {
-    if (/^0x/i.test(input.privateKey)) {
-      input.privateKey = input.privateKey.slice(2)
+  constructor(opts: EyeOptions) {
+    if (/^0x/i.test(opts.privateKey)) {
+      opts.privateKey = opts.privateKey.slice(2)
     }
-    this.privateKey = input.privateKey
+    this.client = new GQLClient(opts.baseURL);
+    this.privateKey = opts.privateKey
   }
 
   private async signRequestBody(requestBody: any): Promise<string> {
@@ -382,7 +383,7 @@ export default class Eye {
   private async addSignatureToHeader(requestBody: any) {
     const signature = await this.signRequestBody(requestBody);
     const headers: GraphQLClientRequestHeaders = {
-        'X-Gandalf-Signature': signature,
+      'X-Gandalf-Signature': signature,
     };
     return headers;
   }
@@ -397,9 +398,9 @@ export default class Eye {
         GandalfErrorCode.InvalidSignature,
       )
     }
-  } 
+  }
 
-      async getActivity(variables: GetActivityQueryVariables, requestHeaders?: GraphQLClientRequestHeaders) {
+  async getActivity(variables: GetActivityQueryVariables, requestHeaders?: GraphQLClientRequestHeaders) {
       const requestBody = {
         query: GetActivityDocumentString,
         variables: {
@@ -411,14 +412,13 @@ export default class Eye {
       requestHeaders = {...requestHeaders, ...headers}
       try {
         const { data } = await this.withWrapper((wrappedRequestHeaders) => this.client.rawRequest<GetActivityQuery>(GetActivityDocumentString, variables, {...requestHeaders, ...wrappedRequestHeaders}), 'getActivity', 'query', variables);
-        return {
-          data: data['getActivity'],
-        };
+        
+        return data['getActivity'];
       } catch (error: any) {
         throw handleErrors(error)
       }
     }
-    async lookupActivity(variables: LookupActivityQueryVariables, requestHeaders?: GraphQLClientRequestHeaders) {
+  async lookupActivity(variables: LookupActivityQueryVariables, requestHeaders?: GraphQLClientRequestHeaders) {
       const requestBody = {
         query: LookupActivityDocumentString,
         variables: {
@@ -437,7 +437,7 @@ export default class Eye {
         throw handleErrors(error)
       }
     }
-    async getAppByPublicKey(variables: GetAppByPublicKeyQueryVariables, requestHeaders?: GraphQLClientRequestHeaders) {
+  async getAppByPublicKey(variables: GetAppByPublicKeyQueryVariables, requestHeaders?: GraphQLClientRequestHeaders) {
       const requestBody = {
         query: GetAppByPublicKeyDocumentString,
         variables: {
@@ -455,5 +455,5 @@ export default class Eye {
       } catch (error: any) {
         throw handleErrors(error)
       }
-    }
+  }
 }

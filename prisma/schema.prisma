@@ -123,5 +123,5 @@ model aiResponse {
   bffQuip          String?
   bffImageURL      String?
   user             user   @relation(fields: [userID], references: [id])
-  userID           String @unique
+  userID           String    @unique
 }

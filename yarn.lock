@@ -576,6 +576,11 @@
   dependencies:
     "@types/node" "*"
 
+"@types/cookie@^0.6.0":
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/@types/cookie/-/cookie-0.6.0.tgz#eac397f28bf1d6ae0ae081363eca2f425bedf0d5"
+  integrity sha512-4Kh9a6B2bQciAhf7FSuMRRkUWecJgJu9nPnx3yzpsfXX/c50REIqpHY4C82bXP90qrLtXtkDxTZosYO3UpOwlA==
+
 "@types/downloadjs@^1.4.6":
   version "1.4.6"
   resolved "https://registry.yarnpkg.com/@types/downloadjs/-/downloadjs-1.4.6.tgz#d03ed04d17332ebf3b47d7a04cbe745dab1ab8a9"
@@ -617,6 +622,11 @@
   integrity sha512-7xMnVEcZFu0DikYjWOlRq7NTPETrm7teqUT2WkQjrTIkEgUyyGdWsj/Zg8bEJt5TNklzbPD1X3fqfsHw3SpapQ==
   dependencies:
     undici-types "~5.26.4"
+
+"@types/node@^16.10.2":
+  version "16.18.96"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-16.18.96.tgz#eb0012d23ff53d14d64ec8a352bf89792de6aade"
+  integrity sha512-84iSqGXoO+Ha16j8pRZ/L90vDMKX04QTYMTfYeE1WrjWaZXuchBehGUZEpNgx7JnmlrIHdnABmpjrQjhCnNldQ==
 
 "@types/node@^18.11.18":
   version "18.19.31"
@@ -1371,6 +1381,20 @@ concat-map@0.0.1:
   version "0.0.1"
   resolved "https://registry.npmjs.org/concat-map/-/concat-map-0.0.1.tgz"
   integrity sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==
+
+cookie@^0.6.0:
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/cookie/-/cookie-0.6.0.tgz#2798b04b071b0ecbff0dbb62a505a8efa4e19051"
+  integrity sha512-U71cyTamuh1CRNCfpGY6to28lxvNwPG4Guz/EVjgf3Jmzv0vlDp1atT9eS5dDjMYHucpHbWns6Lwf3BKz6svdw==
+
+cookies-next@^4.1.1:
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/cookies-next/-/cookies-next-4.1.1.tgz#54498efe867bb5c1a47b5a99a7ea8563601c2413"
+  integrity sha512-20QaN0iQSz87Os0BhNg9M71eM++gylT3N5szTlhq2rK6QvXn1FYGPB4eAgU4qFTunbQKhD35zfQ95ZWgzUy3Cg==
+  dependencies:
+    "@types/cookie" "^0.6.0"
+    "@types/node" "^16.10.2"
+    cookie "^0.6.0"
 
 cross-fetch@^3.1.5:
   version "3.1.8"

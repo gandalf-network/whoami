@@ -125,3 +125,7 @@ export const openLinkInNewTab = (url: string) => {
     window.open(url, "_blank");
   }, 100);
 };
+
+export const generateUUID = () => {
+  return crypto.randomUUID();
+};

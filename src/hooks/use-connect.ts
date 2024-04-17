@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 
+import { getEnvDetails } from "@/helpers/utils";
+
 export const useGandalfConnect = () => {
   const [url, setUrl] = useState("");
 
@@ -9,9 +11,12 @@ export const useGandalfConnect = () => {
     // lazy load the gandalf next import
     // ref: https://nextjs.org/docs/app/building-your-application/optimizing/lazy-loading#loading-external-libraries
     const Connect = (await import("@gandalf-network/connect")).default;
+
     const res = new Connect({
       publicKey: process.env.NEXT_PUBLIC_GANDALF_PUBLIC_KEY as string,
-      redirectURL: process.env.NEXT_PUBLIC_GANDALF_REDIRECT_URL as string,
+      redirectURL:
+        process.env.NEXT_PUBLIC_GANDALF_REDIRECT_URL ||
+        `${getEnvDetails().url}/stories`,
       services: { netflix: true },
     });
     return res;

@@ -1,3 +1,5 @@
+"use server";
+
 import { getReportCardResponse, getStatsResponse } from "./database";
 import { findOrCreateUserBySessionID } from "./database/user";
 

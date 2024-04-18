@@ -6,6 +6,7 @@ import {
   ROTTEN_TOMATOES_APPLICATION_ID,
   ROTTEN_TOMATOES_BASE_URL,
 } from "@/actions/helpers/constants";
+import { standardizeName } from "@/actions/helpers/utils";
 
 export async function getRottenTomatoScore(title: string, cast: string[]) {
   const agentQuery =
@@ -76,10 +77,6 @@ export async function getRottenTomatoScore(title: string, cast: string[]) {
   }
 
   return tomatoScore;
-}
-
-function standardizeName(name: string): string {
-  return name.split(" ").sort().join(" ").toLowerCase();
 }
 
 function compareCastArrays(cast1: string[], cast2: string[]): boolean {

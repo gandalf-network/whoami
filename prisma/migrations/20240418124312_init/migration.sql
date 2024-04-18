@@ -65,6 +65,15 @@ CREATE TABLE "actor" (
 );
 
 -- CreateTable
+CREATE TABLE "showActor" (
+    "actorID" TEXT NOT NULL,
+    "showID" TEXT NOT NULL,
+    "characterName" TEXT NOT NULL,
+
+    CONSTRAINT "showActor_pkey" PRIMARY KEY ("actorID","showID")
+);
+
+-- CreateTable
 CREATE TABLE "assistant" (
     "id" TEXT NOT NULL,
     "name" "AssistantName" NOT NULL,
@@ -88,15 +97,10 @@ CREATE TABLE "aiResponse" (
     "mostRewatchedTVShowQuip" TEXT,
     "bff" TEXT,
     "bffQuip" TEXT,
+    "bffImageURL" TEXT,
     "userID" TEXT NOT NULL,
 
     CONSTRAINT "aiResponse_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "_actorToshow" (
-    "A" TEXT NOT NULL,
-    "B" TEXT NOT NULL
 );
 
 -- CreateIndex
@@ -118,6 +122,12 @@ CREATE UNIQUE INDEX "userEpisode_userShowID_title_episode_season_key" ON "userEp
 CREATE UNIQUE INDEX "actor_name_key" ON "actor"("name");
 
 -- CreateIndex
+CREATE INDEX "showActor_showID_idx" ON "showActor"("showID");
+
+-- CreateIndex
+CREATE INDEX "showActor_characterName_idx" ON "showActor"("characterName");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "assistant_name_key" ON "assistant"("name");
 
 -- CreateIndex
@@ -125,12 +135,6 @@ CREATE INDEX "assistant_name_idx" ON "assistant"("name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "aiResponse_userID_key" ON "aiResponse"("userID");
-
--- CreateIndex
-CREATE UNIQUE INDEX "_actorToshow_AB_unique" ON "_actorToshow"("A", "B");
-
--- CreateIndex
-CREATE INDEX "_actorToshow_B_index" ON "_actorToshow"("B");
 
 -- AddForeignKey
 ALTER TABLE "userShow" ADD CONSTRAINT "userShow_userID_fkey" FOREIGN KEY ("userID") REFERENCES "user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -142,10 +146,10 @@ ALTER TABLE "userShow" ADD CONSTRAINT "userShow_showID_fkey" FOREIGN KEY ("showI
 ALTER TABLE "userEpisode" ADD CONSTRAINT "userEpisode_userShowID_fkey" FOREIGN KEY ("userShowID") REFERENCES "userShow"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "showActor" ADD CONSTRAINT "showActor_actorID_fkey" FOREIGN KEY ("actorID") REFERENCES "actor"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "showActor" ADD CONSTRAINT "showActor_showID_fkey" FOREIGN KEY ("showID") REFERENCES "show"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "aiResponse" ADD CONSTRAINT "aiResponse_userID_fkey" FOREIGN KEY ("userID") REFERENCES "user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "_actorToshow" ADD CONSTRAINT "_actorToshow_A_fkey" FOREIGN KEY ("A") REFERENCES "actor"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "_actorToshow" ADD CONSTRAINT "_actorToshow_B_fkey" FOREIGN KEY ("B") REFERENCES "show"("id") ON DELETE CASCADE ON UPDATE CASCADE;

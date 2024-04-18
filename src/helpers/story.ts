@@ -49,7 +49,7 @@ export const getStoryLink = (storyId: AllStoryIds) => {
 
   const sessionID = createOrGetSessionId();
 
-  return `${url}/stories/?story=${storyId}&id=${sessionID}`;
+  return `${url}/stories?story=${storyId}&id=${sessionID}`;
 };
 
 // get story index

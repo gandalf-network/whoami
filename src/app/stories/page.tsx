@@ -179,7 +179,7 @@ export async function generateMetadata(
 export default async function Page({ searchParams }: { searchParams: any }) {
   // redirect to home if id is present
   if (searchParams.id) {
-    redirect("/");
+    // redirect("/");
   }
 
   return (

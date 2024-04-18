@@ -163,7 +163,7 @@ export async function generateMetadata(
       }
     }
 
-    return {
+    const res: Metadata = {
       ...sharedMetadata,
       title,
       description,
@@ -171,15 +171,15 @@ export async function generateMetadata(
         description,
         title,
         images,
-        ...sharedMetadata.openGraph,
       },
       twitter: {
-        ...sharedMetadata.twitter,
         description,
         title,
         images,
       },
     };
+
+    return res;
   } catch {
     return sharedMetadata;
   }

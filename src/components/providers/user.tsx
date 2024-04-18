@@ -49,3 +49,6 @@ export const UserDataProvider = (props: UserDataProviderProps) => {
     </UserDataContextProvider>
   );
 };
+
+export const useUserData = () =>
+  (useUserDataContext() || {}) as UserDataContextProps;

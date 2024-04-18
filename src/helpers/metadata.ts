@@ -18,7 +18,7 @@ export const buildOgImageUrl = (options?: {
 
   const { story, data } = options;
 
-  return `${getEnvDetails().url}/api/og?id=${story}?data=${encodeURIComponent(JSON.stringify(data))}`;
+  return `${getEnvDetails().url}/api/og?id=${story}&data=${encodeURIComponent(JSON.stringify(data))}`;
 };
 
 // this is the base metadata for the project

@@ -22,167 +22,158 @@ export async function generateMetadata(
   // read route params
   const { id, story } = searchParams;
 
-  try {
-    // fetch data
-    let images = sharedMetadata.openGraph?.images;
+  // fetch data
+  let images = sharedMetadata.openGraph?.images;
 
-    const description = sharedMetadata.openGraph?.description;
+  const description = sharedMetadata.openGraph?.description;
 
-    const title = sharedMetadata.openGraph?.title;
+  const title = sharedMetadata.openGraph?.title;
 
-    // fetch data based on story kinds
-    if (
-      (
-        [
-          "firstTvShow",
-          "mostWatchedTvShow",
-          "totalShows",
-          "crossoverStar",
-          "tvGenre",
-        ] as AllStoryIds[]
-      ).includes(story)
-    ) {
-      // @note: this is the mocked data and should be replaced with the actual data
-      const {
-        firstTvShow,
-        mostWatchedTvShow,
-        watchHistory,
-        genreDistribution,
-        yourCrossoverStar,
-      } = TVStatsMockedData;
+  // fetch data based on story kinds
+  if (
+    (
+      [
+        "firstTvShow",
+        "mostWatchedTvShow",
+        "totalShows",
+        "crossoverStar",
+        "tvGenre",
+      ] as AllStoryIds[]
+    ).includes(story)
+  ) {
+    // @note: this is the mocked data and should be replaced with the actual data
+    const {
+      firstTvShow,
+      mostWatchedTvShow,
+      watchHistory,
+      genreDistribution,
+      yourCrossoverStar,
+    } = TVStatsMockedData;
 
-      // const {
-      //   firstTvShow,
-      //   mostWatchedTvShow,
-      //   watchHistory,
-      //   genreDistribution,
-      //   yourCrossoverStar,
-      // } = await getStats(id);
+    // const {
+    //   firstTvShow,
+    //   mostWatchedTvShow,
+    //   watchHistory,
+    //   genreDistribution,
+    //   yourCrossoverStar,
+    // } = await getStats(id);
 
-      switch (story) {
-        case "firstTvShow":
-          images = buildOgImageUrl({
-            story,
-            data: {
-              name: firstTvShow.show.title,
-              imageUrl: firstTvShow.show.imageURL,
-            },
-          });
-          break;
-        case "mostWatchedTvShow":
-          images = buildOgImageUrl({
-            story,
-            data: {
-              name: mostWatchedTvShow.show.title,
-              imageUrl: mostWatchedTvShow.show.imageURL,
-            },
-          });
-          break;
-        case "totalShows":
-          images = buildOgImageUrl({
-            story,
-            data: {
-              count: watchHistory.topShows.length,
-              imageUrl: watchHistory.topShows.map((show) => show.imageURL),
-            },
-          });
-          break;
-        case "crossoverStar":
-          images = buildOgImageUrl({
-            story,
-            data: {
-              name: yourCrossoverStar.name,
-              imageUrl: yourCrossoverStar.imageURL,
-            },
-          });
-          break;
-        case "tvGenre":
-          images = buildOgImageUrl({
-            story,
-            data: {
-              genres: genreDistribution.genres,
-            },
-          });
-          break;
-      }
+    switch (story) {
+      case "firstTvShow":
+        images = buildOgImageUrl({
+          story,
+          data: {
+            name: firstTvShow.show.title,
+            imageUrl: firstTvShow.show.imageURL,
+          },
+        });
+        break;
+      case "mostWatchedTvShow":
+        images = buildOgImageUrl({
+          story,
+          data: {
+            name: mostWatchedTvShow.show.title,
+            imageUrl: mostWatchedTvShow.show.imageURL,
+          },
+        });
+        break;
+      case "totalShows":
+        images = buildOgImageUrl({
+          story,
+          data: {
+            count: watchHistory.topShows.length,
+            imageUrl: watchHistory.topShows.map((show) => show.imageURL),
+          },
+        });
+        break;
+      case "crossoverStar":
+        images = buildOgImageUrl({
+          story,
+          data: {
+            name: yourCrossoverStar.name,
+            imageUrl: yourCrossoverStar.imageURL,
+          },
+        });
+        break;
+      case "tvGenre":
+        images = buildOgImageUrl({
+          story,
+          data: {
+            genres: genreDistribution.genres,
+          },
+        });
+        break;
     }
-
-    if (
-      (
-        [
-          "rottenTomatoesScore",
-          "tvBff",
-          "starSign",
-          "overview",
-        ] as AllStoryIds[]
-      ).includes(story)
-    ) {
-      // @note: this is the mocked data and should be replaced with the actual data
-      const { personality, tvBFF, starSign } = ReportsCardMockedData;
-
-      // const { personality, tvBFF, starSign } = await getReportCard(id);
-
-      switch (story) {
-        case "rottenTomatoesScore":
-          images = buildOgImageUrl({
-            story,
-            data: {
-              score: personality.rtScore,
-            },
-          });
-          break;
-        case "tvBff":
-          images = buildOgImageUrl({
-            story,
-            data: {
-              name: tvBFF.name,
-              show: tvBFF.show,
-              imageUrl: tvBFF.imageURL,
-            },
-          });
-          break;
-        case "starSign":
-          images = buildOgImageUrl({
-            story,
-            data: {
-              name: starSign.name,
-            },
-          });
-          break;
-        case "overview":
-          images = buildOgImageUrl({
-            story,
-            data: {
-              score: personality.rtScore,
-              tvBff: tvBFF.name,
-              star: starSign.name,
-              title: personality.personality,
-            },
-          });
-          break;
-      }
-    }
-
-    const res: Metadata = {
-      ...sharedMetadata,
-      title,
-      description,
-      openGraph: {
-        description,
-        title,
-        images,
-      },
-      twitter: {
-        description,
-        title,
-        images,
-      },
-    };
-
-    return res;
-  } catch {
-    return sharedMetadata;
   }
+
+  if (
+    (
+      ["rottenTomatoesScore", "tvBff", "starSign", "overview"] as AllStoryIds[]
+    ).includes(story)
+  ) {
+    // @note: this is the mocked data and should be replaced with the actual data
+    const { personality, tvBFF, starSign } = ReportsCardMockedData;
+
+    // const { personality, tvBFF, starSign } = await getReportCard(id);
+
+    switch (story) {
+      case "rottenTomatoesScore":
+        images = buildOgImageUrl({
+          story,
+          data: {
+            score: personality.rtScore,
+          },
+        });
+        break;
+      case "tvBff":
+        images = buildOgImageUrl({
+          story,
+          data: {
+            name: tvBFF.name,
+            show: tvBFF.show,
+            imageUrl: tvBFF.imageURL,
+          },
+        });
+        break;
+      case "starSign":
+        images = buildOgImageUrl({
+          story,
+          data: {
+            name: starSign.name,
+          },
+        });
+        break;
+      case "overview":
+        images = buildOgImageUrl({
+          story,
+          data: {
+            score: personality.rtScore,
+            tvBff: tvBFF.name,
+            star: starSign.name,
+            title: personality.personality,
+          },
+        });
+        break;
+    }
+  }
+
+  const res: Metadata = {
+    ...sharedMetadata,
+    title,
+    description,
+    openGraph: {
+      description,
+      title,
+      images,
+    },
+    twitter: {
+      description,
+      title,
+      images,
+    },
+  };
+
+  return res;
 }
 
 export default async function Page({ searchParams }: { searchParams: any }) {

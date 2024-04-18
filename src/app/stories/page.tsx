@@ -2,6 +2,7 @@ import { Metadata, ResolvingMetadata } from "next";
 import { redirect } from "next/navigation";
 
 import { getReportCard, getStats } from "@/actions";
+import { LandingScreen } from "@/components/screens/landing";
 import { UserStories } from "@/components/stories";
 import { Container } from "@/components/themed";
 import { buildOgImageUrl, sharedMetadata } from "@/helpers/metadata";
@@ -179,7 +180,11 @@ export async function generateMetadata(
 export default async function Page({ searchParams }: { searchParams: any }) {
   // redirect to home if id is present
   if (searchParams.id) {
-    // redirect("/");
+    return (
+      <Container className="relative">
+        <LandingScreen />
+      </Container>
+    );
   }
 
   return (

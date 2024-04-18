@@ -1,4 +1,4 @@
-import { AllStoryIds } from "@/types";
+import { AllStoryIds, TopGenres } from "@/types";
 
 import { getEnvDetails } from "./utils";
 
@@ -86,4 +86,21 @@ export const getStoryDownloadSelector = (storyId: AllStoryIds) => {
     id,
     selector: `#${id}`,
   };
+};
+
+export const getHighestPercentageGenre = (genres: TopGenres) => {
+  // Initialize variables to first genre in the array
+  let highestGenre = genres?.[0];
+
+  // Iterate over the array of genres
+  genres.forEach((genre) => {
+    // If the current genre's percentage is higher than the current highest percentage
+    if (genre.percentage > highestGenre.percentage) {
+      // Update the highest percentage and corresponding genre
+      highestGenre = genre;
+    }
+  });
+
+  // Return the genre with the highest percentage
+  return highestGenre;
 };

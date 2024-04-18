@@ -9,18 +9,18 @@ import { ReportsCardMockedData, TVStatsMockedData } from "@/helpers/mocked";
 import { AllStoryIds } from "@/types";
 
 type PageProps = {
-  params: {
+  searchParams: {
     id: string;
     story: AllStoryIds;
   };
 };
 
 export async function generateMetadata(
-  { params }: PageProps,
+  { searchParams }: PageProps,
   parent: ResolvingMetadata,
 ): Promise<Metadata> {
   // read route params
-  const { id, story } = params;
+  const { id, story } = searchParams;
 
   try {
     // fetch data
@@ -43,21 +43,21 @@ export async function generateMetadata(
       ).includes(story)
     ) {
       // @note: this is the mocked data and should be replaced with the actual data
-      // const {
-      //   firstTvShow,
-      //   mostWatchedTvShow,
-      //   watchHistory,
-      //   genreDistribution,
-      //   yourCrossoverStar,
-      // } = TVStatsMockedData;
-
       const {
         firstTvShow,
         mostWatchedTvShow,
         watchHistory,
         genreDistribution,
         yourCrossoverStar,
-      } = await getStats(id);
+      } = TVStatsMockedData;
+
+      // const {
+      //   firstTvShow,
+      //   mostWatchedTvShow,
+      //   watchHistory,
+      //   genreDistribution,
+      //   yourCrossoverStar,
+      // } = await getStats(id);
 
       switch (story) {
         case "firstTvShow":
@@ -118,9 +118,9 @@ export async function generateMetadata(
       ).includes(story)
     ) {
       // @note: this is the mocked data and should be replaced with the actual data
-      // const { personality, tvBFF, starSign } = ReportsCardMockedData;
+      const { personality, tvBFF, starSign } = ReportsCardMockedData;
 
-      const { personality, tvBFF, starSign } = await getReportCard(id);
+      // const { personality, tvBFF, starSign } = await getReportCard(id);
 
       switch (story) {
         case "rottenTomatoesScore":

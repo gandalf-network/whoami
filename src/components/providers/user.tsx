@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 import { getReportCard, getStats } from "@/actions";
 import { createContext } from "@/helpers/context";
+import { ReportsCardMockedData, TVStatsMockedData } from "@/helpers/mocked";
 import { createOrGetSessionId } from "@/helpers/storage";
 import { useSession } from "@/hooks/use-session";
 import { UserReportCardType, UserStatsType } from "@/types";
@@ -29,9 +30,11 @@ export const UserDataProvider = (props: UserDataProviderProps) => {
 
   const { user } = useSession({ loadOnMount: true, refetchInterval: 5000 });
 
-  const [stats, setStats] = useState<UserStatsType | null>(null);
+  const [stats, setStats] = useState<UserStatsType | null>(TVStatsMockedData);
 
-  const [reportCard, setReportCard] = useState<UserReportCardType | null>(null);
+  const [reportCard, setReportCard] = useState<UserReportCardType | null>(
+    ReportsCardMockedData,
+  );
 
   const loading = !stats || !reportCard;
 

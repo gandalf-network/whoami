@@ -42,20 +42,22 @@ export async function generateMetadata(
         ] as AllStoryIds[]
       ).includes(story)
     ) {
+      // @note: this is the mocked data and should be replaced with the actual data
       // const {
       //   firstTvShow,
       //   mostWatchedTvShow,
       //   watchHistory,
       //   genreDistribution,
       //   yourCrossoverStar,
-      // } = await getStats(id);
+      // } = TVStatsMockedData;
+
       const {
         firstTvShow,
         mostWatchedTvShow,
         watchHistory,
         genreDistribution,
         yourCrossoverStar,
-      } = TVStatsMockedData;
+      } = await getStats(id);
 
       switch (story) {
         case "firstTvShow":
@@ -115,8 +117,10 @@ export async function generateMetadata(
         ] as AllStoryIds[]
       ).includes(story)
     ) {
-      // const { personality, tvBFF, starSign } = await getReportCard(id);
-      const { personality, tvBFF, starSign } = ReportsCardMockedData;
+      // @note: this is the mocked data and should be replaced with the actual data
+      // const { personality, tvBFF, starSign } = ReportsCardMockedData;
+
+      const { personality, tvBFF, starSign } = await getReportCard(id);
 
       switch (story) {
         case "rottenTomatoesScore":

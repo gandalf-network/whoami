@@ -1,5 +1,6 @@
 import { AllStoryIds, TopGenres } from "@/types";
 
+import { createOrGetSessionId } from "./storage";
 import { getEnvDetails } from "./utils";
 
 export const rottenTomatoeImages = {
@@ -46,7 +47,9 @@ export const getRottenTomatoeScoreText = (score: number) => {
 export const getStoryLink = (storyId: AllStoryIds) => {
   const { url } = getEnvDetails();
 
-  return `${url}/stories/?id=${storyId}`;
+  const sessionID = createOrGetSessionId();
+
+  return `${url}/stories/?story=${storyId}&id=${sessionID}`;
 };
 
 // get story index

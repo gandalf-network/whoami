@@ -83,7 +83,7 @@ export async function generateMetadata(
           story,
           data: {
             count: watchHistory.topShows.length,
-            imageUrl: watchHistory.topShows.map((show) => show.imageURL),
+            images: watchHistory.topShows.map((show) => show.imageURL),
           },
         });
         break;

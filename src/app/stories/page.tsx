@@ -1,11 +1,9 @@
 import { Metadata, ResolvingMetadata } from "next";
-import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 import { UserStories } from "@/components/stories";
 import { Container } from "@/components/themed";
 import { sharedMetadata } from "@/helpers/metadata";
-import { cookiesKey, getCookie } from "@/helpers/storage";
 import { AllStoryIds } from "@/types";
 
 type PageProps = {
@@ -13,11 +11,6 @@ type PageProps = {
     id: string;
     story: AllStoryIds;
   };
-};
-
-// return session id on the server side
-export const getSessionId = () => {
-  return getCookie(cookiesKey.sessionId, { cookies }) as string;
 };
 
 export async function generateMetadata(

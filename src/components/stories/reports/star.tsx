@@ -1,12 +1,12 @@
 /* eslint-disable @next/next/no-img-element */
 import { DodecagramStar, StarSignIcon } from "@/components/icon";
+import { useUserData } from "@/components/providers/user";
 import {
   PageHeader,
   ShareButton,
   StoryDownloadContainer,
   Text,
 } from "@/components/themed";
-import { ReportsCardMockedData } from "@/helpers/mocked";
 import { getStoryDownloadSelector } from "@/helpers/story";
 import { cn } from "@/helpers/utils";
 import { StoryContentProps, StoryDownloadContentProps } from "@/types";
@@ -16,7 +16,9 @@ export const StarSignStory = ({
   className,
   ...props
 }: StoryContentProps) => {
-  const { realStarSign } = ReportsCardMockedData;
+  const { reportCard } = useUserData();
+
+  const starSign = reportCard?.starSign;
 
   return (
     <div
@@ -32,18 +34,16 @@ export const StarSignStory = ({
           Real Star Sign
         </Text>
 
-        <StarSignIcon sign={realStarSign.name} className="w-80" />
+        <StarSignIcon sign={starSign?.name || ""} className="w-80" />
 
         <div>
-          <Text className="text-xl font-bold capitalize">
-            {realStarSign.name}
-          </Text>
-          <Text className="text-base my-2 font-medium">
-            From &quot;<span className="capitalize">{realStarSign.show}</span>
+          <Text className="text-xl font-bold capitalize">{starSign?.name}</Text>
+          {/* <Text className="text-base my-2 font-medium">
+            From &quot;<span className="capitalize">{starSign?.show}</span>
             &quot;
-          </Text>
+          </Text> */}
           <Text className="max-w-xs text-base" font="caption">
-            {realStarSign.reason}
+            {starSign?.reason}
           </Text>
         </div>
       </div>
@@ -67,7 +67,9 @@ export const StarSignStory = ({
 export const StarSignDownloadStory = ({
   ...props
 }: StoryDownloadContentProps) => {
-  const { realStarSign } = ReportsCardMockedData;
+  const { reportCard } = useUserData();
+
+  const starSign = reportCard?.starSign;
 
   return (
     <StoryDownloadContainer
@@ -77,13 +79,13 @@ export const StarSignDownloadStory = ({
       {...props}
     >
       <div className="gap-y-10 flex-1 flex-col flex-center text-center">
-        <StarSignIcon sign={realStarSign.name} className="w-80" />
+        <StarSignIcon sign={starSign?.name || ""} className="w-80" />
 
         <div>
           <Text className="text-2xl font-bold mt-2 mb-4 capitalize">
-            {realStarSign.name}
+            {starSign?.name}
           </Text>
-          <Text className="text-xl font-semibold">{realStarSign.show}</Text>
+          {/* <Text className="text-xl font-semibold">{starSign?.show}</Text> */}
         </div>
 
         <DodecagramStar className="absolute w-20 rotate-[-40deg] -left-5 -bottom-7" />

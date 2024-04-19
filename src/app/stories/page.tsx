@@ -1,5 +1,4 @@
 import { Metadata, ResolvingMetadata } from "next";
-import { redirect } from "next/navigation";
 
 import { getReportCard, getStats } from "@/actions";
 import { LandingScreen } from "@/components/screens/landing";
@@ -31,11 +30,12 @@ export async function generateMetadata(
   let images = sharedMetadata.openGraph?.images;
 
   const description = story
-    ? storiesMetadata[story].description
+    ? storiesMetadata[story].description ||
+      sharedMetadata.openGraph?.description
     : sharedMetadata.openGraph?.description;
 
   const title = story
-    ? storiesMetadata[story].title
+    ? storiesMetadata[story].title || sharedMetadata.openGraph?.title
     : sharedMetadata.openGraph?.title;
 
   // fetch data based on story kinds

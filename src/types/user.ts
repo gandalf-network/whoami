@@ -42,9 +42,11 @@ export type UserStats = {
   genreDistribution: { genres: TopGenres; quip: string };
 };
 
-export type Actors = {
+export type Actor = {
+  id: string;
   name: string;
   imageURL: string;
+  characterName: string;
 };
 
 export type TVDBSearchReturn = {
@@ -52,7 +54,7 @@ export type TVDBSearchReturn = {
   imageURL: string;
   summary: string;
   genres: string[];
-  actors: Actors[];
+  actors: Actor[];
 };
 
 type Genre = {
@@ -67,7 +69,7 @@ export type BFF = {
   BFFQuip: string;
 };
 
-export type StarSign = {
+export type TopGenresPersonalityAndStarSignAIResults = {
   topGenresQuip: string;
   starSign: string;
   starSignQuip: string;

@@ -5,7 +5,11 @@ import { getReportCard, getStats } from "@/actions";
 import { LandingScreen } from "@/components/screens/landing";
 import { UserStories } from "@/components/stories";
 import { Container } from "@/components/themed";
-import { buildOgImageUrl, sharedMetadata } from "@/helpers/metadata";
+import {
+  buildOgImageUrl,
+  sharedMetadata,
+  storiesMetadata,
+} from "@/helpers/metadata";
 import { ReportsCardMockedData, TVStatsMockedData } from "@/helpers/mocked";
 import { AllStoryIds } from "@/types";
 
@@ -26,9 +30,13 @@ export async function generateMetadata(
   // fetch data
   let images = sharedMetadata.openGraph?.images;
 
-  const description = sharedMetadata.openGraph?.description;
+  const description = story
+    ? storiesMetadata[story].description
+    : sharedMetadata.openGraph?.description;
 
-  const title = sharedMetadata.openGraph?.title;
+  const title = story
+    ? storiesMetadata[story].title
+    : sharedMetadata.openGraph?.title;
 
   // fetch data based on story kinds
   if (

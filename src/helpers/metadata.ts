@@ -30,6 +30,46 @@ export const baseMetadataInfo = {
   siteName: "WhoAmI",
 };
 
+// this is the metadata for each story
+export const storiesMetadata: Record<AllStoryIds, Metadata> = {
+  starSign: {
+    title: "WhoAmI - Star Sign",
+    description: baseMetadataInfo.description,
+  },
+  tvBff: {
+    title: "WhoAmI - TV BFF",
+    description: baseMetadataInfo.description,
+  },
+  firstTvShow: {
+    title: "WhoAmI - First TV Show",
+    description: baseMetadataInfo.description,
+  },
+  mostWatchedTvShow: {
+    title: "WhoAmI - Most Watched TV Show",
+    description: baseMetadataInfo.description,
+  },
+  totalShows: {
+    title: "WhoAmI - Total Shows",
+    description: baseMetadataInfo.description,
+  },
+  tvGenre: {
+    title: "WhoAmI - TV Genre",
+    description: baseMetadataInfo.description,
+  },
+  rottenTomatoesScore: {
+    title: "WhoAmI - Rotten Tomatoes Score",
+    description: baseMetadataInfo.description,
+  },
+  crossoverStar: {
+    title: "WhoAmI - Crossover Star",
+    description: baseMetadataInfo.description,
+  },
+  overview: {
+    title: "WhoAmI - Personality",
+    description: baseMetadataInfo.description,
+  },
+};
+
 // shared metadata for all pages
 export const sharedMetadata: Metadata = {
   ...(isProduction() ? {} : { metadataBase: new URL(getEnvDetails().url) }),

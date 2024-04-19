@@ -144,6 +144,7 @@ export async function getTop5ShowsByUser(
         s.summary as summary,
         s.genre as genres,
         s."imageURL",
+        s."numberOfEpisodes" as numberOfEpisodes,
       COUNT(ue.id) AS watchCount,
       COUNT(ue.id)::FLOAT / s."numberOfEpisodes" AS score
       FROM 
@@ -160,7 +161,7 @@ export async function getTop5ShowsByUser(
       GROUP BY 
         s.id
       ORDER BY 
-        score DESC
+        score DESC, numberOfEpisodes DESC
       LIMIT 5;
     `;
   return topShows;

@@ -2,18 +2,18 @@ import axios from "axios";
 import levenshtein from "js-levenshtein";
 
 import {
-  ROTTEN_TOMATOES_API_KEY,
-  ROTTEN_TOMATOES_APPLICATION_ID,
-  ROTTEN_TOMATOES_BASE_URL,
+  ROTTEN_TOMATOES_ALGOLIA_API_KEY,
+  ROTTEN_TOMATOES_ALGOLIA_APPLICATION_ID,
+  ROTTEN_TOMATOES_ALGOLIA_BASE_URL,
 } from "@/actions/helpers/constants";
 import { standardizeName } from "@/actions/helpers/utils";
 
 export async function getRottenTomatoScore(title: string, cast: string[]) {
   const agentQuery =
     "x-algolia-agent=Algolia for JavaScript (4.23.3); Browser (lite)";
-  const apiKey = `x-algolia-api-key=${ROTTEN_TOMATOES_API_KEY}`;
-  const appID = `x-algolia-application-id=${ROTTEN_TOMATOES_APPLICATION_ID}`;
-  const url = `${ROTTEN_TOMATOES_BASE_URL}/1/indexes/*/queries?${agentQuery}&${apiKey}&${appID}`;
+  const apiKey = `x-algolia-api-key=${ROTTEN_TOMATOES_ALGOLIA_API_KEY}`;
+  const appID = `x-algolia-application-id=${ROTTEN_TOMATOES_ALGOLIA_APPLICATION_ID}`;
+  const url = `${ROTTEN_TOMATOES_ALGOLIA_BASE_URL}/1/indexes/*/queries?${agentQuery}&${apiKey}&${appID}`;
 
   const body = {
     requests: [

@@ -64,7 +64,7 @@ export const RottenTomatoeStory = ({
 }: StoryContentProps) => {
   const { reportCard } = useUserData();
 
-  const { rtScore, reason } = reportCard?.personality;
+  const { rtScore, reason } = reportCard?.rottenTomato;
 
   return (
     <div

@@ -12,7 +12,7 @@ export async function getPersonalities(topShow: string) {
       { role: "system", content: "Be precise and concise." },
       {
         role: "user",
-        content: `What are the personalities of the main characters in the series "${topShow}"`,
+        content: `What are the personalities of the main characters in the TV show "${topShow}"`,
       },
     ],
   });

@@ -1,5 +1,6 @@
 import { MostWatchedTvShowWithEpisode, UserStats } from "@/types";
 
+import { getActorsImageByCharacterNameAndShow } from "./actor";
 import { createOrUpdateUsersAIResponse } from "./aiResponses";
 import {
   getUsersFirstShow,
@@ -32,11 +33,13 @@ export async function getStatsResponse(sessionID: string) {
   const stats: UserStats = {
     firstTvShow: {
       show: usersFirstShow,
-      quip: aiResponses.firstTVShowQuip as string,
+      quip: aiResponses.firstTVShowQuip ? aiResponses.firstTVShowQuip : "",
     },
     mostWatchedTvShow: {
       show: mostWatchedTvShow,
-      quip: aiResponses.mostRewatchedTVShowQuip as string,
+      quip: aiResponses.mostRewatchedTVShowQuip
+        ? aiResponses.mostRewatchedTVShowQuip
+        : "",
     },
     yourCrossoverStar: topShowsByActor,
     watchHistory: {
@@ -45,7 +48,7 @@ export async function getStatsResponse(sessionID: string) {
     },
     genreDistribution: {
       genres: topGenres,
-      quip: aiResponses.topGenresQuip as string,
+      quip: aiResponses.topGenresQuip ? aiResponses.topGenresQuip : "",
     },
   };
 
@@ -62,17 +65,30 @@ export async function getReportCardResponse(sessionID: string) {
   const topShows = await getTop5ShowsByUser(user.id);
   const topShow = topShows[0];
   const rtScore = await getUserAverageRottenTomatoScore(user.id);
+  let actorImageURL = aiResponses.bffImageURL;
+  if (!actorImageURL) {
+    actorImageURL = await getActorsImageByCharacterNameAndShow(
+      aiResponses.bff as string,
+      topShow.id,
+    );
+
+    await createOrUpdateUsersAIResponse({
+      userID: user.id,
+      bffImageURL: actorImageURL,
+    });
+  }
 
   const tvBFF = {
     show: topShow.title,
     name: aiResponses.bff,
     reason: aiResponses.bffQuip,
-    imageURL: "",
+    imageURL: actorImageURL,
   };
 
   const starSign = {
     name: aiResponses.starSign,
     reason: aiResponses.starSignQuip,
+    show: topShow.title,
   };
 
   const personality = {
@@ -81,9 +97,15 @@ export async function getReportCardResponse(sessionID: string) {
     reason: aiResponses.personalityQuip,
   };
 
+  const rottenTomato = {
+    rtScore,
+    reason: aiResponses.rtScoreQuip,
+  };
+
   return {
     tvBFF,
     starSign,
     personality,
+    rottenTomato,
   };
 }

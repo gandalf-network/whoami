@@ -12,6 +12,7 @@ type CreateOrUpdateUsersAIResponseInput = {
   mostRewatchedTVShowQuip?: string;
   bff?: string;
   bffQuip?: string;
+  bffImageURL?: string;
   userID: string;
 };
 
@@ -48,5 +49,6 @@ function getData(input: CreateOrUpdateUsersAIResponseInput) {
     }),
     ...(input.bff && { bff: input.bff }),
     ...(input.bffQuip && { bffQuip: input.bffQuip }),
+    ...(input.bffImageURL && { bffImageURL: input.bffImageURL }),
   };
 }

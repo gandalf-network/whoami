@@ -42,9 +42,9 @@ model show {
   numberOfEpisodes  Int?
   rottenTomatoScore Int?   
   genre             String[]   @db.VarChar(255)
-  imageURL          String?   @db.VarChar(255)
-  summary           String?   @db.VarChar(255)
-  actors            actor[]
+  imageURL          String?    @db.VarChar(255)
+  summary           String?    @db.VarChar(255)
+  actors            showActor[]
   users             userShow[]
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
@@ -81,9 +81,22 @@ model actor {
   id        String    @id @default(uuid())
   name      String    @unique @db.VarChar(255)
   imageURL  String?   @db.VarChar(255)
-  shows     show[]
+  shows     showActor[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+}
+
+model showActor {
+  actorID        String  
+  showID         String  
+  characterName  String
+
+  actor      actor   @relation(fields: [actorID], references: [id])
+  show       show    @relation(fields: [showID], references: [id])
+
+  @@id([actorID, showID], name: "showActorID")
+  @@index([showID])
+  @@index([characterName])
 }
 
 model assistant {
@@ -108,6 +121,7 @@ model aiResponse {
   mostRewatchedTVShowQuip String?
   bff              String?
   bffQuip          String?
+  bffImageURL      String?
   user             user   @relation(fields: [userID], references: [id])
-  userID           String    @unique
+  userID           String @unique
 }

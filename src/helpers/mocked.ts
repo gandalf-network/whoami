@@ -91,6 +91,7 @@ export const ReportsCardMockedData: UserReportCardType = {
   },
   starSign: {
     name: "aries",
+    show: "The Last Kingdom",
     reason:
       "With a penchant for epic battles and intricate plots, Uhtred of Bebbanburg would proudly claim you as his own.",
   },
@@ -99,5 +100,10 @@ export const ReportsCardMockedData: UserReportCardType = {
     reason:
       "You always seek thrills and excitement, with a taste for the unexpected in every TV journey.",
     rtScore: 10,
+  },
+  rottenTomato: {
+    rtScore: 10,
+    reason:
+      "You have a taste for the finest shows, with a keen eye for quality and a love for the classics.",
   },
 };

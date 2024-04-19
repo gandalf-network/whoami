@@ -10,7 +10,13 @@ import { OPENAI_API_KEY } from "@/actions/helpers/constants";
 import { BFFAssistant } from "@/helpers/assistants/bff-picker";
 import { GeneralShowAssistant } from "@/helpers/assistants/first-and-most-rewatched-shows-quips";
 import { StarSignAssistant } from "@/helpers/assistants/top-genres-star-sign-rtscore-and-personality-quips";
-import { BFF, Show, StarSign, TopGenres, TVShowQuips } from "@/types";
+import {
+  BFF,
+  Show,
+  TopGenresPersonalityAndStarSignAIResults,
+  TopGenres,
+  TVShowQuips,
+} from "@/types";
 
 const openai = new OpenAI({
   apiKey: OPENAI_API_KEY,
@@ -31,7 +37,7 @@ export async function getTVBFF(
 export async function getStarSign(
   topGenres: TopGenres,
   avgRottenTomatoScore: number,
-): Promise<StarSign> {
+): Promise<TopGenresPersonalityAndStarSignAIResults> {
   const input = {
     topGenres,
     RTScore: avgRottenTomatoScore,

@@ -169,15 +169,15 @@ export async function getTop5ShowsByUser(
 export async function getUsersMostWatchedActor(userID: string) {
   const mostWatchedActor: any = await prisma.$queryRaw`
       SELECT 
-        a.id, a.name, a."imageURL", COUNT(DISTINCT sa."B") AS shows_count
+        a.id, a.name, a."imageURL", COUNT(DISTINCT sa."showID") AS shows_count
       FROM 
         "userShow" us
       INNER JOIN 
         "show" s ON us."showID" = s.id
       INNER JOIN 
-        "_actorToshow" sa ON s.id = sa."B"
+        "showActor" sa ON s.id = sa."showID"
       INNER JOIN 
-        "actor" a ON sa."A" = a.id
+        "actor" a ON sa."actorID" = a.id
       WHERE 
         us."userID" = ${userID}
       GROUP BY 
@@ -204,9 +204,9 @@ export async function getUsersTopShowsByActor(userID: string) {
       INNER JOIN 
         "show" s ON us."showID" = s.id
       INNER JOIN 
-        "_actorToshow" sa ON s.id = sa."B"
+        "showActor" sa ON s.id = sa."showID"
       WHERE 
-        us."userID" = ${userID} AND sa."A" = ${mostWatchedActor[0].id}
+        us."userID" = ${userID} AND sa."actorID" = ${mostWatchedActor[0].id}
       GROUP BY 
         s.id
       ORDER BY 

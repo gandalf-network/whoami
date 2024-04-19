@@ -2,7 +2,7 @@ import axios from "axios";
 // import RateLimiter from "bottleneck";
 
 import { TVDB_BASE_URL } from "@/actions/helpers/constants";
-import { Actors, TVDBSearchReturn } from "@/types";
+import { Actor, TVDBSearchReturn } from "@/types";
 
 export default class TVDBClient {
   private token: string = "";
@@ -40,8 +40,7 @@ export default class TVDBClient {
     const episodeCount = data.episodes.length as number;
     const genres = data.genres.map((genre: any) => genre.name);
 
-    let actors: Actors[] = [];
-
+    let actors: Actor[] = [];
     for (let i = 0; i < data.characters.length; i++) {
       const character = data.characters[i];
       if (character.sort > 10) continue;
@@ -49,7 +48,9 @@ export default class TVDBClient {
         ...actors,
         {
           name: character.personName as string,
+          characterName: character.name as string,
           imageURL: character.image as string,
+          id: "",
         },
       ];
     }

@@ -96,7 +96,6 @@ async function callOpenAI(
       assistantCreateParams,
     );
     assistantID = assistant.id;
-
     await createAssistant({
       assistantID,
       name: assistantName,

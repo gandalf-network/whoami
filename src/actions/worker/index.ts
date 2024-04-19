@@ -35,17 +35,6 @@ const queryShowDataWorker  = () => {
   }, {connection: vercelKVClient });
 };
 
-const genreDistributionWorker  = () => {
-  new Worker(queueNames.GenreDistribution, async (job: Job) => {
-    try {
-      console.log(`Processing job ${job.id}`);
-      
-    } catch (error) {
-      console.error('Error processing job:', error);
-    }
-  }, {connection: vercelKVClient });
-};
-
 const starSignPickerWorker  = () => {
   new Worker(queueNames.StarSignPicker, async (job: Job) => {
     try {
@@ -62,7 +51,6 @@ export default ()=> {
   queryActivitiesWorker();
   crawlRottenTomatoeWorker();
   queryShowDataWorker();
-  genreDistributionWorker();
   starSignPickerWorker();
   console.log("> server workers ready ")
 }

@@ -37,9 +37,9 @@ export async function enqueueShowData(payload: ShowPayload): Promise<void> {
     }
 }
 
-export async function enqueueGenreDistribution(payload: ShowPayload): Promise<void> {
+export async function enqueueTVBFF(payload: ShowPayload): Promise<void> {
     try {
-        await queryActivitiesQueue.add(queueNames.GenreDistribution, { payload });
+        await queryActivitiesQueue.add(queueNames.TVBFF, { payload });
         return console.log('Data successfully enqueued');
     } catch (error) {
         console.error('Failed to enqueue data', error);

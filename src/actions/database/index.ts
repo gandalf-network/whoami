@@ -1,4 +1,4 @@
-import { MostWatchedTvShowWithEpisode, UserStats } from "@/types";
+import { MostWatchedTvShowWithEpisode, UserStats } from "../../types";
 
 import { getActorsImageByCharacterNameAndShow } from "./actor";
 import { createOrUpdateUsersAIResponse } from "./aiResponses";

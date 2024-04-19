@@ -20,13 +20,10 @@
  * 1. `queryShowDataQueue`: Focuses on gathering comprehensive details about each show. This queue's 
  *    output serves as a foundation for subsequent analyses and processing steps. Upon total completion, 
  *    it triggers 3 tasks:
- *      a.) `genreDistributionQueue`: to analyze the genre distribution of the shows based on the acquired data. 
- *           This analysis leverages OpenAI API for advanced data insights.
- * 
- *      b.) `tvBFFQueue`: Determines user television Best Friends Forever (BFF) based on viewing habits 
+ *      a.) `tvBFFQueue`: Determines user television Best Friends Forever (BFF) based on viewing habits 
  *            and preferences using AI
  * 
- *      c.) `starSignPickerQueue`: Handles designation of star sign to the user based on their taste(s)
+ *      b.) `starSignPickerQueue`: Handles designation of star sign to the user based on their taste(s)
  * 
  * 2. `crawlRottenTomatoesQueue`: This operates independently of the show-related 
  * data queues. It focuses on web crawling Rotten Tomatoes for the latest show and movie reviews 
@@ -41,11 +38,7 @@
  * |                        |                              | --> queryShowDataQueue        |                   
  * |                        |                              | --> crawlRottenTomatoeQueue   |
  * |                        |                              |                               |
- * | queryShowDataQueue     | Actors & show information    | --> genreDistributionQueue    |   |
- * |                        |                              |                               |
- * | queryShowDataQueue     | Show details                 | --> genreDistributionQueue    |
- * |                        |                              |                               |
- * | genreDistributionQueue | Genre distribution analysis  | --> tvBFFQueue                |                   
+ * | queryShowDataQueue     |   Actors & show information  | --> tvBFFQueue                |                   
  * |                        |                              | --> starSignPickerQueue       |
  * |                        |                              |                               |
  * | crawlRottenTomatoesQueue| Rotten Tomatoes crawling     | (Ends after processing)       |                   
@@ -64,7 +57,6 @@ export const queueNames = {
     QueryShowActors: "queryShowActors",
     QueryShowData: "queryShowData",
     CrawlRottenTomatoes: "crawlRottenTomatoe",
-    GenreDistribution: "genreDistribution",
     TVBFF: "tvBFF",
     StarSignPicker: "starSignPicker",
 }
@@ -93,11 +85,6 @@ export const queryShowDataQueue: Queue = new Queue(queueNames.QueryShowData, que
 export const crawlRottenTomatoesQueue: Queue = new Queue(queueNames.CrawlRottenTomatoes, queueOptions);
 
 /** 
- * Analyzes and distributes activties based on genre leveraging openAI API
- */
-export const genreDistributionQueue: Queue = new Queue(queueNames.GenreDistribution, queueOptions);
-
-/** 
  * Processes user viewing habits to determine "TV Best Friends Forever" (BFF)
  */
 export const tvBFFQueue: Queue = new Queue(queueNames.TVBFF, queueOptions);
@@ -110,7 +97,6 @@ export const starSignPickerQueue: Queue = new Queue('starSignPickerQueue', queue
 export default {
     starSignPickerQueue,
     tvBFFQueue,
-    genreDistributionQueue,
     queryShowActorsQueue,
     queryShowDataQueue,
     queryActivitiesQueue,

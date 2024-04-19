@@ -1,7 +1,8 @@
-import { ParsedActivity, Show } from "../types";
+import { Actor, ParsedActivity, Show } from "../types";
 import { getRottenTomatoScore } from "./api/rottenTomatoes";
 import TMDBClient from "./api/tmdb";
 import { getReportCardResponse, getStatsResponse } from "./database";
+import { createAndConnectActorToShow } from "./database/actor";
 import { batchInsertEpisodes, insertEpisodeInput, updateShow, upsertShow, upsertUserShow } from "./database/show";
 import { findOrCreateUserBySessionID } from "./database/user";
 import Eye, { Source } from "./eyeofsauron";
@@ -41,6 +42,7 @@ export async function getAndUpdateRottenTomatoesScore(shows: Show[]) {
 
 export async function getShowData(payload: ShowPayload) {
     let updatedShows: Show[] = []
+    let showActors: Actor[] = []
     for (const show of payload.Shows) {
         let showResponse = await tmdbClient.searchTVShows(show.title)
         let showDetails = await tmdbClient.getTVShowDetails(showResponse.results[0].id)
@@ -58,10 +60,17 @@ export async function getShowData(payload: ShowPayload) {
 
         await updateShow(updatedShow)
         updatedShows.push(updatedShow)
+
+        for (const actor of showDetails.aggregate_credits.cast) {
+            await createAndConnectActorToShow({
+                name: actor.name,
+                showID: show.id,
+                imageURL:  `https://image.tmdb.org/t/p/w1280/${actor.profile_path}` 
+            })
+        }
     }
     
     payload.Shows = updatedShows
-    await enqueueRottenTomatoes(payload)
 }
 
 

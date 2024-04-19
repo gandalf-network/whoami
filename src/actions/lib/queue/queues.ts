@@ -17,10 +17,7 @@
  * 
  * As data is stored, it is concurrently pushed into three separate queues for further processing by serverless functions:
  * 
- * 1. `queryShowActorsQueue`: This queue handles fetching and storing actor information for shows. 
- *    It's dedicated to enriching the dataset with detailed actor profiles.
- * 
- * 2. `queryShowDataQueue`: Focuses on gathering comprehensive details about each show. This queue's 
+ * 1. `queryShowDataQueue`: Focuses on gathering comprehensive details about each show. This queue's 
  *    output serves as a foundation for subsequent analyses and processing steps. Upon total completion, 
  *    it triggers 3 tasks:
  *      a.) `genreDistributionQueue`: to analyze the genre distribution of the shows based on the acquired data. 
@@ -31,7 +28,7 @@
  * 
  *      c.) `starSignPickerQueue`: Handles designation of star sign to the user based on their taste(s)
  * 
- * 3. `crawlRottenTomatoesQueue`: This operates independently of the show-related 
+ * 2. `crawlRottenTomatoesQueue`: This operates independently of the show-related 
  * data queues. It focuses on web crawling Rotten Tomatoes for the latest show and movie reviews 
  * and ratings, enriching the dataset with neccessary information.
  *
@@ -44,7 +41,7 @@
  * |                        |                              | --> queryShowDataQueue        |                   
  * |                        |                              | --> crawlRottenTomatoeQueue   |
  * |                        |                              |                               |
- * | queryShowActorsQueue   | Actors information           | (Ends after processing)       |
+ * | queryShowDataQueue     | Actors & show information    | --> genreDistributionQueue    |   |
  * |                        |                              |                               |
  * | queryShowDataQueue     | Show details                 | --> genreDistributionQueue    |
  * |                        |                              |                               |
@@ -54,7 +51,7 @@
  * | crawlRottenTomatoesQueue| Rotten Tomatoes crawling     | (Ends after processing)       |                   
  * | tvBFFQueue             | TV BFF logic                 | (Ends after processing)       |                 
  * | starSignPickerQueue    | Astrological recommendations | (Ends after processing)       |
- */
+*/
 
 import { vercelKVClient } from '../../store/vercelkv';
 import { Queue } from 'bullmq';

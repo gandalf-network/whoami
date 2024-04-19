@@ -17,16 +17,6 @@ export type ShowPayload = {
     Shows: Show[];
 }
 
-export async function enqueueShowActorsQueue(payload: ShowPayload): Promise<void> {
-    try {
-        await queryActivitiesQueue.add(queueNames.QueryShowActors, { payload });
-        return console.log('Data successfully enqueued');
-    } catch (error) {
-        console.error('Failed to enqueue data', error);
-        throw error;
-    }
-}
-
 export async function enqueueRottenTomatoes(payload: ShowPayload): Promise<void> {
     try {
         await queryActivitiesQueue.add(queueNames.CrawlRottenTomatoes, { payload });
@@ -40,6 +30,16 @@ export async function enqueueRottenTomatoes(payload: ShowPayload): Promise<void>
 export async function enqueueShowData(payload: ShowPayload): Promise<void> {
     try {
         await queryActivitiesQueue.add(queueNames.QueryShowData, { payload });
+        return console.log('Data successfully enqueued');
+    } catch (error) {
+        console.error('Failed to enqueue data', error);
+        throw error;
+    }
+}
+
+export async function enqueueGenreDistribution(payload: ShowPayload): Promise<void> {
+    try {
+        await queryActivitiesQueue.add(queueNames.GenreDistribution, { payload });
         return console.log('Data successfully enqueued');
     } catch (error) {
         console.error('Failed to enqueue data', error);

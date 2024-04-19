@@ -17,7 +17,7 @@
  * Queue state data include:
  * - `key:sessionId`: A string that serves as the unique identifier for a group of related jobs which is specific to a user within a queue.
  * - `value:state`: A value from `QUEUE_STATES` that represents the job's current status.
- */
+*/
 
 import { kv } from "@vercel/kv";
 
@@ -31,14 +31,8 @@ export const QUEUE_STATES = {
 export type QueueName = keyof QueueSessionStates;
 export type QueueState = typeof QUEUE_STATES[keyof typeof QUEUE_STATES];
 
-type QueueSession = {
-  States: QueueSessionStates
-  Payload: any
-}
-
 type QueueSessionStates = {
   queryActivitiesQueue: QueueState;
-  queryShowActorsQueue: QueueState;
   queryShowDataQueue: QueueState;
   genreDistributionQueue: QueueState;
   tvBFFQueue: QueueState;
@@ -49,7 +43,6 @@ type QueueSessionStates = {
 function initializeSessionStates(): QueueSessionStates {
   return {
     queryActivitiesQueue: QUEUE_STATES.NOT_INITIATED,
-    queryShowActorsQueue: QUEUE_STATES.NOT_INITIATED,
     queryShowDataQueue: QUEUE_STATES.NOT_INITIATED,
     genreDistributionQueue: QUEUE_STATES.NOT_INITIATED,
     tvBFFQueue: QUEUE_STATES.NOT_INITIATED,

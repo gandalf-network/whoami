@@ -1,13 +1,11 @@
 import { Worker, Job } from 'bullmq';
 import { queueNames } from '../lib/queue/queues';
 import { vercelKVClient } from '../store/vercelkv';
-import { getStateRecordFromStore } from '../lib/queue/state';
 
 const queryActivitiesWorker  = () => {
   new Worker(queueNames.QueryActivities, async (job: Job) => {
     try {
       console.log(`Processing job ${job.id}`);
-      await getStateRecordFromStore(job.data.sessionID)
       
     } catch (error) {
       console.error('Error processing job:', error);
@@ -37,18 +35,6 @@ const queryShowDataWorker  = () => {
   }, {connection: vercelKVClient });
 };
 
-const queryShowActorsWorker  = () => {
-  new Worker(queueNames.QueryShowActors, async (job: Job) => {
-    try {
-      console.log(`Processing job ${job.id}`);
-     
-    } catch (error) {
-      console.error('Error processing job:', error);
-    }
-  }, {connection: vercelKVClient });
-};
-
-
 const genreDistributionWorker  = () => {
   new Worker(queueNames.GenreDistribution, async (job: Job) => {
     try {
@@ -76,7 +62,6 @@ export default ()=> {
   queryActivitiesWorker();
   crawlRottenTomatoeWorker();
   queryShowDataWorker();
-  queryShowActorsWorker();
   genreDistributionWorker();
   starSignPickerWorker();
   console.log("> server workers ready ")

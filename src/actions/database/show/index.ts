@@ -49,6 +49,7 @@ type UpdateShowInput = {
   id: string;
   imageURL?: string;
   summary?: string;
+  genre?: string[];
   rottenTomatoScore?: number;
   numberOfEpisodes?: number;
 };
@@ -63,6 +64,9 @@ export async function updateShow(updateShowInput: UpdateShowInput) {
       ...(updateShowInput.summary && { summary: updateShowInput.summary }),
       ...(updateShowInput.rottenTomatoScore && {
         rottenTomatoScore: updateShowInput.rottenTomatoScore,
+      }),
+      ...(updateShowInput.genre && {
+        genre: updateShowInput.genre,
       }),
       ...(updateShowInput.numberOfEpisodes && {
         numberOfEpisodes: updateShowInput.numberOfEpisodes,

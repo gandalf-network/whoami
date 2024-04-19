@@ -1,17 +1,24 @@
 import { ParsedActivity, Show } from "../types";
+import { getRottenTomatoScore } from "./api/rottenTomatoes";
+import TMDBClient from "./api/tmdb";
 import { getReportCardResponse, getStatsResponse } from "./database";
-import { batchInsertEpisodes, insertEpisodeInput, upsertShow, upsertUserShow } from "./database/show";
+import { batchInsertEpisodes, insertEpisodeInput, updateShow, upsertShow, upsertUserShow } from "./database/show";
 import { findOrCreateUserBySessionID } from "./database/user";
 import Eye, { Source } from "./eyeofsauron";
 import {  NetflixActivityMetadata } from "./eyeofsauron/gql/__generated__";
 import { parseActivityInput, extractEpisodeNumberFromTitle, parseDate } from "./helpers/parser";
-import {  ShowPayload, enqueueRottenTomatoes, enqueueShowActorsQueue, enqueueShowData } from "./lib/queue/producers";
+import {  ShowPayload, enqueueRottenTomatoes, enqueueShowData } from "./lib/queue/producers";
 
 
 const eye = new Eye({
     baseURL: process.env.GANDALF_SAURON_URL as string,
     privateKey: process.env.GANDALF_APP_PRIVATE_KEY as string,
 });
+
+const tmdbClient = new TMDBClient(
+    process.env.TMDB_API_URL as string, 
+    process.env.TMDB_API_KEY as string
+)
 
 export async function findOrCreateUser(sessionID: string) {
   return findOrCreateUserBySessionID(sessionID);
@@ -25,7 +32,40 @@ export async function getReportCard(sessionID: string) {
   return getReportCardResponse(sessionID);
 }
 
-export async function queryAndDumpActivities(sessionID: string, dataKey: string): Promise<void> {
+export async function getAndUpdateRottenTomatoesScore(shows: Show[]) {
+    for (const show of shows) {
+        let score = await getRottenTomatoScore(show.title)
+        await updateShow({id: show.id, rottenTomatoScore: parseInt(score) })
+    }
+}
+
+export async function getShowData(payload: ShowPayload) {
+    let updatedShows: Show[] = []
+    for (const show of payload.Shows) {
+        let showResponse = await tmdbClient.searchTVShows(show.title)
+        let showDetails = await tmdbClient.getTVShowDetails(showResponse.results[0].id)
+        let genres: string[] = [];
+
+        for (const genre of showDetails.genres) {
+            genres.push(genre.name)
+        }
+        let updatedShow = {
+            id: show.id,
+            genre: genres,
+            title: show.title,
+            imageURL:  `https://image.tmdb.org/t/p/w1280/${showDetails.poster_path}` 
+        }
+
+        await updateShow(updatedShow)
+        updatedShows.push(updatedShow)
+    }
+    
+    payload.Shows = updatedShows
+    await enqueueRottenTomatoes(payload)
+}
+
+
+export async function getAndDumpActivities(sessionID: string, dataKey: string): Promise<void> {
     let page = 1;
     const limit = 300;
     let total: number = 0;
@@ -95,7 +135,6 @@ export async function queryAndDumpActivities(sessionID: string, dataKey: string)
                 Shows: shows
             };
 
-            await enqueueShowActorsQueue(showPayload)
             await enqueueRottenTomatoes(showPayload)
             await enqueueShowData(showPayload)
 

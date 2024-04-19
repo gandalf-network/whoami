@@ -1,10 +1,10 @@
 import { VercelRequest, VercelResponse } from '@vercel/node';
-import { getAndDumpActivities } from '../..';
+import {  getAndUpdateRottenTomatoesScore } from '../..';
 
 export default async (req: VercelRequest, res: VercelResponse): Promise<void> => {
-    const {sessionID, dataKey } = req.body;
+    const { shows } = req.body;
     try {
-        await getAndDumpActivities(sessionID, dataKey);
+        await getAndUpdateRottenTomatoesScore(shows);
         res.status(200).send('Job processed successfully');
     } catch (error) {
         console.error('Error processing job:', error);

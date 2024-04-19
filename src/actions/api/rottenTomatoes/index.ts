@@ -60,6 +60,10 @@ export async function getRottenTomatoScore(title: string, cast: string[]) {
       .replace(/[\u0300-\u036f]/g, "")
       .toLowerCase();
 
+    if (!hit.castCrew?.cast) {
+      continue;
+    }
+
     const castIsSimilar = compareCastArrays(hit.castCrew.cast, cast);
 
     const levenshteinDistance = levenshtein(normalizedTitle, title);

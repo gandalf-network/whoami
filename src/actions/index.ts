@@ -1,15 +1,17 @@
 import { Actor, ParsedActivity, Show } from "../types";
+import { getStarSign, getTVBFF } from "./api/openai";
+import { getPersonalities } from "./api/perplexity";
 import { getRottenTomatoScore } from "./api/rottenTomatoes";
 import TMDBClient from "./api/tmdb";
 import { getReportCardResponse, getStatsResponse } from "./database";
-import { createAndConnectActorToShow } from "./database/actor";
-import { batchInsertEpisodes, insertEpisodeInput, updateShow, upsertShow, upsertUserShow } from "./database/show";
+import { createAndConnectActorToShow, findActorByNameAndShow } from "./database/actor";
+import {  createOrUpdateUsersAIResponse } from "./database/aiResponses";
+import { UpdateShowInput, batchInsertEpisodes, getTop5ShowsByUser, getUserAverageRottenTomatoScore, getUsersTopGenres, insertEpisodeInput, updateShow, upsertShow, upsertUserShow } from "./database/show";
 import { findOrCreateUserBySessionID } from "./database/user";
 import Eye, { Source } from "./eyeofsauron";
 import {  NetflixActivityMetadata } from "./eyeofsauron/gql/__generated__";
 import { parseActivityInput, extractEpisodeNumberFromTitle, parseDate } from "./helpers/parser";
-import {  ShowPayload, enqueueRottenTomatoes, enqueueShowData } from "./lib/queue/producers";
-
+import {  ShowPayload, enqueueRottenTomatoes, enqueueShowData, enqueueTVBFF } from "./lib/queue/producers";
 
 const eye = new Eye({
     baseURL: process.env.GANDALF_SAURON_URL as string,
@@ -33,11 +35,47 @@ export async function getReportCard(sessionID: string) {
   return getReportCardResponse(sessionID);
 }
 
-export async function getAndUpdateRottenTomatoesScore(shows: Show[]) {
-    for (const show of shows) {
-        let score = await getRottenTomatoScore(show.title)
-        await updateShow({id: show.id, rottenTomatoScore: parseInt(score) })
+export async function getAndUpdateRottenTomatoesScore(payload: ShowPayload) {
+    for (const show of payload.Shows) {
+        var actors: string[] = []
+        if (show.actors){
+            for(const actor of show.actors) {
+                actors.push(actor.name)
+            }
+        }
+        let score = await getRottenTomatoScore(show.title, actors)
+        if(score) {
+            await updateShow({id: show.id, rottenTomatoScore: score })
+        }
     }
+
+    // This will be triggered when GET_ACTIVITY, GET_SHOW_DATA & ROTTEN_TOMATOE is done.
+    await enqueueTVBFF(payload)
+    await enqueueTVBFF(payload)
+}
+
+export async function getAndUpdateStarSignPicker(payload: ShowPayload) {
+    let user = await findOrCreateUserBySessionID(payload.SessionID)
+    let topGenres = await getUsersTopGenres(user.id)
+    let averageRottenTomatoesScore = await getUserAverageRottenTomatoScore(user.id)
+    let starSign = await getStarSign(topGenres, averageRottenTomatoesScore)
+   
+    await createOrUpdateUsersAIResponse({
+        ...starSign,
+        userID: user.id,
+    })
+}
+
+export async function getAndUpdateTVBFF(payload: ShowPayload) {
+    let user = await findOrCreateUserBySessionID(payload.SessionID)
+    let topGenres = await getUsersTopGenres(user.id)
+    let topShow = await getTop5ShowsByUser(user.id)
+    let characterPersonalities = await getPersonalities(topShow[0].title)
+    let tvBFF = await getTVBFF(topGenres, characterPersonalities)
+    await createOrUpdateUsersAIResponse({
+        ...tvBFF,
+        userID: user.id,
+    })
 }
 
 export async function getShowData(payload: ShowPayload) {
@@ -51,26 +89,35 @@ export async function getShowData(payload: ShowPayload) {
         for (const genre of showDetails.genres) {
             genres.push(genre.name)
         }
-        let updatedShow = {
+
+        for (const currentActor of showDetails.aggregate_credits.cast) {
+            let actor = {
+                name: currentActor.name,
+                showID: show.id,
+                characterName: currentActor.roles[0].character,
+                imageURL:  `https://image.tmdb.org/t/p/w1280/${currentActor.profile_path}` 
+            }
+            await createAndConnectActorToShow(actor)
+
+            let updatedActor = await findActorByNameAndShow(currentActor.name, show.id)
+            showActors.push(updatedActor)
+        }
+
+        let updatedShow: Show | UpdateShowInput = {
             id: show.id,
-            genre: genres,
+            genres: genres,
             title: show.title,
+            actors: show.actors,
             imageURL:  `https://image.tmdb.org/t/p/w1280/${showDetails.poster_path}` 
         }
 
         await updateShow(updatedShow)
         updatedShows.push(updatedShow)
-
-        for (const actor of showDetails.aggregate_credits.cast) {
-            await createAndConnectActorToShow({
-                name: actor.name,
-                showID: show.id,
-                imageURL:  `https://image.tmdb.org/t/p/w1280/${actor.profile_path}` 
-            })
-        }
     }
     
     payload.Shows = updatedShows
+
+    await enqueueRottenTomatoes(payload)
 }
 
 
@@ -144,9 +191,7 @@ export async function getAndDumpActivities(sessionID: string, dataKey: string): 
                 Shows: shows
             };
 
-            await enqueueRottenTomatoes(showPayload)
             await enqueueShowData(showPayload)
-
             page++;
         }
     } catch (error) {

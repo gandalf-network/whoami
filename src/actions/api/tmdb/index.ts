@@ -42,6 +42,10 @@ interface Season {
     vote_average: number;
 }
 
+interface Role {
+    character: string
+}
+
 interface CastMember {
     id: number;
     name: string;
@@ -49,6 +53,7 @@ interface CastMember {
     popularity: number;
     profile_path: string;
     total_episode_count: number;
+    roles: Role
 }
 
 interface TVShowDetails {

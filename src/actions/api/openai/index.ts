@@ -16,7 +16,7 @@ import {
   TopGenresPersonalityAndStarSignAIResults,
   TopGenres,
   TVShowQuips,
-} from "@/types";
+} from "../../../types";
 
 const openai = new OpenAI({
   apiKey: OPENAI_API_KEY,

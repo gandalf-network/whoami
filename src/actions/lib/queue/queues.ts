@@ -34,14 +34,12 @@
  * 
  * | Start                  | Processing Queue             | Next Steps                    |
  * |------------------------|------------------------------|-------------------------------|
- * | queryActivitiesQueue   | Initial data fetching        | --> queryShowActorsQueue      |                    
- * |                        |                              | --> queryShowDataQueue        |                   
- * |                        |                              | --> crawlRottenTomatoeQueue   |
+ * | queryActivitiesQueue   | Initial data fetching        | --> queryShowDataQueue        |                                     
  * |                        |                              |                               |
- * | queryShowDataQueue     |   Actors & show information  | --> tvBFFQueue                |                   
+ * | queryShowDataQueue     |  Actors & show information   | --> tvBFFQueue                |                   
  * |                        |                              | --> starSignPickerQueue       |
  * |                        |                              |                               |
- * | crawlRottenTomatoesQueue| Rotten Tomatoes crawling     | (Ends after processing)       |                   
+ * | crawlRottenTomatoesQueue| Rotten Tomatoes crawling    | (Ends after processing)       |                   
  * | tvBFFQueue             | TV BFF logic                 | (Ends after processing)       |                 
  * | starSignPickerQueue    | Astrological recommendations | (Ends after processing)       |
 */
@@ -54,7 +52,6 @@ const queueOptions = { connection: vercelKVClient }
 
 export const queueNames = {
     QueryActivities: "queryActivities",
-    QueryShowActors: "queryShowActors",
     QueryShowData: "queryShowData",
     CrawlRottenTomatoes: "crawlRottenTomatoe",
     TVBFF: "tvBFF",
@@ -66,11 +63,6 @@ export const queueNames = {
  */
 export const queryActivitiesQueue: Queue = new Queue(queueNames.QueryActivities, queueOptions);
 
-/** 
- * Dedicated to fetching actors' information for TV shows or movies.
- * This queue enhances media data with detailed cast information.
-*/
-export const queryShowActorsQueue: Queue = new Queue(queueNames.QueryShowActors, queueOptions);
 
 /** 
  * Handles querying detailed information about shows from sources like IMDB or TMDB.

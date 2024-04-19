@@ -27,11 +27,8 @@
     "graphql": "^16.8.1",
     "graphql-request": "^6.1.0",
     "graphql-tag": "^2.12.6",
-<<<<<<< HEAD
     "js-levenshtein": "^1.1.6",
-=======
     "ioredis": "^5.3.2",
->>>>>>> c55f698 ([ feat ] serverless functions)
     "lucide-react": "^0.331.0",
     "next": "14.1.0",
     "next-themes": "^0.2.1",

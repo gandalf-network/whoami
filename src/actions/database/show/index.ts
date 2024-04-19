@@ -45,11 +45,11 @@ export async function upsertUserShow(userID: string, showID: string) {
   return userShow;
 }
 
-type UpdateShowInput = {
+export type UpdateShowInput = {
   id: string;
   imageURL?: string;
   summary?: string;
-  genre?: string[];
+  genres?: string[];
   rottenTomatoScore?: number;
   numberOfEpisodes?: number;
 };
@@ -65,8 +65,8 @@ export async function updateShow(updateShowInput: UpdateShowInput) {
       ...(updateShowInput.rottenTomatoScore && {
         rottenTomatoScore: updateShowInput.rottenTomatoScore,
       }),
-      ...(updateShowInput.genre && {
-        genre: updateShowInput.genre,
+      ...(updateShowInput.genres && {
+        genre: updateShowInput.genres,
       }),
       ...(updateShowInput.numberOfEpisodes && {
         numberOfEpisodes: updateShowInput.numberOfEpisodes,

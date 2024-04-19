@@ -1,5 +1,3 @@
-import { type } from "os";
-
 export type Show = {
   id: string;
   title: string;
@@ -9,6 +7,7 @@ export type Show = {
   watchCount?: number;
   numberOfEpisodes?: number;
   imageURL?: string;
+  actors?:  Actor[]
 };
 
 export type YourCrossoverStar = {

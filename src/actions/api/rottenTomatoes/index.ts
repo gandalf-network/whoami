@@ -8,7 +8,7 @@ import {
 } from "@/actions/helpers/constants";
 import { standardizeName } from "@/actions/helpers/utils";
 
-export async function getRottenTomatoScore(title: string, cast: string[]) {
+export async function getRottenTomatoScore(title: string, cast: string[]): Promise<number | null> {
   const agentQuery =
     "x-algolia-agent=Algolia for JavaScript (4.23.3); Browser (lite)";
   const apiKey = `x-algolia-api-key=${ROTTEN_TOMATOES_ALGOLIA_API_KEY}`;

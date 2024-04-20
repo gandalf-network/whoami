@@ -1,3 +1,4 @@
+import 'module-alias/register';
 import { parse } from "url"
 import { IncomingMessage, ServerResponse, createServer } from "http"
 import instantiateWorkers from './src/actions/worker';

@@ -1,6 +1,6 @@
 import { AssistantName } from "@prisma/client";
 import OpenAI from "openai";
-import { AssistantCreateParams } from "openai/resources/beta/assistants/assistants.mjs";
+// import { AssistantCreateParams } from "./openai/resources/beta/assistants/assistants.mjs";
 
 import {
   createAssistant,
@@ -16,7 +16,7 @@ import {
   TopGenresPersonalityAndStarSignAIResults,
   TopGenres,
   TVShowQuips,
-} from "../../../types";
+} from "@/types";
 
 const openai = new OpenAI({
   apiKey: OPENAI_API_KEY,
@@ -79,7 +79,7 @@ export async function getFirstAndMostRewatchedShowQuips(
 
 async function callOpenAI(
   input: object,
-  assistantCreateParams: AssistantCreateParams,
+  assistantCreateParams: any,
   assistantName: AssistantName,
 ) {
   const inputJSON = JSON.stringify(input);

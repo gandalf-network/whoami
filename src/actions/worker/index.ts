@@ -3,20 +3,23 @@ import { queueNames } from '../lib/queue/queues';
 import { vercelKVClient } from '../store/vercelkv';
 import axios from 'axios';
 import { ActivityDataPayload, ShowPayload } from '../lib/queue/producers';
+import { getAndDumpActivities, getAndUpdateRottenTomatoesScore, getShowData } from '..';
 
 const queryActivitiesWorker  = () => {
   new Worker(queueNames.QueryActivities, async (job: Job<ActivityDataPayload>) => {
     try {
       const { sessionID, dataKey } = job.data;
 
-      const url = `${process.env.VERCEL_FUNCTION_BASE_URL}/api/queryActivities`;
+      // const url = `${process.env.VERCEL_FUNCTION_BASE_URL}/api/queryActivities`;
 
-      const response = await axios.post(url, {
-        sessionID,
-        dataKey
-      });
+      // const response = await axios.post(url, {
+      //   sessionID,
+      //   dataKey
+      // });
 
-      console.log(`Job ${job.id} processed successfully. Response:`, response.data);
+      await getAndDumpActivities(sessionID, dataKey);
+
+      // console.log(`Job ${job.id} processed successfully. Response:`, response.data);
     } catch (error) {
       console.error('Error processing job:', error);
     }
@@ -28,11 +31,12 @@ const crawlRottenTomatoeWorker  = () => {
     try {
       const showPayload = job.data;
 
-      const url = `${process.env.VERCEL_FUNCTION_BASE_URL}/api/crawlRottenTomatoes`;
+      // const url = `${process.env.VERCEL_FUNCTION_BASE_URL}/api/crawlRottenTomatoes`;
 
-      const response = await axios.post(url, showPayload);
+      // const response = await axios.post(url, showPayload);
 
-      console.log(`Job ${job.id} processed successfully. Response:`, response.data);
+      await getAndUpdateRottenTomatoesScore(showPayload);
+      // console.log(`Job ${job.id} processed successfully. Response:`, response.data);
       
     } catch (error) {
       console.error('Error processing job:', error);
@@ -45,11 +49,12 @@ const queryShowDataWorker  = () => {
     try {
       const showPayload = job.data;
 
-      const url = `${process.env.VERCEL_FUNCTION_BASE_URL}/api/queryShowData`;
+      // const url = `${process.env.VERCEL_FUNCTION_BASE_URL}/api/queryShowData`;
 
-      const response = await axios.post(url, showPayload);
+      // const response = await axios.post(url, showPayload);
 
-      console.log(`Job ${job.id} processed successfully. Response:`, response.data);
+      // console.log(`Job ${job.id} processed successfully. Response:`, response.data);
+      await getShowData(showPayload);
       
     } catch (error) {
       console.error('Error processing job:', error);

@@ -19,7 +19,7 @@ const eye = new Eye({
 });
 
 const tmdbClient = new TMDBClient(
-    process.env.TMDB_API_URL as string, 
+    process.env.TMDB_BASE_URL as string, 
     process.env.TMDB_API_KEY as string
 )
 
@@ -81,6 +81,8 @@ export async function getAndUpdateTVBFF(payload: ShowPayload) {
 export async function getShowData(payload: ShowPayload) {
     let updatedShows: Show[] = []
     let showActors: Actor[] = []
+    console.log("Number of shows:", payload?.Shows?.length);
+
     for (const show of payload.Shows) {
         let showResponse = await tmdbClient.searchTVShows(show.title)
         let showDetails = await tmdbClient.getTVShowDetails(showResponse.results[0].id)
@@ -89,13 +91,13 @@ export async function getShowData(payload: ShowPayload) {
         for (const genre of showDetails.genres) {
             genres.push(genre.name)
         }
-
+       
         for (const currentActor of showDetails.aggregate_credits.cast) {
             let actor = {
                 name: currentActor.name,
                 showID: show.id,
                 characterName: currentActor.roles[0].character,
-                imageURL:  `https://image.tmdb.org/t/p/w1280/${currentActor.profile_path}` 
+                imageURL:  currentActor.profile_path ? `https://image.tmdb.org/t/p/w1280/${currentActor.profile_path}` : ""
             }
             await createAndConnectActorToShow(actor)
 
@@ -125,7 +127,6 @@ export async function getAndDumpActivities(sessionID: string, dataKey: string): 
     let page = 1;
     const limit = 300;
     let total: number = 0;
-    
     try {
         const user = await findOrCreateUserBySessionID(sessionID)
         const seenShows: Record<string, boolean>  = {}
@@ -194,8 +195,8 @@ export async function getAndDumpActivities(sessionID: string, dataKey: string): 
             await enqueueShowData(showPayload)
             page++;
         }
-    } catch (error) {
-        console.error('Failed to fetch data', error);
+    } catch (error: any) {
+        console.error('Failed to fetch data', error.message);
         throw error; 
     }
 }

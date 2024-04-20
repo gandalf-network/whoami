@@ -1,5 +1,5 @@
 import { Show } from '../../../types';
-import { queryActivitiesQueue, queueNames } from './queues';
+import { crawlRottenTomatoesQueue, queryActivitiesQueue, queryShowDataQueue, queueNames, starSignPickerQueue, tvBFFQueue } from './queues';
 
 export interface ActivityDataPayload {
     sessionID: string;
@@ -8,6 +8,7 @@ export interface ActivityDataPayload {
 
 export async function enqueueActivityData(sessionID: string, dataKey: string): Promise<void> {
     try {
+        console.log(sessionID, dataKey);
         await queryActivitiesQueue.add(queueNames.QueryActivities, { sessionID, dataKey });
         return console.log('Data successfully enqueued');
     } catch (error) {
@@ -24,7 +25,7 @@ export type ShowPayload = {
 
 export async function enqueueRottenTomatoes(payload: ShowPayload): Promise<void> {
     try {
-        await queryActivitiesQueue.add(queueNames.CrawlRottenTomatoes, { payload });
+        await crawlRottenTomatoesQueue.add(queueNames.CrawlRottenTomatoes, { ...payload });
         return console.log('data successfully enqueued');
     } catch (error) {
         console.error('Failed to enqueue data', error);
@@ -34,7 +35,7 @@ export async function enqueueRottenTomatoes(payload: ShowPayload): Promise<void>
 
 export async function enqueueShowData(payload: ShowPayload): Promise<void> {
     try {
-        await queryActivitiesQueue.add(queueNames.QueryShowData, { payload });
+        await queryShowDataQueue.add(queueNames.QueryShowData, { ...payload });
         return console.log('data successfully enqueued');
     } catch (error) {
         console.error('Failed to enqueue data', error);
@@ -44,7 +45,7 @@ export async function enqueueShowData(payload: ShowPayload): Promise<void> {
 
 export async function enqueueTVBFF(payload: ShowPayload): Promise<void> {
     try {
-        await queryActivitiesQueue.add(queueNames.TVBFF, { payload });
+        await tvBFFQueue.add(queueNames.TVBFF, { ...payload });
         return console.log('data successfully enqueued');
     } catch (error) {
         console.error('Failed to enqueue data', error);
@@ -54,7 +55,7 @@ export async function enqueueTVBFF(payload: ShowPayload): Promise<void> {
 
 export async function enqueueStarSignPicker(payload: ShowPayload): Promise<void> {
     try {
-        await queryActivitiesQueue.add(queueNames.StarSignPicker, { payload });
+        await starSignPickerQueue.add(queueNames.StarSignPicker, { ...payload });
         return console.log('data successfully enqueued');
     } catch (error) {
         console.error('Failed to enqueue data', error);

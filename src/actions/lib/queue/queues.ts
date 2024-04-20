@@ -48,7 +48,7 @@ import { vercelKVClient } from '../../store/vercelkv';
 import { Queue } from 'bullmq';
 
 
-const queueOptions = { connection: vercelKVClient }
+const queueOptions = { connection: vercelKVClient  }
 
 export const queueNames = {
     QueryActivities: "queryActivities",
@@ -89,7 +89,6 @@ export const starSignPickerQueue: Queue = new Queue('starSignPickerQueue', queue
 export default {
     starSignPickerQueue,
     tvBFFQueue,
-    queryShowActorsQueue,
     queryShowDataQueue,
     queryActivitiesQueue,
     crawlRottenTomatoesQueue,

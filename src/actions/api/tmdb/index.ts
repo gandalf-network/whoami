@@ -84,12 +84,11 @@ class TMDBClient {
     private apiKey: string;
     private client: AxiosInstance;
 
-    constructor(apiKey: string, url: string) {
+    constructor(url: string, apiKey: string) {
         this.apiKey = apiKey;
         this.client = axios.create({
             baseURL: url,
             headers: {
-                Authorization: `Bearer ${this.apiKey}`,
                 'Content-Type': 'application/json',
             },
         });
@@ -103,6 +102,7 @@ class TMDBClient {
                     include_adult: false,
                     language: 'en-US',
                     page,
+                    api_key: this.apiKey
                 },
             });
             return response.data;
@@ -116,6 +116,8 @@ class TMDBClient {
             const response = await this.client.get<TVShowDetails>(`/tv/${tvShowId}`, {
                 params: {
                     language,
+                    append_to_response: "aggregate_credits",
+                    api_key: this.apiKey
                 }
             });
             return response.data;

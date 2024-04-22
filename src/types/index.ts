@@ -5,14 +5,8 @@ export type Show = {
   genres?: string[];
   summary?: string;
   watchCount?: number;
+  numberOfEpisodes?: number;
   imageURL?: string;
-};
-
-export type Episode = {
-  id: string;
-  episode: string;
-  season: string;
-  watchCount?: number;
 };
 
 export type YourCrossoverStar = {

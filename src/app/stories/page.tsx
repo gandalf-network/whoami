@@ -4,11 +4,7 @@ import { getReportCard, getStats } from "@/actions";
 import { LandingScreen } from "@/components/screens/landing";
 import { UserStories } from "@/components/stories";
 import { Container } from "@/components/themed";
-import {
-  buildOgImageUrl,
-  sharedMetadata,
-  storiesMetadata,
-} from "@/helpers/metadata";
+import { buildOgImageUrl, sharedMetadata } from "@/helpers/metadata";
 import { ReportsCardMockedData, TVStatsMockedData } from "@/helpers/mocked";
 import { AllStoryIds } from "@/types";
 
@@ -30,13 +26,10 @@ export async function generateMetadata(
   let images = sharedMetadata.openGraph?.images;
 
   const description = story
-    ? storiesMetadata[story].description ||
-      sharedMetadata.openGraph?.description
+    ? "Check out whoami.tv to find out yours!"
     : sharedMetadata.openGraph?.description;
 
-  const title = story
-    ? storiesMetadata[story].title || sharedMetadata.openGraph?.title
-    : sharedMetadata.openGraph?.title;
+  let title = sharedMetadata.openGraph?.title;
 
   // fetch data based on story kinds
   if (
@@ -69,6 +62,7 @@ export async function generateMetadata(
 
     switch (story) {
       case "firstTvShow":
+        title = `My first TV show is ${firstTvShow.show.title}`;
         images = buildOgImageUrl({
           story,
           data: {
@@ -78,6 +72,7 @@ export async function generateMetadata(
         });
         break;
       case "mostWatchedTvShow":
+        title = `My most watched TV show is ${mostWatchedTvShow.show.title}`;
         images = buildOgImageUrl({
           story,
           data: {
@@ -87,6 +82,7 @@ export async function generateMetadata(
         });
         break;
       case "totalShows":
+        title = `I have watched ${watchHistory.totalShowsWatched} Netflix shows`;
         images = buildOgImageUrl({
           story,
           data: {
@@ -96,6 +92,7 @@ export async function generateMetadata(
         });
         break;
       case "crossoverStar":
+        title = `My crossover star is ${yourCrossoverStar.name}`;
         images = buildOgImageUrl({
           story,
           data: {
@@ -105,6 +102,9 @@ export async function generateMetadata(
         });
         break;
       case "tvGenre":
+        title = `My favorite TV genres are ${genreDistribution.genres
+          .map((genre) => genre.genre)
+          .join(", ")}`;
         images = buildOgImageUrl({
           story,
           data: {
@@ -127,6 +127,7 @@ export async function generateMetadata(
 
     switch (story) {
       case "rottenTomatoesScore":
+        title = `My Rotten Tomatoes score is ${personality.rtScore}%`;
         images = buildOgImageUrl({
           story,
           data: {
@@ -135,6 +136,7 @@ export async function generateMetadata(
         });
         break;
       case "tvBff":
+        title = `My TV BFF is ${tvBFF.name}`;
         images = buildOgImageUrl({
           story,
           data: {
@@ -145,6 +147,7 @@ export async function generateMetadata(
         });
         break;
       case "starSign":
+        title = `My star sign is ${starSign.name}`;
         images = buildOgImageUrl({
           story,
           data: {
@@ -153,6 +156,7 @@ export async function generateMetadata(
         });
         break;
       case "overview":
+        title = `My personality is ${personality.personality}`;
         images = buildOgImageUrl({
           story,
           data: {

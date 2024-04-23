@@ -23,51 +23,11 @@ export const buildOgImageUrl = (options?: {
 
 // this is the base metadata for the project
 export const baseMetadataInfo = {
-  title: "WhoAmI",
+  title: "whoami.tv",
   description:
-    "A fun, sharable web application that shows users all kinds of cool facts and stats about their TV tastes.",
+    "Connect your Netflix profile to learn more about your TV watching habits",
   url: "https://whoami.tv",
-  siteName: "WhoAmI",
-};
-
-// this is the metadata for each story
-export const storiesMetadata: Record<AllStoryIds, Metadata> = {
-  starSign: {
-    title: "WhoAmI - Star Sign",
-    description: baseMetadataInfo.description,
-  },
-  tvBff: {
-    title: "WhoAmI - TV BFF",
-    description: baseMetadataInfo.description,
-  },
-  firstTvShow: {
-    title: "WhoAmI - First TV Show",
-    description: baseMetadataInfo.description,
-  },
-  mostWatchedTvShow: {
-    title: "WhoAmI - Most Watched TV Show",
-    description: baseMetadataInfo.description,
-  },
-  totalShows: {
-    title: "WhoAmI - Total Shows",
-    description: baseMetadataInfo.description,
-  },
-  tvGenre: {
-    title: "WhoAmI - TV Genre",
-    description: baseMetadataInfo.description,
-  },
-  rottenTomatoesScore: {
-    title: "WhoAmI - Rotten Tomatoes Score",
-    description: baseMetadataInfo.description,
-  },
-  crossoverStar: {
-    title: "WhoAmI - Crossover Star",
-    description: baseMetadataInfo.description,
-  },
-  overview: {
-    title: "WhoAmI - Personality",
-    description: baseMetadataInfo.description,
-  },
+  siteName: "whoami",
 };
 
 // shared metadata for all pages

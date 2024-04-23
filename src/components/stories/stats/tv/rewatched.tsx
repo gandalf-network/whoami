@@ -20,6 +20,12 @@ export const MostRewatchTVShowStory = ({
 
   const mostWatchedTvShow = stats?.mostWatchedTvShow;
 
+  const watchCount = mostWatchedTvShow.show?.watchCount;
+  const numberOfEpisodes = mostWatchedTvShow.show?.numberOfEpisodes;
+
+  const hasCompletedShow =
+    watchCount && numberOfEpisodes ? watchCount >= numberOfEpisodes : false;
+
   return (
     <div
       className={cn(
@@ -31,7 +37,7 @@ export const MostRewatchTVShowStory = ({
 
       <div className="gap-y-10 story-content">
         <Text className="text-2xl uppercase" font="heading">
-          Most Rewatched TV Show
+          Most Watched TV Show
         </Text>
 
         <div className="relative p-0 w-52 h-72">
@@ -49,12 +55,19 @@ export const MostRewatchTVShowStory = ({
             {mostWatchedTvShow.show?.title}
           </Text>
           <Text className="text-base my-3 font-medium">
-            You have played{" "}
-            <strong>
-              S{mostWatchedTvShow.show?.title}:E
-              {mostWatchedTvShow.show?.title}
-            </strong>{" "}
-            {mostWatchedTvShow.show?.watchCount} times
+            You have watched{" "}
+            {hasCompletedShow ? (
+              <>
+                All <strong>{numberOfEpisodes}</strong> episode
+                {numberOfEpisodes && numberOfEpisodes > 1 && "s"}
+              </>
+            ) : (
+              <>
+                <strong>{watchCount}</strong> out of{" "}
+                <strong>{numberOfEpisodes}</strong> episode
+                {numberOfEpisodes && numberOfEpisodes > 1 && "s"}
+              </>
+            )}
           </Text>
           <Text className="text-base" font="caption">
             {mostWatchedTvShow.quip}
@@ -83,11 +96,17 @@ export const MostRewatchTVShowDownloadStory = ({
 
   const mostWatchedTvShow = stats?.mostWatchedTvShow;
 
+  const watchCount = mostWatchedTvShow.show?.watchCount;
+  const numberOfEpisodes = mostWatchedTvShow.show?.numberOfEpisodes;
+
+  const hasCompletedShow =
+    watchCount && numberOfEpisodes ? watchCount >= numberOfEpisodes : false;
+
   return (
     <StoryDownloadContainer
       id={getStoryDownloadSelector("mostWatchedTvShow").id}
       className="bg-primary-green"
-      title="My Most Rewatched TV Show"
+      title="My Most Watched TV Show"
       {...props}
     >
       <div className="gap-y-10 flex-1 flex-col flex-center text-center">
@@ -105,16 +124,21 @@ export const MostRewatchTVShowDownloadStory = ({
           <Text className="text-2xl font-bold mt-2 mb-4">
             {mostWatchedTvShow.show?.title}
           </Text>
-          <Text className="text-muted text-base font-medium">
-            Most played episode
-          </Text>
-          <Text className="text-xl font-bold">
-            S{mostWatchedTvShow.show?.title}:E
-            {mostWatchedTvShow.show?.title}
-          </Text>
 
-          <Text className="mt-6 text-lg font-medium">
-            Played {mostWatchedTvShow?.show?.watchCount} times
+          <Text className="mt-2 text-lg font-medium">
+            You have watched{" "}
+            {hasCompletedShow ? (
+              <>
+                All <strong>{numberOfEpisodes}</strong> episode
+                {numberOfEpisodes && numberOfEpisodes > 1 && "s"}
+              </>
+            ) : (
+              <>
+                <strong>{watchCount}</strong> out of{" "}
+                <strong>{numberOfEpisodes}</strong> episode
+                {numberOfEpisodes && numberOfEpisodes > 1 && "s"}
+              </>
+            )}
           </Text>
         </div>
       </div>

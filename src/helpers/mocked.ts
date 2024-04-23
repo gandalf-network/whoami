@@ -13,6 +13,8 @@ export const TVStatsMockedData: UserStatsType = {
   },
   mostWatchedTvShow: {
     show: {
+      watchCount: 78,
+      numberOfEpisodes: 100,
       id: "1",
       dateFirstPlayed: "",
       title: "Friends",

@@ -43,7 +43,7 @@ model show {
   rottenTomatoScore Int?   
   genre             String[]   @db.VarChar(255)
   imageURL          String?    @db.VarChar(255)
-  summary           String?    @db.VarChar(255)
+  summary           String?    @db.VarChar(1089)
   actors            showActor[]
   users             userShow[]
   createdAt         DateTime  @default(now())

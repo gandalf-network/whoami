@@ -1,85 +1,74 @@
 /**
  * State Tracking in Workflow:
  * 
- * The state tracking workflow is designed to track the processing state of various jobs within a series of queues,
- * each uniquely identified by a `sessionId`. This `sessionId` acts as a unique identifier for a collection of tasks,
- * for a specific user activities analysis, allowing for efficient monitoring, tracking, and aggregation
- * of job statuses across different stages of the processing workflow. The state of each job is
- * dynamically updated to reflect its current state, enabling real-time monitoring and control over
- * the workflow execution.
+ * Designed to oversee the progress of tasks distributed across various queues, this state tracking logic uses a 
+ * `sessionId` as a unique identifier for collections of tasks tailored to specific user activities. This identifier 
+ * is key to efficiently monitoring, tracking, and aggregating job statuses throughout different phases of the processing 
+ * workflow. Each job's state is dynamically updated to reflect its current state based on the total jobs and completed jobs, 
+ * ensuring real-time oversight of the workflow.
  * 
- * The workflow utilizes a predefined set of states (`QUEUE_STATES`) to categorize the status of each job:
- * - NOT_INITIATED: The job has been identified but not yet started.
- * - PROCESSING: The job is currently in progress.
- * - COMPLETED: The job has finished successfully.
- * - ERROR: The job encountered an error during processing.
- * 
- * Queue state data include:
- * - `key:sessionId`: A string that serves as the unique identifier for a group of related jobs which is specific to a user within a queue.
- * - `value:state`: A value from `QUEUE_STATES` that represents the job's current status.
-*/
+ * The idea is to employ a dynamic percentage completion model to gauge the progress of each job:
+ * - 0% indicates a job is identified but not yet initiated.
+ * - 1% to 99% indicates that a job is currently been processed.
+ * - 100% completion signifies a job has been successfully completed but we only care about 97% completion.
+ */
 
 import { kv } from "@vercel/kv";
 
-export const QUEUE_STATES = {
-  NOT_INITIATED: 'NOT_INITIATED',
-  PROCESSING: 'PROCESSING',
-  COMPLETED: 'COMPLETED',
-  ERROR: 'ERROR',
-};
+export type QueueName = 'queryActivities' | 'queryShowData'  | 'tvBFF' | 'starSignPicker' | 'crawlRottenTomatoe';
+export type QueueCompletion = number;
 
-export type QueueName = keyof QueueSessionStates;
-export type QueueState = typeof QUEUE_STATES[keyof typeof QUEUE_STATES];
+const makeKey = (sessionId: string, queueName: QueueName, suffix: string) => `session:${sessionId}:queue:${queueName}:${suffix}`;
 
-type QueueSessionStates = {
-  queryActivitiesQueue: QueueState;
-  queryShowDataQueue: QueueState;
-  genreDistributionQueue: QueueState;
-  tvBFFQueue: QueueState;
-  starSignPickerQueue: QueueState;
-  crawlRottenTomatoeQueue: QueueState;
+const COMPLETION_THRESHOLD = 97;
+
+export async function setQueueStateInRedis(sessionId: string, queueName: QueueName, totalJobs: number) {
+  await kv.set(makeKey(sessionId, queueName, 'totalJobs'), totalJobs.toString());
+  await kv.set(makeKey(sessionId, queueName, 'completedJobs'), '0');
 }
 
-function initializeSessionStates(): QueueSessionStates {
-  return {
-    queryActivitiesQueue: QUEUE_STATES.NOT_INITIATED,
-    queryShowDataQueue: QUEUE_STATES.NOT_INITIATED,
-    genreDistributionQueue: QUEUE_STATES.NOT_INITIATED,
-    tvBFFQueue: QUEUE_STATES.NOT_INITIATED,
-    starSignPickerQueue: QUEUE_STATES.NOT_INITIATED,
-    crawlRottenTomatoeQueue: QUEUE_STATES.NOT_INITIATED,
-  };
-}
-
-// getStateRecordFromStore gets the current state record from the store
-export async function getStateRecordFromStore(sessionId: string): Promise<QueueSessionStates> {
-  try {
-    const parsedState: QueueSessionStates | null = await kv.get(sessionId);
-    const initialState = initializeSessionStates();
-    
-    if (!parsedState) return initialState;
-    const queueSessionStates: QueueSessionStates = { ...initialState, ...parsedState };
-    
-    return queueSessionStates;
-  } catch (error) {
-    console.error(`Error fetching state for session ${sessionId}:`, error);
-    throw new Error('Failed to fetch state from store.');
+export async function setAllQueueTotalJobs(sessionId: string, totalJobs: number) {
+  const queues: QueueName[] = ['queryActivities', 'queryShowData', 'crawlRottenTomatoe'];
+  for (const queueName of queues) {
+    setQueueStateInRedis(sessionId, queueName, totalJobs)
   }
 }
 
-// saveStateRecordToStore save the updated state record back to the store
-export async function saveStateRecordToStore(sessionId: string, sessionStates: QueueSessionStates): Promise<void> {
-  try {
-    await kv.set(sessionId, JSON.stringify(sessionStates));
-  } catch (error) {
-    console.error(`Error saving state for session ${sessionId}:`, error);
-    throw new Error('Failed to save state to store.');
-  }
+export async function getQueueCompletion(sessionId: string, queueName: QueueName): Promise<number> {
+  let totalJobsKey = makeKey(sessionId, queueName, 'totalJobs');
+  let completedJobsKey = makeKey(sessionId, queueName, 'completedJobs');
+
+  let totalJobsString: string | null = await kv.get(totalJobsKey);
+  let completedJobsString: string | null = await kv.get(completedJobsKey);
+
+  let totalJobs = parseInt(totalJobsString || '0');
+  let completedJobs = parseInt(completedJobsString || '0');
+
+  return (completedJobs / totalJobs) * 100;
 }
 
-// updateQueueState update the state of a specific queue for a session
-export async function updateQueueState(sessionId: string, queueName: QueueName, newState: QueueState): Promise<void> {
-  const queueSessionStates = await getStateRecordFromStore(sessionId);
-  queueSessionStates[queueName] = newState;
-  await saveStateRecordToStore(sessionId, queueSessionStates);
+export async function incrementCompletedJobs(sessionId: string, queueName: QueueName, jobs: number) {
+  let completedJobsKey = makeKey(sessionId, queueName, 'completedJobs');
+
+  let completedJobsString: string | null = await kv.get(completedJobsKey);
+  let completedJobs = parseInt(completedJobsString || '0');
+  completedJobs += jobs;
+
+  await kv.set(completedJobsKey, completedJobs.toString());
 }
+
+export async function checkDependentQueuesThresold(sessionId: string): Promise<boolean> {
+  let queuesToCheck: QueueName[] = ['queryActivities', 'queryShowData', 'crawlRottenTomatoe'];
+  let canTrigger = true;
+
+  for (let queueName of queuesToCheck) {
+    let completion = await getQueueCompletion(sessionId, queueName as QueueName);
+    if (completion < COMPLETION_THRESHOLD) {
+      canTrigger = false;
+      break;
+    }
+  }
+
+  return canTrigger
+}
+

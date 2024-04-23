@@ -11,7 +11,8 @@ import { findOrCreateUserBySessionID } from "./database/user";
 import Eye, { Source } from "./eyeofsauron";
 import {  NetflixActivityMetadata } from "./eyeofsauron/gql/__generated__";
 import { parseActivityInput, extractEpisodeNumberFromTitle, parseDate } from "./helpers/parser";
-import {  ShowPayload, enqueueRottenTomatoes, enqueueShowData, enqueueTVBFF } from "./lib/queue/producers";
+import {  ShowPayload, enqueueRottenTomatoes, enqueueShowData, enqueueStarSignPicker, enqueueTVBFF } from "./lib/queue/producers";
+import { checkDependentQueuesThresold } from "./lib/queue/state";
 
 const eye = new Eye({
     baseURL: process.env.GANDALF_SAURON_URL as string,
@@ -35,7 +36,8 @@ export async function getReportCard(sessionID: string) {
   return getReportCardResponse(sessionID);
 }
 
-export async function getAndUpdateRottenTomatoesScore(payload: ShowPayload) {
+export async function getAndUpdateRottenTomatoesScore(payload: ShowPayload): Promise<number> {
+    let processed: number = 0;
     for (const show of payload.Shows) {
         var actors: string[] = []
         if (show.actors){
@@ -46,12 +48,11 @@ export async function getAndUpdateRottenTomatoesScore(payload: ShowPayload) {
         let score = await getRottenTomatoScore(show.title, actors)
         if(score) {
             await updateShow({id: show.id, rottenTomatoScore: score })
+            processed += 1
         }
     }
 
-    // This will be triggered when GET_ACTIVITY, GET_SHOW_DATA & ROTTEN_TOMATOE is done.
-    await enqueueTVBFF(payload)
-    await enqueueTVBFF(payload)
+    return processed
 }
 
 export async function getAndUpdateStarSignPicker(payload: ShowPayload) {
@@ -72,15 +73,17 @@ export async function getAndUpdateTVBFF(payload: ShowPayload) {
     let topShow = await getTop5ShowsByUser(user.id)
     let characterPersonalities = await getPersonalities(topShow[0].title)
     let tvBFF = await getTVBFF(topGenres, characterPersonalities)
+    
     await createOrUpdateUsersAIResponse({
         ...tvBFF,
         userID: user.id,
     })
 }
 
-export async function getShowData(payload: ShowPayload) {
+export async function getShowData(payload: ShowPayload): Promise<number> {
     let updatedShows: Show[] = []
     let showActors: Actor[] = []
+    let processed: number = 0
     console.log("Number of shows:", payload?.Shows?.length);
 
     for (const show of payload.Shows) {
@@ -109,21 +112,24 @@ export async function getShowData(payload: ShowPayload) {
             id: show.id,
             genres: genres,
             title: show.title,
-            actors: show.actors,
+            numberOfEpisodes: showDetails.number_of_episodes,
+            summary: showDetails.overview,
+            actors: showActors,
             imageURL:  `https://image.tmdb.org/t/p/w1280/${showDetails.poster_path}` 
         }
 
         await updateShow(updatedShow)
         updatedShows.push(updatedShow)
+        processed += 1
     }
     
     payload.Shows = updatedShows
-
     await enqueueRottenTomatoes(payload)
+    return processed
 }
 
 
-export async function getAndDumpActivities(sessionID: string, dataKey: string): Promise<void> {
+export async function getAndDumpActivities(sessionID: string, dataKey: string): Promise<number> {
     let page = 1;
     const limit = 300;
     let total: number = 0;
@@ -184,17 +190,16 @@ export async function getAndDumpActivities(sessionID: string, dataKey: string): 
             }
             
             await batchInsertEpisodes(episodes)
-
-            total = total - (limit - shows.length)
             const showPayload: ShowPayload = {
                 SessionID: sessionID,
-                ChunksTotal: total,
                 Shows: shows
             };
 
             await enqueueShowData(showPayload)
             page++;
         }
+
+        return shows.length
     } catch (error: any) {
         console.error('Failed to fetch data', error.message);
         throw error; 

@@ -58,33 +58,20 @@ export const queueNames = {
     StarSignPicker: "starSignPicker",
 }
 
-/** 
- * Queue for querying activities data from Gandalf API.
- */
+// queryActivitiesQueue: Queue for querying activities data from Gandalf API.
 export const queryActivitiesQueue: Queue = new Queue(queueNames.QueryActivities, queueOptions);
 
-
-/** 
- * Handles querying detailed information about shows from sources like IMDB or TMDB.
- * This queue is focused on enriching the database with comprehensive show data.
- */
+// queryShowDataQueue: Handles querying detailed information about shows from sources like IMDB or TMDB. this queue is focused on enriching the database with comprehensive show data.
 export const queryShowDataQueue: Queue = new Queue(queueNames.QueryShowData, queueOptions);
 
-/** 
- * Aimed at crawling Rotten Tomatoes for reviews and ratings, aggregating critical 
- * and audience reception data.
- */
+// crawlRottenTomatoesQueue: Aimed at crawling Rotten Tomatoes for reviews and ratings, aggregating critical and audience reception data.
 export const crawlRottenTomatoesQueue: Queue = new Queue(queueNames.CrawlRottenTomatoes, queueOptions);
 
-/** 
- * Processes user viewing habits to determine "TV Best Friends Forever" (BFF)
- */
+//  Processes user viewing habits to determine "TV Best Friends Forever" (BFF)
 export const tvBFFQueue: Queue = new Queue(queueNames.TVBFF, queueOptions);
 
-/** 
- * Engages in fun task of matching activities real star signs, 
- */
-export const starSignPickerQueue: Queue = new Queue('starSignPickerQueue', queueOptions);
+// Engages in fun task of matching activities real star signs, 
+export const starSignPickerQueue: Queue = new Queue(queueNames.StarSignPicker, queueOptions);
 
 export default {
     starSignPickerQueue,

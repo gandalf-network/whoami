@@ -1,4 +1,4 @@
-import { Show } from '../../../types';
+import { Show } from '@/types';
 import { crawlRottenTomatoesQueue, queryActivitiesQueue, queryShowDataQueue, queueNames, starSignPickerQueue, tvBFFQueue } from './queues';
 
 export interface ActivityDataPayload {
@@ -19,7 +19,6 @@ export async function enqueueActivityData(sessionID: string, dataKey: string): P
 
 export type ShowPayload = {
     SessionID: string;
-    ChunksTotal: number;
     Shows: Show[];
 }
 
@@ -43,9 +42,10 @@ export async function enqueueShowData(payload: ShowPayload): Promise<void> {
     }
 }
 
-export async function enqueueTVBFF(payload: ShowPayload): Promise<void> {
+
+export async function enqueueTVBFF(sessionID: string): Promise<void> {
     try {
-        await tvBFFQueue.add(queueNames.TVBFF, { ...payload });
+        await tvBFFQueue.add(queueNames.TVBFF, { sessionID });
         return console.log('data successfully enqueued');
     } catch (error) {
         console.error('Failed to enqueue data', error);
@@ -53,9 +53,9 @@ export async function enqueueTVBFF(payload: ShowPayload): Promise<void> {
     }
 }
 
-export async function enqueueStarSignPicker(payload: ShowPayload): Promise<void> {
+export async function enqueueStarSignPicker(sessionID: string): Promise<void> {
     try {
-        await starSignPickerQueue.add(queueNames.StarSignPicker, { ...payload });
+        await starSignPickerQueue.add(queueNames.StarSignPicker, { sessionID });
         return console.log('data successfully enqueued');
     } catch (error) {
         console.error('Failed to enqueue data', error);

@@ -275,6 +275,8 @@ export async function getUserAverageRottenTomatoScore(userID: string) {
     FROM
       EpisodeCounts;
     `;
+  console.log(result)
   const weightedScore = result[0].weightedScore as number;
+
   return Number(weightedScore.toPrecision(3));
 }

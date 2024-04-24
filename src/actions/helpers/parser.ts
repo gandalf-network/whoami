@@ -30,7 +30,7 @@ export function extractEpisodeNumberFromTitle(episodeTitle: string): [number | n
     return [null, episodeTitle];
 }
 
-export function parseDate(dateStr) {
+export function parseDate(dateStr: string) {
     const parts = dateStr.split("/");
     if (parts.length === 3) {
         const day = parseInt(parts[0], 10);

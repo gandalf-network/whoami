@@ -43,6 +43,7 @@ interface Season {
 }
 
 interface Role {
+    length: number;
     character: string
 }
 
@@ -53,7 +54,7 @@ interface CastMember {
     popularity: number;
     profile_path: string;
     total_episode_count: number;
-    roles: Role
+    roles: Role[]
 }
 
 interface TVShowDetails {

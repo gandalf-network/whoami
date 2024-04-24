@@ -1,4 +1,4 @@
-import { AssistantCreateParams } from "openai/resources/beta/assistants/assistants.mjs";
+import { AssistantCreateParams } from "openai/resources/beta/assistants";
 
 export const StarSignAssistant: AssistantCreateParams = {
   name: "Star Sign Picker",

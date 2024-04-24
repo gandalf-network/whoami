@@ -10,7 +10,7 @@ export async function enqueueActivityData(sessionID: string, dataKey: string): P
     try {
         console.log(sessionID, dataKey);
         await queryActivitiesQueue.add(queueNames.QueryActivities, { sessionID, dataKey });
-        return console.log('Data successfully enqueued');
+        return console.log('enqueueActivityData: data successfully enqueued');
     } catch (error) {
         console.error('Failed to enqueue data', error);
         throw error;
@@ -25,7 +25,7 @@ export type ShowPayload = {
 export async function enqueueRottenTomatoes(payload: ShowPayload): Promise<void> {
     try {
         await crawlRottenTomatoesQueue.add(queueNames.CrawlRottenTomatoes, { ...payload });
-        return console.log('data successfully enqueued');
+        return console.log('enqueueRottenTomatoes: data successfully enqueued');
     } catch (error) {
         console.error('Failed to enqueue data', error);
         throw error;
@@ -35,7 +35,7 @@ export async function enqueueRottenTomatoes(payload: ShowPayload): Promise<void>
 export async function enqueueShowData(payload: ShowPayload): Promise<void> {
     try {
         await queryShowDataQueue.add(queueNames.QueryShowData, { ...payload });
-        return console.log('data successfully enqueued');
+        return console.log('enqueueShowData: data successfully enqueued');
     } catch (error) {
         console.error('Failed to enqueue data', error);
         throw error;
@@ -46,7 +46,7 @@ export async function enqueueShowData(payload: ShowPayload): Promise<void> {
 export async function enqueueTVBFF(sessionID: string): Promise<void> {
     try {
         await tvBFFQueue.add(queueNames.TVBFF, { sessionID });
-        return console.log('data successfully enqueued');
+        return console.log('enqueueTVBFF: data successfully enqueued');
     } catch (error) {
         console.error('Failed to enqueue data', error);
         throw error;
@@ -56,7 +56,7 @@ export async function enqueueTVBFF(sessionID: string): Promise<void> {
 export async function enqueueStarSignPicker(sessionID: string): Promise<void> {
     try {
         await starSignPickerQueue.add(queueNames.StarSignPicker, { sessionID });
-        return console.log('data successfully enqueued');
+        return console.log('enqueueStarSignPicker: data successfully enqueued');
     } catch (error) {
         console.error('Failed to enqueue data', error);
         throw error;

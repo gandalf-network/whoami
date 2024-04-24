@@ -6,13 +6,12 @@ import TMDBClient from "./api/tmdb";
 import { getReportCardResponse, getStatsResponse } from "./database";
 import { createAndConnectActorToShow, findActorByNameAndShow } from "./database/actor";
 import {  createOrUpdateUsersAIResponse } from "./database/aiResponses";
-import { UpdateShowInput, batchInsertEpisodes, getTop5ShowsByUser, getUserAverageRottenTomatoScore, getUsersTopGenres, insertEpisodeInput, updateShow, upsertShow, upsertUserShow } from "./database/show";
+import { UpdateShowInput, batchInsertEpisodes, getTop5ShowsByUser, getTotalNumberOfShowsWatchedByUser, getUserAverageRottenTomatoScore, getUsersTopGenres, insertEpisodeInput, updateShow, upsertShow, upsertUserShow } from "./database/show";
 import { findOrCreateUserBySessionID } from "./database/user";
 import Eye, { Source } from "./eyeofsauron";
 import {  NetflixActivityMetadata } from "./eyeofsauron/gql/__generated__";
 import { parseActivityInput, extractEpisodeNumberFromTitle, parseDate } from "./helpers/parser";
-import {  ShowPayload, enqueueRottenTomatoes, enqueueShowData, enqueueStarSignPicker, enqueueTVBFF } from "./lib/queue/producers";
-import { checkDependentQueuesThresold } from "./lib/queue/state";
+import {  ShowPayload, enqueueRottenTomatoes, enqueueShowData } from "./lib/queue/producers";
 
 const eye = new Eye({
     baseURL: process.env.GANDALF_SAURON_URL as string,
@@ -55,29 +54,33 @@ export async function getAndUpdateRottenTomatoesScore(payload: ShowPayload): Pro
     return processed
 }
 
-export async function getAndUpdateStarSignPicker(payload: ShowPayload) {
-    let user = await findOrCreateUserBySessionID(payload.SessionID)
+export async function getAndUpdateStarSignPicker(sessionID: string): Promise<number>  {
+    let user = await findOrCreateUserBySessionID(sessionID)
     let topGenres = await getUsersTopGenres(user.id)
     let averageRottenTomatoesScore = await getUserAverageRottenTomatoScore(user.id)
-    let starSign = await getStarSign(topGenres, averageRottenTomatoesScore)
-   
+    let starSigner = await getStarSign(topGenres, averageRottenTomatoesScore)
+    console.log(starSigner)
     await createOrUpdateUsersAIResponse({
-        ...starSign,
+        ...starSigner,
         userID: user.id,
     })
+
+    return await getTotalNumberOfShowsWatchedByUser(user.id)
 }
 
-export async function getAndUpdateTVBFF(payload: ShowPayload) {
-    let user = await findOrCreateUserBySessionID(payload.SessionID)
+export async function getAndUpdateTVBFF(sessionID: string) : Promise<number>  {
+    let user = await findOrCreateUserBySessionID(sessionID)
     let topGenres = await getUsersTopGenres(user.id)
     let topShow = await getTop5ShowsByUser(user.id)
     let characterPersonalities = await getPersonalities(topShow[0].title)
     let tvBFF = await getTVBFF(topGenres, characterPersonalities)
-    
+    console.log(tvBFF)
     await createOrUpdateUsersAIResponse({
         ...tvBFF,
         userID: user.id,
     })
+
+    return await getTotalNumberOfShowsWatchedByUser(user.id)
 }
 
 export async function getShowData(payload: ShowPayload): Promise<number> {
@@ -96,10 +99,11 @@ export async function getShowData(payload: ShowPayload): Promise<number> {
         }
        
         for (const currentActor of showDetails.aggregate_credits.cast) {
+            
             let actor = {
                 name: currentActor.name,
                 showID: show.id,
-                characterName: currentActor.roles[0].character,
+                characterName: (currentActor.roles && currentActor.roles.length > 0) ? currentActor.roles[0].character : "",
                 imageURL:  currentActor.profile_path ? `https://image.tmdb.org/t/p/w1280/${currentActor.profile_path}` : ""
             }
             await createAndConnectActorToShow(actor)

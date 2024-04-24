@@ -1,11 +1,11 @@
 import { VercelRequest, VercelResponse } from '@vercel/node';
-import {  getAndUpdateRottenTomatoesScore } from '../..';
-import { ShowPayload } from '../queue/producers';
+import { getShowData } from '../src/actions';
+import { ShowPayload } from '../src/actions/lib/queue/producers';
 
 export default async (req: VercelRequest, res: VercelResponse): Promise<void> => {
     const payload: ShowPayload = req.body;
     try {
-        await getAndUpdateRottenTomatoesScore(payload);
+        await getShowData(payload);
         res.status(200).send('Job processed successfully');
     } catch (error) {
         console.error('Error processing job:', error);

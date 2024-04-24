@@ -56,6 +56,7 @@ export const queueNames = {
     CrawlRottenTomatoes: "crawlRottenTomatoe",
     TVBFF: "tvBFF",
     StarSignPicker: "starSignPicker",
+    StateThresholdCheck: "stateThresholdCheck",
 }
 
 // queryActivitiesQueue: Queue for querying activities data from Gandalf API.
@@ -73,10 +74,14 @@ export const tvBFFQueue: Queue = new Queue(queueNames.TVBFF, queueOptions);
 // Engages in fun task of matching activities real star signs, 
 export const starSignPickerQueue: Queue = new Queue(queueNames.StarSignPicker, queueOptions);
 
+// state threshold check 
+export const stateThresholdCheckQueue: Queue = new Queue(queueNames.StateThresholdCheck, queueOptions);
+
 export default {
     starSignPickerQueue,
     tvBFFQueue,
     queryShowDataQueue,
     queryActivitiesQueue,
     crawlRottenTomatoesQueue,
+    stateThresholdCheckQueue,
 };

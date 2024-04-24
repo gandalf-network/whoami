@@ -1,12 +1,12 @@
 import { Worker, Job } from 'bullmq';
-import { queueNames } from '../lib/queue/queues';
+import { stateThresholdCheckQueue, queueNames } from '../lib/queue/queues';
 import { vercelKVClient } from '../store/vercelkv';
 import axios from 'axios';
 import { ActivityDataPayload, ShowPayload, enqueueStarSignPicker, enqueueTVBFF } from '../lib/queue/producers';
 import { getAndDumpActivities, getAndUpdateRottenTomatoesScore, getAndUpdateStarSignPicker, getAndUpdateTVBFF, getShowData } from '..';
-import { QueueName, checkDependentQueuesThresold, incrementCompletedJobs, setAllQueueTotalJobs } from '../lib/queue/state';
+import { QueueName, checkDependentQueuesThresold, checkIndependentQueuesThresold, getSessionsByState, incrementCompletedJobs, sessionStates, setAllQueueTotalJobs, setSessionIndex } from '../lib/queue/state';
 
-const queryActivitiesWorker  = () => {
+const queryActivitiesWorker  = async  () => {
   new Worker(queueNames.QueryActivities, async (job: Job<ActivityDataPayload>) => {
     try {
       const { sessionID, dataKey } = job.data;
@@ -19,9 +19,12 @@ const queryActivitiesWorker  = () => {
       // });
 
       let totalData = await getAndDumpActivities(sessionID, dataKey);
+      await setSessionIndex(sessionID, sessionStates.PROCESSING)
       await setAllQueueTotalJobs(sessionID, totalData)
+
       let queueName = queueNames.QueryActivities as QueueName;
       await incrementCompletedJobs(sessionID, queueName, totalData)
+      console.log("totalData:", totalData)
 
       // console.log(`Job ${job.id} processed successfully. Response:`, response.data);
     } catch (error) {
@@ -42,11 +45,6 @@ const crawlRottenTomatoeWorker  = () => {
       let processedData = await getAndUpdateRottenTomatoesScore(showPayload);
       let queueName = queueNames.CrawlRottenTomatoes as QueueName;
       await incrementCompletedJobs(showPayload.SessionID, queueName, processedData)
-
-      if (await checkDependentQueuesThresold(showPayload.SessionID)) {
-        await enqueueTVBFF(showPayload.SessionID)
-        await enqueueStarSignPicker(showPayload.SessionID)
-      }
     // console.log(`Job ${job.id} processed successfully. Response:`, response.data);
       
     } catch (error) {
@@ -76,17 +74,19 @@ const queryShowDataWorker  = () => {
 };
 
 const starSignPickerWorker  = () => {
-  new Worker(queueNames.StarSignPicker, async (job: Job<ShowPayload>) => {
+  new Worker(queueNames.StarSignPicker, async (job: Job) => {
     try {
-      const showPayload = job.data;
-      console.log("StarSignPicker")
+      const { sessionID } = job.data;
 
       // const url = `${process.env.VERCEL_FUNCTION_BASE_URL}/api/starSignPicker`;
 
       // const response = await axios.post(url, showPayload);
 
       // console.log(`Job ${job.id} processed successfully. Response:`, response.data);
-      await getAndUpdateStarSignPicker(showPayload);
+      const processedData = await getAndUpdateStarSignPicker(sessionID);
+      let queueName = queueNames.StarSignPicker as QueueName;
+      await incrementCompletedJobs(sessionID, queueName, processedData)
+
     } catch (error) {
       console.error('Error processing job:', error);
     }
@@ -94,16 +94,48 @@ const starSignPickerWorker  = () => {
 };
 
 const tvBFFWorker  = () => {
-  new Worker(queueNames.TVBFF, async (job: Job<ShowPayload>) => {
+  new Worker(queueNames.TVBFF, async (job: Job) => {
     try {
-      const showPayload = job.data;
+      const { sessionID } = job.data;
 
       // const url = `${process.env.VERCEL_FUNCTION_BASE_URL}/api/tvBFF`;
 
       // const response = await axios.post(url, showPayload);
 
       // console.log(`Job ${job.id} processed successfully. Response:`, response.data);
-      await getAndUpdateTVBFF(showPayload);
+      let processedData = await getAndUpdateTVBFF(sessionID);
+      let queueName = queueNames.TVBFF as QueueName;
+      await incrementCompletedJobs(sessionID, queueName, processedData)
+
+    } catch (error) {
+      console.error('Error processing job:', error);
+    }
+  }, {connection: vercelKVClient });
+};
+
+const checkDependentQueuesThresoldWorker  = () => {
+  stateThresholdCheckQueue.add(queueNames.StateThresholdCheck, {}, {
+    repeat: {
+      every: 10000,
+      limit: 100,
+    },
+  });
+
+  new Worker(queueNames.StateThresholdCheck, async (job: Job) => {
+    try {
+      console.log("> checking state threshold ")
+      let sessionIDs = await getSessionsByState(sessionStates.PROCESSING)
+      for(const sessionID of sessionIDs) {
+        if (await checkIndependentQueuesThresold(sessionID)) {
+          setSessionIndex(sessionID, sessionStates.COMPLETED)
+          continue;
+        }
+
+        if (await checkDependentQueuesThresold(sessionID)) {
+          await enqueueTVBFF(sessionID)
+          await enqueueStarSignPicker(sessionID)
+        }
+      }
     } catch (error) {
       console.error('Error processing job:', error);
     }
@@ -117,5 +149,6 @@ export default ()=> {
   queryShowDataWorker();
   starSignPickerWorker();
   tvBFFWorker();
+  checkDependentQueuesThresoldWorker();
   console.log("> server workers ready ")
 }

@@ -1,9 +1,8 @@
 import { VercelRequest, VercelResponse } from '@vercel/node';
-import {  getAndUpdateStarSignPicker } from '../..';
-import { ShowPayload } from '../queue/producers';
+import {  getAndUpdateStarSignPicker } from '../src/actions';
 
 export default async (req: VercelRequest, res: VercelResponse): Promise<void> => {
-    const payload: ShowPayload = req.body;
+    const payload = req.body;
     try {
         await getAndUpdateStarSignPicker(payload);
 

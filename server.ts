@@ -2,7 +2,6 @@ import 'module-alias/register';
 import { parse } from "url"
 import { IncomingMessage, ServerResponse, createServer } from "http"
 import instantiateWorkers from './src/actions/worker';
-
 import next from "next"
  
 const dev = process.env.NODE_ENV !== 'production'

@@ -1,13 +1,14 @@
+import { UserState } from "@prisma/client";
 import { Actor, ParsedActivity, Show } from "../types";
-import { getStarSign, getTVBFF } from "./api/openai";
+import { getFirstAndMostRewatchedShowQuips, getStarSign, getTVBFF } from "./api/openai";
 import { getPersonalities } from "./api/perplexity";
 import { getRottenTomatoScore } from "./api/rottenTomatoes";
 import TMDBClient from "./api/tmdb";
 import { getReportCardResponse, getStatsResponse } from "./database";
-import { createAndConnectActorToShow, findActorByNameAndShow } from "./database/actor";
+import { createAndConnectActorToShow, findActorByNameAndShow, getActorsByShow, getActorsImageByCharacterNameAndShow } from "./database/actor";
 import {  createOrUpdateUsersAIResponse } from "./database/aiResponses";
-import { UpdateShowInput, batchInsertEpisodes, getTop5ShowsByUser, getTotalNumberOfShowsWatchedByUser, getUserAverageRottenTomatoScore, getUsersTopGenres, insertEpisodeInput, updateShow, upsertShow, upsertUserShow } from "./database/show";
-import { findOrCreateUserBySessionID } from "./database/user";
+import { UpdateShowInput, batchInsertEpisodes, getTop5ShowsByUser, getTotalNumberOfShowsWatchedByUser, getUserAverageRottenTomatoScore, getUsersFirstShow, getUsersTopGenres, insertEpisodeInput, updateShow, upsertShow, upsertUserShow } from "./database/show";
+import { findOrCreateUserBySessionID, updateUser } from "./database/user";
 import Eye, { Source } from "./eyeofsauron";
 import {  NetflixActivityMetadata } from "./eyeofsauron/gql/__generated__";
 import { parseActivityInput, extractEpisodeNumberFromTitle, parseDate } from "./helpers/parser";
@@ -35,6 +36,11 @@ export async function getReportCard(sessionID: string) {
   return getReportCardResponse(sessionID);
 }
 
+export async function updateUserStateBySession(sessionID: string, state: UserState) {
+    let user = await findOrCreateUserBySessionID(sessionID)
+    return await updateUser({state: state, id: user.id});
+}
+
 export async function getAndUpdateRottenTomatoesScore(payload: ShowPayload): Promise<number> {
     let processed: number = 0;
     for (const show of payload.Shows) {
@@ -59,9 +65,10 @@ export async function getAndUpdateStarSignPicker(sessionID: string): Promise<num
     let topGenres = await getUsersTopGenres(user.id)
     let averageRottenTomatoesScore = await getUserAverageRottenTomatoScore(user.id)
     let starSigner = await getStarSign(topGenres, averageRottenTomatoesScore)
-    console.log(starSigner)
+   
     await createOrUpdateUsersAIResponse({
         ...starSigner,
+        rtScoreQuip: starSigner.RTScoreQuip,
         userID: user.id,
     })
 
@@ -72,11 +79,23 @@ export async function getAndUpdateTVBFF(sessionID: string) : Promise<number>  {
     let user = await findOrCreateUserBySessionID(sessionID)
     let topGenres = await getUsersTopGenres(user.id)
     let topShow = await getTop5ShowsByUser(user.id)
-    let characterPersonalities = await getPersonalities(topShow[0].title)
+    let showActors = await getActorsByShow(topShow[0].id)
+    let characters: string[] = showActors.map((actor)=> actor.characterName)
+
+    let characterPersonalities = await getPersonalities(characters.slice(0, 5), topShow[0].title)
     let tvBFF = await getTVBFF(topGenres, characterPersonalities)
-    console.log(tvBFF)
+    let firstShow = await getUsersFirstShow(user.id)
+    let mostRewatchedShowQuips = await getFirstAndMostRewatchedShowQuips(firstShow, topShow)
+
+    let actorImageURL = await getActorsImageByCharacterNameAndShow(
+        tvBFF.BFF as string,
+        topShow[0].id,
+    );
+
     await createOrUpdateUsersAIResponse({
         ...tvBFF,
+        ...mostRewatchedShowQuips,
+        bffImageURL: actorImageURL,
         userID: user.id,
     })
 
@@ -97,12 +116,12 @@ export async function getShowData(payload: ShowPayload): Promise<number> {
         for (const genre of showDetails.genres) {
             genres.push(genre.name)
         }
-       
+
         for (const currentActor of showDetails.aggregate_credits.cast) {
-            
             let actor = {
                 name: currentActor.name,
                 showID: show.id,
+                popularity: currentActor.popularity,
                 characterName: (currentActor.roles && currentActor.roles.length > 0) ? currentActor.roles[0].character : "",
                 imageURL:  currentActor.profile_path ? `https://image.tmdb.org/t/p/w1280/${currentActor.profile_path}` : ""
             }

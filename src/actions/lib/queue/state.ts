@@ -133,3 +133,12 @@ export async function checkIndependentQueuesThresold(sessionId: string): Promise
   return canTrigger
 }
 
+export async function checkQueueThresold(sessionId: string, queueName: QueueName): Promise<boolean> {
+  let completion = await getQueueCompletion(sessionId, queueName);
+  if (completion < COMPLETION_THRESHOLD) {
+    return false
+  }
+
+  return true
+}
+

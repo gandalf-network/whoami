@@ -1,10 +1,11 @@
 import { Worker, Job } from 'bullmq';
-import { stateThresholdCheckQueue, queueNames } from '../lib/queue/queues';
+import { stateThresholdCheckQueue, queueNames } from '@/actions/lib/queue/queues';
 import { vercelKVClient } from '../store/vercelkv';
 import axios from 'axios';
 import { ActivityDataPayload, ShowPayload, enqueueStarSignPicker, enqueueTVBFF } from '../lib/queue/producers';
-import { getAndDumpActivities, getAndUpdateRottenTomatoesScore, getAndUpdateStarSignPicker, getAndUpdateTVBFF, getShowData } from '..';
-import { QueueName, checkDependentQueuesThresold, checkIndependentQueuesThresold, getSessionsByState, incrementCompletedJobs, sessionStates, setAllQueueTotalJobs, setSessionIndex } from '../lib/queue/state';
+import { getAndDumpActivities, getAndUpdateRottenTomatoesScore, getAndUpdateStarSignPicker, getAndUpdateTVBFF, getShowData, updateUserStateBySession } from '..';
+import { QueueName, checkDependentQueuesThresold, checkIndependentQueuesThresold, checkQueueThresold, getSessionsByState, incrementCompletedJobs, sessionStates, setAllQueueTotalJobs, setSessionIndex } from '../lib/queue/state';
+import { $Enums, UserState } from '@prisma/client';
 
 const queryActivitiesWorker  = async  () => {
   new Worker(queueNames.QueryActivities, async (job: Job<ActivityDataPayload>) => {
@@ -20,6 +21,7 @@ const queryActivitiesWorker  = async  () => {
 
       let totalData = await getAndDumpActivities(sessionID, dataKey);
       await setSessionIndex(sessionID, sessionStates.PROCESSING)
+      await updateUserStateBySession(sessionID, UserState.CRUNCHING_DATA)
       await setAllQueueTotalJobs(sessionID, totalData)
 
       let queueName = queueNames.QueryActivities as QueueName;
@@ -116,7 +118,7 @@ const tvBFFWorker  = () => {
 const checkDependentQueuesThresoldWorker  = () => {
   stateThresholdCheckQueue.add(queueNames.StateThresholdCheck, {}, {
     repeat: {
-      every: 10000,
+      every: 30000,
       limit: 100,
     },
   });
@@ -127,13 +129,19 @@ const checkDependentQueuesThresoldWorker  = () => {
       let sessionIDs = await getSessionsByState(sessionStates.PROCESSING)
       for(const sessionID of sessionIDs) {
         if (await checkIndependentQueuesThresold(sessionID)) {
-          setSessionIndex(sessionID, sessionStates.COMPLETED)
+          await setSessionIndex(sessionID, sessionStates.COMPLETED)
+          await updateUserStateBySession(sessionID, UserState.COMPLETED)
           continue;
         }
 
         if (await checkDependentQueuesThresold(sessionID)) {
-          await enqueueTVBFF(sessionID)
-          await enqueueStarSignPicker(sessionID)
+          if (!await checkQueueThresold(sessionID, queueNames.TVBFF as QueueName)) {
+            await enqueueTVBFF(sessionID)
+          }
+
+          if (!await checkQueueThresold(sessionID, queueNames.StarSignPicker as QueueName)) {
+            await enqueueStarSignPicker(sessionID)
+          }
         }
       }
     } catch (error) {

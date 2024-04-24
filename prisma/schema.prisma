@@ -90,6 +90,7 @@ model showActor {
   actorID        String  
   showID         String  
   characterName  String
+  popularity     Int
 
   actor      actor   @relation(fields: [actorID], references: [id])
   show       show    @relation(fields: [showID], references: [id])

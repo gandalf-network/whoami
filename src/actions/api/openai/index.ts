@@ -1,4 +1,3 @@
-import { AssistantName } from "@prisma/client";
 import OpenAI from "openai";
 
 import {
@@ -17,6 +16,7 @@ import {
   TVShowQuips,
 } from "@/types";
 import { AssistantCreateParams } from "openai/resources/beta/assistants";
+import { AssistantName } from "@prisma/client";
 
 const openai = new OpenAI({
   apiKey: OPENAI_API_KEY,

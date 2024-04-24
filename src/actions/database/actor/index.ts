@@ -8,6 +8,7 @@ const prisma = new PrismaClient();
 type CreateActorInput = {
   name: string;
   characterName: string;
+  popularity: number;
   showID: string;
   imageURL?: string;
 };
@@ -24,6 +25,7 @@ export async function createAndConnectActorToShow(
         actors: {
           create: {
             characterName: createActorInput.characterName,
+            popularity: createActorInput.popularity,
             actor: {
               connectOrCreate: {
                 where: {
@@ -62,7 +64,6 @@ export async function findActorByNameAndShow(name: string, showID: string) {
   });
 
   if (!actorRes) throw new Error(`"actor ${name} not found`);
-
   const actor: Actor = {
     id: actorRes.id,
     name: actorRes.name,
@@ -71,6 +72,23 @@ export async function findActorByNameAndShow(name: string, showID: string) {
   };
 
   return actor;
+}
+
+
+export async function getActorsByShow(showID: string) {
+  const actorsRes = await prisma.showActor.findMany({
+    where: { showID },
+    include: {
+      actor: true,
+    },
+    orderBy: {
+      popularity: "desc",
+    },
+  });
+
+  if (!actorsRes) throw new Error(`"actor ${name} not found`);
+
+  return actorsRes;
 }
 
 export async function getActorsImageByCharacterNameAndShow(
@@ -91,10 +109,11 @@ export async function getActorsImageByCharacterNameAndShow(
   let imageURL = "";
   for (const actor of actorRes) {
     const levenshteinDistance = levenshtein(
-      standardizeName(actor.actor.name),
+      standardizeName(actor.characterName),
       standardizeName(name),
     );
-    const threshold = 0.25 * Math.max(actor.actor.name.length, name.length);
+    console.log(actor.characterName, "=", standardizeName(name))
+    const threshold = 0.25 * Math.max(actor.characterName.length, name.length);
 
     if (levenshteinDistance > threshold) {
       continue;

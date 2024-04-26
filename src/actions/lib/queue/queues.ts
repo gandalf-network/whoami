@@ -1,87 +1,101 @@
-
 /**
  * Data Processing Workflow:
- * 
- * This workflow is designed to by-pass the limitations of serverless functions, which are constrained by 
+ *
+ * This workflow is designed to by-pass the limitations of serverless functions, which are constrained by
  * execution time limits (seconds to minutes). It utilizes BullMQ to manage a series of queues, enabling asynchronous,
- *  batched data processing in chunks. Serverless/edge functions are activated through API requests from workers initialized 
+ *  batched data processing in chunks. Serverless/edge functions are activated through API requests from workers initialized
  * at application startup. These workers, upon detecting new events (pushed by the producer), collate this data and dispatch them in
- *  chunks to serverless functions via API calls. A state management system constantly tracks progress (NOT_INITIATED, PROCESSING, COMPLETED) 
+ *  chunks to serverless functions via API calls. A state management system constantly tracks progress (NOT_INITIATED, PROCESSING, COMPLETED)
  * across each stage, ensuring an orderly and reliable data flow.
- * 
- * The workflow begins with the `queryActivitiesQueue`, serving as the entry point. This queue 
- * is responsible for making API calls to Gandalf to fetch data using `dataKey`. Given Our API's data volume limits, 
- * data is retrieved in batches and subsequently stored in the database. This batched retrieval and storage process may 
- * extend the data processing time. The primary goal of this queue is to ensure all data 
+ *
+ * The workflow begins with the `queryActivitiesQueue`, serving as the entry point. This queue
+ * is responsible for making API calls to Gandalf to fetch data using `dataKey`. Given Our API's data volume limits,
+ * data is retrieved in batches and subsequently stored in the database. This batched retrieval and storage process may
+ * extend the data processing time. The primary goal of this queue is to ensure all data
  * is collected and stored efficiently.
- * 
+ *
  * As data is stored, it is concurrently pushed into three separate queues for further processing by serverless functions:
- * 
- * 1. `queryShowDataQueue`: Focuses on gathering comprehensive details about each show. This queue's 
- *    output serves as a foundation for subsequent analyses and processing steps. Upon total completion, 
+ *
+ * 1. `queryShowDataQueue`: Focuses on gathering comprehensive details about each show. This queue's
+ *    output serves as a foundation for subsequent analyses and processing steps. Upon total completion,
  *    it triggers 3 tasks:
- *      a.) `tvBFFQueue`: Determines user television Best Friends Forever (BFF) based on viewing habits 
+ *      a.) `tvBFFQueue`: Determines user television Best Friends Forever (BFF) based on viewing habits
  *            and preferences using AI
- * 
+ *
  *      b.) `starSignPickerQueue`: Handles designation of star sign to the user based on their taste(s)
- * 
- * 2. `crawlRottenTomatoesQueue`: This operates independently of the show-related 
- * data queues. It focuses on web crawling Rotten Tomatoes for the latest show and movie reviews 
+ *
+ * 2. `crawlRottenTomatoesQueue`: This operates independently of the show-related
+ * data queues. It focuses on web crawling Rotten Tomatoes for the latest show and movie reviews
  * and ratings, enriching the dataset with neccessary information.
  *
- * This layered, queue-based approach ensures that data is processed efficiently in 
+ * This layered, queue-based approach ensures that data is processed efficiently in
  * the face of edge/serverless function constraints.
- * 
+ *
  * | Start                  | Processing Queue             | Next Steps                    |
  * |------------------------|------------------------------|-------------------------------|
- * | queryActivitiesQueue   | Initial data fetching        | --> queryShowDataQueue        |                                     
+ * | queryActivitiesQueue   | Initial data fetching        | --> queryShowDataQueue        |
  * |                        |                              |                               |
- * | queryShowDataQueue     |  Actors & show information   | --> tvBFFQueue                |                   
+ * | queryShowDataQueue     |  Actors & show information   | --> tvBFFQueue                |
  * |                        |                              | --> starSignPickerQueue       |
  * |                        |                              |                               |
- * | crawlRottenTomatoesQueue| Rotten Tomatoes crawling    | (Ends after processing)       |                   
- * | tvBFFQueue             | TV BFF logic                 | (Ends after processing)       |                 
+ * | crawlRottenTomatoesQueue| Rotten Tomatoes crawling    | (Ends after processing)       |
+ * | tvBFFQueue             | TV BFF logic                 | (Ends after processing)       |
  * | starSignPickerQueue    | Astrological recommendations | (Ends after processing)       |
-*/
+ */
 
-import { vercelKVClient } from '../../store/vercelkv';
-import { Queue } from 'bullmq';
+import { Queue } from "bullmq";
 
+import { vercelKVClient } from "../../store/vercelkv";
 
-const queueOptions = { connection: vercelKVClient  }
+const queueOptions = { connection: vercelKVClient };
 
 export const queueNames = {
-    QueryActivities: "queryActivities",
-    QueryShowData: "queryShowData",
-    CrawlRottenTomatoes: "crawlRottenTomatoe",
-    TVBFF: "tvBFF",
-    StarSignPicker: "starSignPicker",
-    StateThresholdCheck: "stateThresholdCheck",
-}
+  QueryActivities: "queryActivities",
+  QueryShowData: "queryShowData",
+  CrawlRottenTomatoes: "crawlRottenTomatoe",
+  TVBFF: "tvBFF",
+  StarSignPicker: "starSignPicker",
+  StateThresholdCheck: "stateThresholdCheck",
+};
 
 // queryActivitiesQueue: Queue for querying activities data from Gandalf API.
-export const queryActivitiesQueue: Queue = new Queue(queueNames.QueryActivities, queueOptions);
+export const queryActivitiesQueue: Queue = new Queue(
+  queueNames.QueryActivities,
+  queueOptions,
+);
 
 // queryShowDataQueue: Handles querying detailed information about shows from sources like IMDB or TMDB. this queue is focused on enriching the database with comprehensive show data.
-export const queryShowDataQueue: Queue = new Queue(queueNames.QueryShowData, queueOptions);
+export const queryShowDataQueue: Queue = new Queue(
+  queueNames.QueryShowData,
+  queueOptions,
+);
 
 // crawlRottenTomatoesQueue: Aimed at crawling Rotten Tomatoes for reviews and ratings, aggregating critical and audience reception data.
-export const crawlRottenTomatoesQueue: Queue = new Queue(queueNames.CrawlRottenTomatoes, queueOptions);
+export const crawlRottenTomatoesQueue: Queue = new Queue(
+  queueNames.CrawlRottenTomatoes,
+  queueOptions,
+);
 
 //  Processes user viewing habits to determine "TV Best Friends Forever" (BFF)
 export const tvBFFQueue: Queue = new Queue(queueNames.TVBFF, queueOptions);
 
-// Engages in fun task of matching activities real star signs, 
-export const starSignPickerQueue: Queue = new Queue(queueNames.StarSignPicker, queueOptions);
+// Engages in fun task of matching activities real star signs,
+export const starSignPickerQueue: Queue = new Queue(
+  queueNames.StarSignPicker,
+  queueOptions,
+);
 
-// state threshold check 
-export const stateThresholdCheckQueue: Queue = new Queue(queueNames.StateThresholdCheck, queueOptions);
+// state threshold check
+export const stateThresholdCheckQueue: Queue = new Queue(
+  queueNames.StateThresholdCheck,
+  queueOptions,
+);
 
 export default {
-    starSignPickerQueue,
-    tvBFFQueue,
-    queryShowDataQueue,
-    queryActivitiesQueue,
-    crawlRottenTomatoesQueue,
-    stateThresholdCheckQueue,
+  starSignPickerQueue,
+  tvBFFQueue,
+  queryShowDataQueue,
+  queryActivitiesQueue,
+  crawlRottenTomatoesQueue,
+  stateThresholdCheckQueue,
 };

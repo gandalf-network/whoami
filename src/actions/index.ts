@@ -1,19 +1,18 @@
 import { UserState } from "@prisma/client";
-import { Actor, ParsedActivity, Show } from "../types";
+import { ParsedActivity } from "../types";
 import { getFirstAndMostRewatchedShowQuips, getStarSign, getTVBFF } from "./api/openai";
 import { getPersonalities } from "./api/perplexity";
 import { getRottenTomatoScore } from "./api/rottenTomatoes";
 import TMDBClient from "./api/tmdb";
 import { getReportCardResponse, getStatsResponse } from "./database";
-import { createAndConnectActorToShow, findActorByNameAndShow, getActorsByShow, getActorsImageByCharacterNameAndShow } from "./database/actor";
+import {  ActorInput, createActorsAndConnectToShow, getActorsByShow, getActorsImageByCharacterNameAndShow } from "./database/actor";
 import {  createOrUpdateUsersAIResponse } from "./database/aiResponses";
-import { UpdateShowInput, batchInsertEpisodes, getTop5ShowsByUser, getTotalNumberOfShowsWatchedByUser, getUserAverageRottenTomatoScore, getUsersFirstShow, getUsersTopGenres, insertEpisodeInput, updateShow, upsertShow, upsertUserShow } from "./database/show";
+import { UpdateShowInput, batchInsertEpisodes, getNumberOfUpdatedShowsByUser, getTop5ShowsByUser, getTotalNumberOfShowsWatchedByUser, getUserAverageRottenTomatoScore, getUsersFirstShow, getUsersTopGenres, insertEpisodeInput, updateShow, upsertShow, upsertUserShow } from "./database/show";
 import { findOrCreateUserBySessionID, updateUser } from "./database/user";
 import Eye, { Source } from "./eyeofsauron";
 import {  NetflixActivityMetadata } from "./eyeofsauron/gql/__generated__";
 import { parseActivityInput, extractEpisodeNumberFromTitle, parseDate } from "./helpers/parser";
 import {  JobShow, ShowPayload, enqueueRottenTomatoes, enqueueShowData } from "./lib/queue/producers";
-
 
 const eye = new Eye({
     baseURL: process.env.GANDALF_SAURON_URL as string,
@@ -45,15 +44,24 @@ export async function updateUserStateBySession(sessionID: string, state: UserSta
 export async function getAndUpdateRottenTomatoesScore(payload: ShowPayload): Promise<number> {
     let processed: number = 0;
     for (const show of payload.Shows) {
-        
-        let score = await getRottenTomatoScore(show.title, show.actors)
-        if(score) {
-            await updateShow({id: show.id, rottenTomatoScore: score })
-            processed += 1
+        try {
+            let score = await getRottenTomatoScore(show.title, show.actors)
+            if(score != null) {
+                await updateShow({id: show.id, rottenTomatoScore: score })
+                processed += 1
+            }
+        }catch(error: any) {
+            console.log(`RottenTomatoesScore: title ${show.title} failed with error: `, error)
         }
     }
 
     return processed
+}
+
+
+export async function getCompletedShowDataBySession(sessionID: string): Promise<number>  {
+    let user = await findOrCreateUserBySessionID(sessionID)
+    return getNumberOfUpdatedShowsByUser(user.id)
 }
 
 export async function getAndUpdateStarSignPicker(sessionID: string): Promise<number>  {
@@ -100,51 +108,52 @@ export async function getAndUpdateTVBFF(sessionID: string) : Promise<number>  {
 
 export async function getShowData(payload: ShowPayload): Promise<number> {
     let jobShows: JobShow[] = []
-    let showActors: Actor[] = []
-    let processed: number = 0
+    let processed: number = 0;
     console.log("> Number of shows:", payload?.Shows?.length);
 
     for (const show of payload.Shows) {
-        let showResponse = await tmdbClient.searchTVShows(show.title)
-        let showDetails = await tmdbClient.getTVShowDetails(showResponse.results[0].id)
-        let genres: string[] = [];
+        try {
+            let showResponse = await tmdbClient.searchTVShows(show.title)
+            let showDetails = await tmdbClient.getTVShowDetails(showResponse.results[0].id)
+            let genres: string[] = [];
 
-        for (const genre of showDetails.genres) {
-            genres.push(genre.name)
-        }
-
-        let jobActors: string[] = []
-        for (const currentActor of showDetails.aggregate_credits.cast) {
-            let actor = {
-                name: currentActor.name,
-                showID: show.id,
-                popularity: currentActor.popularity,
-                characterName: (currentActor.roles && currentActor.roles.length > 0) ? currentActor.roles[0].character : "",
-                imageURL:  currentActor.profile_path ? `https://image.tmdb.org/t/p/w1280/${currentActor.profile_path}` : ""
+            for (const genre of showDetails.genres) {
+                genres.push(genre.name)
             }
-            await createAndConnectActorToShow(actor)
 
-            let updatedActor = await findActorByNameAndShow(currentActor.name, show.id)
-            showActors.push(updatedActor)
-            jobActors.push(currentActor.name)
+            let actorNames: string[] = []
+            let actors: ActorInput[] = []
+            for (const currentActor of showDetails.aggregate_credits.cast) {
+                let actor = {
+                    name: currentActor.name,
+                    popularity: currentActor.popularity,
+                    characterName: (currentActor.roles && currentActor.roles.length > 0) ? currentActor.roles[0].character : "",
+                    imageURL:  currentActor.profile_path ? `https://image.tmdb.org/t/p/w1280/${currentActor.profile_path}` : ""
+                }
+                actors.push(actor)
+                actorNames.push(currentActor.name)
+            }
+            await createActorsAndConnectToShow(actors, show.id)
+
+            let updatedShow: UpdateShowInput = {
+                id: show.id,
+                genres: genres,
+                numberOfEpisodes: showDetails.number_of_episodes,
+                summary: showDetails.overview,
+                imageURL:  `https://image.tmdb.org/t/p/w1280/${showDetails.poster_path}` 
+            }
+
+            await updateShow(updatedShow)
+
+            jobShows.push({
+                id: show.id, 
+                title: show.title, 
+                actors: actorNames,
+            })
+            processed += 1
+        }catch(error: any) {
+            console.log(`getShowData: show  title ${show.title} failed with error: `, error)
         }
-
-        let updatedShow: UpdateShowInput = {
-            id: show.id,
-            genres: genres,
-            numberOfEpisodes: showDetails.number_of_episodes,
-            summary: showDetails.overview,
-            imageURL:  `https://image.tmdb.org/t/p/w1280/${showDetails.poster_path}` 
-        }
-
-        await updateShow(updatedShow)
-
-        jobShows.push({
-            id: show.id, 
-            title: show.title, 
-            actors: jobActors,
-        })
-        processed += 1
     }
     
     payload.Shows = jobShows
@@ -163,7 +172,8 @@ export async function getAndDumpActivities(sessionID: string, dataKey: string): 
     try {
         const user = await findOrCreateUserBySessionID(sessionID)
         const seenShows: Record<string, boolean>  = {}
-        const jobShows: JobShow[] = []
+        let jobShows: JobShow[] = []
+        let totalShows: number = 0
         const episodes: insertEpisodeInput[] = []
         while (true) {
             const activityResponse = await eye.getActivity({
@@ -230,10 +240,12 @@ export async function getAndDumpActivities(sessionID: string, dataKey: string): 
             };
 
             await enqueueShowData(showPayload)
+            totalShows += jobShows.length
+            jobShows = []
             page++;
         }
 
-        return jobShows.length
+        return totalShows
     } catch (error: any) {
         console.error('Failed to fetch data', error.message);
         throw error; 

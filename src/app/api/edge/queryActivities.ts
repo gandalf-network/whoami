@@ -1,5 +1,4 @@
 import { VercelRequest, VercelResponse } from "@vercel/node";
-
 import { getAndDumpActivities } from "@/actions";
 
 export default async (

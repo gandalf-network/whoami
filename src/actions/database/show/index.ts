@@ -85,6 +85,23 @@ export async function getTotalNumberOfShowsWatchedByUser(userID: string) {
   return watchCount;
 }
 
+export async function getNumberOfUpdatedShowsByUser(userID: string) {
+  const watchCount = await prisma.userShow.count({
+    where: {
+      userID,
+      show: {  
+        numberOfEpisodes: {
+          gt: 0 
+        },
+        genre: {
+          isEmpty: false,
+        },
+      }
+    },
+  });
+  return watchCount;
+}
+
 export async function getUsersFirstShow(userID: string): Promise<Show> {
   const usersFirstShowRes = await prisma.userEpisode.findFirst({
     where: {

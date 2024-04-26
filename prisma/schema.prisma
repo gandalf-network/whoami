@@ -79,7 +79,7 @@ model userEpisode {
 
 model actor {
   id        String    @id @default(uuid())
-  name      String    @unique @db.VarChar(255)
+  name      String    @unique
   imageURL  String?   @db.VarChar(255)
   shows     showActor[]
   createdAt DateTime  @default(now())

@@ -21,7 +21,7 @@ export type QueueCompletion = number;
 
 const makeKey = (sessionId: string, queueName: QueueName, suffix: string) => `session:${sessionId}:queue:${queueName}:${suffix}`;
 
-const COMPLETION_THRESHOLD = 85;
+const COMPLETION_THRESHOLD = 97;
 
 export const sessionStates: Record<string, SessionState>  = {
   NOT_STARTED: "NOT_STARTED",
@@ -101,6 +101,11 @@ export async function incrementCompletedJobs(sessionId: string, queueName: Queue
   completedJobs += jobs;
 
   await kv.set(completedJobsKey, completedJobs.toString());
+}
+
+export async function updatedCompletedJobs(sessionId: string, queueName: QueueName, jobs: number) {
+  let completedJobsKey = makeKey(sessionId, queueName, 'completedJobs');
+  await kv.set(completedJobsKey, jobs);
 }
 
 export async function checkDependentQueuesThresold(sessionId: string): Promise<boolean> {

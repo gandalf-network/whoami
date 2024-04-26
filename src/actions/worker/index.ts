@@ -5,8 +5,9 @@ import axios from 'axios';
 import { ActivityDataPayload, ShowPayload, enqueueStarSignPicker, enqueueTVBFF } from '../lib/queue/producers';
 import { getAndDumpActivities, getAndUpdateRottenTomatoesScore, getAndUpdateStarSignPicker, getAndUpdateTVBFF, getShowData, updateUserStateBySession } from '..';
 import { QueueName, checkDependentQueuesThresold, checkIndependentQueuesThresold, checkQueueThresold, getSessionsByState, incrementCompletedJobs, sessionStates, setAllQueueTotalJobs, setSessionIndex } from '../lib/queue/state';
-import { $Enums, UserState } from '@prisma/client';
+import { UserState } from '@prisma/client';
 
+const concurrency = 50
 const queryActivitiesWorker  = async  () => {
   new Worker(queueNames.QueryActivities, async (job: Job<ActivityDataPayload>) => {
     try {
@@ -32,7 +33,7 @@ const queryActivitiesWorker  = async  () => {
     } catch (error) {
       console.error('Error processing job:', error);
     }
-  }, {connection: vercelKVClient });
+  }, {connection: vercelKVClient, concurrency });
 };
 
 const crawlRottenTomatoeWorker  = () => {
@@ -52,7 +53,7 @@ const crawlRottenTomatoeWorker  = () => {
     } catch (error) {
       console.error('Error processing job:', error);
     }
-  }, {connection: vercelKVClient });
+  }, {connection: vercelKVClient , concurrency });
 };
 
 const queryShowDataWorker  = () => {
@@ -72,7 +73,7 @@ const queryShowDataWorker  = () => {
     } catch (error) {
       console.error('Error processing job:', error);
     }
-  }, {connection: vercelKVClient });
+  }, {connection: vercelKVClient, concurrency });
 };
 
 const starSignPickerWorker  = () => {
@@ -92,7 +93,7 @@ const starSignPickerWorker  = () => {
     } catch (error) {
       console.error('Error processing job:', error);
     }
-  }, {connection: vercelKVClient });
+  }, {connection: vercelKVClient, concurrency });
 };
 
 const tvBFFWorker  = () => {
@@ -112,7 +113,7 @@ const tvBFFWorker  = () => {
     } catch (error) {
       console.error('Error processing job:', error);
     }
-  }, {connection: vercelKVClient });
+  }, {connection: vercelKVClient, concurrency });
 };
 
 const checkDependentQueuesThresoldWorker  = () => {

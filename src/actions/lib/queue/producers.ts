@@ -1,4 +1,3 @@
-import { Show } from '@/types';
 import { crawlRottenTomatoesQueue, queryActivitiesQueue, queryShowDataQueue, queueNames, starSignPickerQueue, tvBFFQueue } from './queues';
 
 export interface ActivityDataPayload {
@@ -8,8 +7,7 @@ export interface ActivityDataPayload {
 
 export async function enqueueActivityData(sessionID: string, dataKey: string): Promise<void> {
     try {
-        console.log(sessionID, dataKey);
-        await queryActivitiesQueue.add(queueNames.QueryActivities, { sessionID, dataKey });
+        await queryActivitiesQueue.add(queueNames.QueryActivities, { sessionID, dataKey }, { jobId: sessionID});
         return console.log('enqueueActivityData: data successfully enqueued');
     } catch (error) {
         console.error('Failed to enqueue data', error);
@@ -17,24 +15,32 @@ export async function enqueueActivityData(sessionID: string, dataKey: string): P
     }
 }
 
+export type JobShow = {
+    id: string;
+    title: string;
+    actors: string[]
+}
+
 export type ShowPayload = {
     SessionID: string;
-    Shows: Show[];
+    Shows: JobShow[];
+    JobID: string;
 }
 
 export async function enqueueRottenTomatoes(payload: ShowPayload): Promise<void> {
     try {
-        await crawlRottenTomatoesQueue.add(queueNames.CrawlRottenTomatoes, { ...payload });
+        console.log(payload)
+        await crawlRottenTomatoesQueue.add(queueNames.CrawlRottenTomatoes, { ...payload }, { jobId: payload.JobID});
         return console.log('enqueueRottenTomatoes: data successfully enqueued');
     } catch (error) {
-        console.error('Failed to enqueue data', error);
+        console.error('enqueueRottenTomatoes: Failed to enqueue data', error);
         throw error;
     }
 }
 
 export async function enqueueShowData(payload: ShowPayload): Promise<void> {
     try {
-        await queryShowDataQueue.add(queueNames.QueryShowData, { ...payload });
+        await queryShowDataQueue.add(queueNames.QueryShowData, { ...payload }, { jobId: payload.JobID});
         return console.log('enqueueShowData: data successfully enqueued');
     } catch (error) {
         console.error('Failed to enqueue data', error);

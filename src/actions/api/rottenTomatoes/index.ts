@@ -74,7 +74,7 @@ export async function getRottenTomatoScore(title: string, cast: string[]): Promi
       continue;
     }
 
-    tomatoScore = !hit.rottenTomatoes.criticsScore ? 0 : hit.rottenTomatoes.criticsScore;
+    tomatoScore = (!hit.rottenTomatoes || !hit.rottenTomatoes.criticsScore) ? 0 : hit.rottenTomatoes.criticsScore;
     break;
   }
 

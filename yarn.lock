@@ -93,10 +93,10 @@
   dependencies:
     "@edge-runtime/primitives" "4.1.0"
 
-"@enipx/react-insta-stories@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@enipx/react-insta-stories/-/react-insta-stories-1.0.0.tgz#a8e1924fbfd779d29efc43fda22ad34a501ce740"
-  integrity sha512-UVL43IcQ8eGav+euQwWxPTrE6zi5WnOjArTpQzP6dbkhZQRk/edIkcDl71iK1W+g2w2BUERhAO7IUfzAf2iCiA==
+"@enipx/react-insta-stories@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@enipx/react-insta-stories/-/react-insta-stories-1.0.2.tgz#2eade031db1fc4f4244bad5666bf9d4ecab740b0"
+  integrity sha512-9dYudT2lPdr6lToJ8SKrC4Pag036/FI6NBxluOozfTJk2EJnUG2vhksXYDPThPcY0HyuC215OrW6tVzgCllb3A==
 
 "@eslint-community/eslint-utils@^4.2.0", "@eslint-community/eslint-utils@^4.4.0":
   version "4.4.0"
@@ -139,6 +139,15 @@
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/@fastify/busboy/-/busboy-2.1.1.tgz#b9da6a878a371829a0502c9b6c1c143ef6663f4d"
   integrity sha512-vBZP4NlzfOlerQTnba4aqZoMhE/a9HY7HRqoOPaETQcSQuWEIyZMHGfVu6w9wGtGK5fED5qRs2DteVCjOH60sA==
+
+"@gandalf-network/connect@^1.0.5":
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/@gandalf-network/connect/-/connect-1.0.5.tgz#763bfd084431f3b4936fa2ee522b034a27d64003"
+  integrity sha512-aLqtQXBxqBmqTzhqOCLhogW82JVZHrCeWnjT8s6c3JP713mmPkOXaDkrPbR+pQiFVJGqnQVyo7tGzDHy4AJhyA==
+  dependencies:
+    graphql "^16.8.1"
+    graphql-request "^6.1.0"
+    qr-code-styling "^1.6.0-rc.1"
 
 "@graphql-typed-document-node/core@^3.2.0":
   version "3.2.0"
@@ -701,6 +710,11 @@
   integrity sha512-V46N0zwKRF5Q00AZ6hWtN0T8gGmDUaUzLWQvHFo5yThtVwK/VCenFY3wXVbOvNfajEpsTfQM4IN9k/d6gUVX3A==
   dependencies:
     "@types/node" "*"
+
+"@types/downloadjs@^1.4.6":
+  version "1.4.6"
+  resolved "https://registry.yarnpkg.com/@types/downloadjs/-/downloadjs-1.4.6.tgz#d03ed04d17332ebf3b47d7a04cbe745dab1ab8a9"
+  integrity sha512-mp3w70vsaiLRT9ix92fmI9Ob2yJAPZm6tShJtofo2uHbN11G2i6a0ApIEjBl/kv3e9V7Pv7jMjk1bUwYWvMHvA==
 
 "@types/elliptic@^6.4.18":
   version "6.4.18"
@@ -1959,6 +1973,11 @@ dotenv@^16.4.5:
   resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-16.4.5.tgz#cdd3b3b604cb327e286b4762e13502f717cb099f"
   integrity sha512-ZmdL2rui+eB2YwhsWzjInR8LldtZHGDoQ1ugH85ppHKwpUHL7j7rN0Ti9NCnGiQbhaZ11FpR+7ao1dNsmduNUg==
 
+downloadjs@^1.4.7:
+  version "1.4.7"
+  resolved "https://registry.yarnpkg.com/downloadjs/-/downloadjs-1.4.7.tgz#f69f96f940e0d0553dac291139865a3cd0101e3c"
+  integrity sha512-LN1gO7+u9xjU5oEScGFKvXhYf7Y/empUIIEAGBs1LzUq/rg5duiDrkuH5A2lQGd5jfMOb9X9usDa2oVXwJ0U/Q==
+
 eastasianwidth@^0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/eastasianwidth/-/eastasianwidth-0.2.0.tgz#696ce2ec0aa0e6ea93a397ffcf24aa7840c827cb"
@@ -3099,6 +3118,11 @@ hmac-drbg@^1.0.1:
     hash.js "^1.0.3"
     minimalistic-assert "^1.0.0"
     minimalistic-crypto-utils "^1.0.1"
+
+html-to-image@^1.11.11:
+  version "1.11.11"
+  resolved "https://registry.yarnpkg.com/html-to-image/-/html-to-image-1.11.11.tgz#c0f8a34dc9e4b97b93ff7ea286eb8562642ebbea"
+  integrity sha512-9gux8QhvjRO/erSnDPv28noDZcPZmYE7e1vFsBLKLlRlKDSqNJYebj6Qz1TGd5lsRV+X+xYyjCKjuZdABinWjA==
 
 htmlparser2@^8.0.1:
   version "8.0.2"
@@ -4519,6 +4543,18 @@ punycode@^2.1.0:
   version "2.3.1"
   resolved "https://registry.yarnpkg.com/punycode/-/punycode-2.3.1.tgz#027422e2faec0b25e1549c3e1bd8309b9133b6e5"
   integrity sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==
+
+qr-code-styling@^1.6.0-rc.1:
+  version "1.6.0-rc.1"
+  resolved "https://registry.yarnpkg.com/qr-code-styling/-/qr-code-styling-1.6.0-rc.1.tgz#6c89e185fa50cc9135101085c12ae95b06f1b290"
+  integrity sha512-ModRIiW6oUnsP18QzrRYZSc/CFKFKIdj7pUs57AEVH20ajlglRpN3HukjHk0UbNMTlKGuaYl7Gt6/O5Gg2NU2Q==
+  dependencies:
+    qrcode-generator "^1.4.3"
+
+qrcode-generator@^1.4.3:
+  version "1.4.4"
+  resolved "https://registry.yarnpkg.com/qrcode-generator/-/qrcode-generator-1.4.4.tgz#63f771224854759329a99048806a53ed278740e7"
+  integrity sha512-HM7yY8O2ilqhmULxGMpcHSF1EhJJ9yBj8gvDEuZ6M+KGJ0YY2hKpnXvRD+hZPLrDVck3ExIGhmPtSdcjC+guuw==
 
 qs@^6.10.5:
   version "6.12.1"

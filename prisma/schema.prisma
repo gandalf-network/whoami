@@ -1,0 +1,128 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserState {
+  AWAITING_CONNECTION
+  CONNECTED
+  CRUNCHING_DATA
+  COMPLETED
+}
+
+enum AssistantName {
+  TV_BFF
+  FIRST_AND_MOST_REWATCHED_SHOW_QUIPS
+  TOP_GENRES_STAR_SIGN
+}
+
+model user {
+  id         String     @id @default(uuid())
+  identifier String     @unique @db.VarChar(255)
+  state      UserState  @default(AWAITING_CONNECTION)
+  shows      userShow[]
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  aiResponse aiResponse?
+}
+
+model show {
+  id                String    @id @default(uuid())
+  title             String    @unique @db.VarChar(255)
+  numberOfEpisodes  Int?
+  rottenTomatoScore Int?   
+  genre             String[]   @db.VarChar(255)
+  imageURL          String?    @db.VarChar(255)
+  summary           String?    @db.VarChar(1089)
+  actors            showActor[]
+  users             userShow[]
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+}
+
+model userShow {
+  id         String     @id @default(uuid())
+  userID     String  
+  showID     String  
+
+  user       user    @relation(fields: [userID], references: [id])
+  show       show    @relation(fields: [showID], references: [id])
+  episodes   userEpisode[]
+
+  @@unique([userID, showID], name: "userShowID")
+}
+
+model userEpisode {
+  id          String     @id @default(uuid())
+  title       String
+  season      Int?
+  episode     Int?
+  datePlayed  DateTime
+  userShowID  String
+  userShow    userShow? @relation(fields: [userShowID], references: [id])
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@unique([userShowID, title, episode, season], name: "uniqueShowSeasonEpisode")
+  @@index([userShowID])
+}
+
+model actor {
+  id        String    @id @default(uuid())
+  name      String    @unique
+  imageURL  String?   @db.VarChar(255)
+  shows     showActor[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model showActor {
+  actorID        String  
+  showID         String  
+  characterName  String
+  popularity     Int
+
+  actor      actor   @relation(fields: [actorID], references: [id])
+  show       show    @relation(fields: [showID], references: [id])
+
+  @@id([actorID, showID], name: "showActorID")
+  @@index([showID])
+  @@index([characterName])
+}
+
+model assistant {
+  id          String           @id @default(uuid())
+  name        AssistantName    @unique
+  assistantID String
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  @@index([name])
+}
+
+model aiResponse {
+  id               String @id @default(uuid())
+  topGenresQuip    String?
+  starSign         String?
+  starSignQuip     String?
+  rtScoreQuip      String?
+  personality      String?
+  personalityQuip  String?
+  firstTVShowQuip  String?
+  mostRewatchedTVShowQuip String?
+  bff              String?
+  bffQuip          String?
+  bffImageURL      String?
+  user             user   @relation(fields: [userID], references: [id])
+  userID           String    @unique
+}

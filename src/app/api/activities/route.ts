@@ -1,14 +1,25 @@
-import { VercelRequest, VercelResponse } from "@vercel/node";
-
 import { getAndDumpActivities } from "@/actions";
 
-export async function activities(req: VercelRequest, res: VercelResponse) {
-  const { sessionID, dataKey } = req.body;
+export async function GET(req: Request) {
+  const { sessionID, dataKey } = (await req.json()) as {
+    sessionID: string;
+    dataKey: string;
+  };
   try {
     await getAndDumpActivities(sessionID, dataKey);
-    res.status(200).send("Job processed successfully");
+    return new Response("Job run successfully", {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
   } catch (error) {
     console.error("Error processing job:", error);
-    res.status(500).send("Error processing job");
+    return new Response("Error processing job", {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
   }
 }

@@ -1,15 +1,22 @@
-import { VercelRequest, VercelResponse } from "@vercel/node";
-
 import { getAndUpdateTVBFF } from "@/actions";
 
-export async function GET(req: VercelRequest, res: VercelResponse) {
-  const payload = req.body;
+export async function GET(req: Request) {
+  const payload = await req.json();
   try {
     await getAndUpdateTVBFF(payload);
-
-    res.status(200).send("Job processed successfully");
+    return new Response("Job run successfully", {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
   } catch (error) {
     console.error("Error processing job:", error);
-    res.status(500).send("Error processing job");
+    return new Response("Error processing job", {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
   }
 }

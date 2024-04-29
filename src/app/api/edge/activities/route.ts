@@ -4,7 +4,7 @@ import { VercelRequest, VercelResponse } from "@vercel/node";
 
 import { getAndDumpActivities } from "@/actions";
 
-export async function activies(req: VercelRequest, res: VercelResponse) {
+export default async function (req: VercelRequest, res: VercelResponse) {
   const { sessionID, dataKey } = req.body;
   try {
     await getAndDumpActivities(sessionID, dataKey);

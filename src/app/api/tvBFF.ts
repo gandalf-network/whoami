@@ -1,11 +1,12 @@
 import { VercelRequest, VercelResponse } from "@vercel/node";
 
-import { getAndDumpActivities } from "@/actions";
+import { getAndUpdateTVBFF } from "@/actions";
 
-export default async function (req: VercelRequest, res: VercelResponse) {
-  const { sessionID, dataKey } = req.body;
+export default async function handler(req: VercelRequest, res: VercelResponse) {
+  const payload = req.body;
   try {
-    await getAndDumpActivities(sessionID, dataKey);
+    await getAndUpdateTVBFF(payload);
+
     res.status(200).send("Job processed successfully");
   } catch (error) {
     console.error("Error processing job:", error);

@@ -2,10 +2,7 @@ import { VercelRequest, VercelResponse } from "@vercel/node";
 
 import { getAndUpdateStarSignPicker } from "@/actions";
 
-export default async (
-  req: VercelRequest,
-  res: VercelResponse,
-): Promise<void> => {
+export default async function (req: VercelRequest, res: VercelResponse) {
   const payload = req.body;
   try {
     await getAndUpdateStarSignPicker(payload);
@@ -15,4 +12,4 @@ export default async (
     console.error("Error processing job:", error);
     res.status(500).send("Error processing job");
   }
-};
+}

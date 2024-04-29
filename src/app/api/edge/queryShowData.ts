@@ -3,10 +3,7 @@ import { VercelRequest, VercelResponse } from "@vercel/node";
 import { getShowData } from "@/actions";
 import { ShowPayload } from "@/actions/lib/queue/producers";
 
-export default async (
-  req: VercelRequest,
-  res: VercelResponse,
-): Promise<void> => {
+export default async function (req: VercelRequest, res: VercelResponse) {
   const payload: ShowPayload = req.body;
   try {
     await getShowData(payload);
@@ -15,4 +12,4 @@ export default async (
     console.error("Error processing job:", error);
     res.status(500).send("Error processing job");
   }
-};
+}

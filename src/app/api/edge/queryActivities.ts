@@ -1,10 +1,8 @@
 import { VercelRequest, VercelResponse } from "@vercel/node";
+
 import { getAndDumpActivities } from "@/actions";
 
-export default async (
-  req: VercelRequest,
-  res: VercelResponse,
-): Promise<void> => {
+export default async function (req: VercelRequest, res: VercelResponse) {
   const { sessionID, dataKey } = req.body;
   try {
     await getAndDumpActivities(sessionID, dataKey);
@@ -13,4 +11,4 @@ export default async (
     console.error("Error processing job:", error);
     res.status(500).send("Error processing job");
   }
-};
+}

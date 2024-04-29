@@ -1,134 +1,203 @@
-import { Worker, Job } from 'bullmq';
-import { stateThresholdCheckQueue, queueNames } from '@/actions/lib/queue/queues';
-import { vercelKVClient } from '../store/vercelkv';
-import axios from 'axios';
-import { ActivityDataPayload, ShowPayload, enqueueStarSignPicker, enqueueTVBFF } from '../lib/queue/producers';
-import { getAndDumpActivities, getAndUpdateRottenTomatoesScore, getAndUpdateStarSignPicker, getAndUpdateTVBFF, getCompletedShowDataBySession, getShowData, updateUserStateBySession } from '..';
-import { QueueName, checkDependentQueuesThresold, checkIndependentQueuesThresold, checkQueueThresold, getSessionsByState, incrementCompletedJobs, sessionStates, setAllQueueTotalJobs, setSessionIndex, updatedCompletedJobs } from '../lib/queue/state';
-import { UserState } from '@prisma/client';
+import { UserState } from "@prisma/client";
+import { Worker, Job } from "bullmq";
 
-const concurrency = 50
-const queryActivitiesWorker  = async  () => {
-  new Worker(queueNames.QueryActivities, async (job: Job<ActivityDataPayload>) => {
-    try {
-      const { sessionID, dataKey } = job.data;
-      let totalData = await getAndDumpActivities(sessionID, dataKey);
-      await setSessionIndex(sessionID, sessionStates.PROCESSING)
-      await updateUserStateBySession(sessionID, UserState.CRUNCHING_DATA)
-      await setAllQueueTotalJobs(sessionID, totalData)
+import {
+  stateThresholdCheckQueue,
+  queueNames,
+} from "@/actions/lib/queue/queues";
 
-      let queueName = queueNames.QueryActivities as QueueName;
-      await incrementCompletedJobs(sessionID, queueName, totalData)
-      console.log("totalData:", totalData)
-    } catch (error) {
-      console.error('Error processing job:', error);
-    }
-  }, {connection: vercelKVClient, concurrency });
-};
+import {
+  getAndDumpActivities,
+  getAndUpdateRottenTomatoesScore,
+  getAndUpdateStarSignPicker,
+  getAndUpdateTVBFF,
+  getCompletedShowDataBySession,
+  getShowData,
+  updateUserStateBySession,
+} from "..";
+import {
+  ActivityDataPayload,
+  ShowPayload,
+  enqueueStarSignPicker,
+  enqueueTVBFF,
+} from "../lib/queue/producers";
+import {
+  QueueName,
+  checkDependentQueuesThresold,
+  checkIndependentQueuesThresold,
+  checkQueueThresold,
+  getSessionsByState,
+  incrementCompletedJobs,
+  sessionStates,
+  setAllQueueTotalJobs,
+  setSessionIndex,
+  updatedCompletedJobs,
+} from "../lib/queue/state";
+import { vercelKVClient } from "../store/vercelkv";
 
-const crawlRottenTomatoeWorker  = () => {
-  new Worker(queueNames.CrawlRottenTomatoes, async (job: Job<ShowPayload>) => {
-    try {
-      const showPayload = job.data;
-      let processedData = await getAndUpdateRottenTomatoesScore(showPayload);
-      let queueName = queueNames.CrawlRottenTomatoes as QueueName;
-      await incrementCompletedJobs(showPayload.SessionID, queueName, processedData)
-    
-    } catch (error) {
-      console.error('Error processing job:', error);
-    }
-  }, {connection: vercelKVClient , concurrency });
-};
+const concurrency = 50;
+const queryActivitiesWorker = async () => {
+  new Worker(
+    queueNames.QueryActivities,
+    async (job: Job<ActivityDataPayload>) => {
+      try {
+        const { sessionID, dataKey } = job.data;
+        const totalData = await getAndDumpActivities(sessionID, dataKey);
+        await setSessionIndex(sessionID, sessionStates.PROCESSING);
+        await updateUserStateBySession(sessionID, UserState.CRUNCHING_DATA);
+        await setAllQueueTotalJobs(sessionID, totalData);
 
-const queryShowDataWorker  = () => {
-  new Worker(queueNames.QueryShowData,async (job: Job<ShowPayload>) => {
-    try {
-      const showPayload = job.data;
-      await getShowData(showPayload);
-      let processedData = await getCompletedShowDataBySession(showPayload.SessionID)
-      let queueName = queueNames.QueryShowData as QueueName;
-      await updatedCompletedJobs(
-        showPayload.SessionID, 
-        queueName, 
-        processedData,
-      )
-
-    } catch (error) {
-      console.error('Error processing job:', error);
-    }
-  }, {connection: vercelKVClient, concurrency });
-};
-
-const starSignPickerWorker  = () => {
-  new Worker(queueNames.StarSignPicker, async (job: Job) => {
-    try {
-      const { sessionID } = job.data;
-      const processedData = await getAndUpdateStarSignPicker(sessionID);
-      let queueName = queueNames.StarSignPicker as QueueName;
-      await incrementCompletedJobs(sessionID, queueName, processedData)
-
-    } catch (error) {
-      console.error('Error processing job:', error);
-    }
-  }, {connection: vercelKVClient, concurrency });
-};
-
-const tvBFFWorker  = () => {
-  new Worker(queueNames.TVBFF, async (job: Job) => {
-    try {
-      const { sessionID } = job.data;
-      let processedData = await getAndUpdateTVBFF(sessionID);
-      let queueName = queueNames.TVBFF as QueueName;
-      await incrementCompletedJobs(sessionID, queueName, processedData)
-
-    } catch (error) {
-      console.error('Error processing job:', error);
-    }
-  }, {connection: vercelKVClient, concurrency });
-};
-
-const checkDependentQueuesThresoldWorker  = () => {
-  stateThresholdCheckQueue.add(queueNames.StateThresholdCheck, {}, {
-    repeat: {
-      every: 30000,
-      limit: 100,
-    },
-  });
-
-  new Worker(queueNames.StateThresholdCheck, async (job: Job) => {
-    try {
-      console.log("> checking state threshold ")
-      let sessionIDs = await getSessionsByState(sessionStates.PROCESSING)
-      for(const sessionID of sessionIDs) {
-        if (await checkIndependentQueuesThresold(sessionID)) {
-          await setSessionIndex(sessionID, sessionStates.COMPLETED)
-          await updateUserStateBySession(sessionID, UserState.COMPLETED)
-          continue;
-        }
-
-        if (await checkDependentQueuesThresold(sessionID)) {
-          if (!await checkQueueThresold(sessionID, queueNames.TVBFF as QueueName)) {
-            await enqueueTVBFF(sessionID)
-          }
-
-          if (!await checkQueueThresold(sessionID, queueNames.StarSignPicker as QueueName)) {
-            await enqueueStarSignPicker(sessionID)
-          }
-        }
+        const queueName = queueNames.QueryActivities as QueueName;
+        await incrementCompletedJobs(sessionID, queueName, totalData);
+        console.log("totalData:", totalData);
+      } catch (error) {
+        console.error("Error processing job:", error);
       }
-    } catch (error) {
-      console.error('Error processing job:', error);
-    }
-  }, {connection: vercelKVClient });
+    },
+    { connection: vercelKVClient, concurrency },
+  );
 };
 
-export default ()=> {
-  console.log("> initiate server workers")
+const crawlRottenTomatoeWorker = () => {
+  new Worker(
+    queueNames.CrawlRottenTomatoes,
+    async (job: Job<ShowPayload>) => {
+      try {
+        const showPayload = job.data;
+        const processedData =
+          await getAndUpdateRottenTomatoesScore(showPayload);
+        const queueName = queueNames.CrawlRottenTomatoes as QueueName;
+        await incrementCompletedJobs(
+          showPayload.SessionID,
+          queueName,
+          processedData,
+        );
+      } catch (error) {
+        console.error("Error processing job:", error);
+      }
+    },
+    { connection: vercelKVClient, concurrency },
+  );
+};
+
+const queryShowDataWorker = () => {
+  new Worker(
+    queueNames.QueryShowData,
+    async (job: Job<ShowPayload>) => {
+      try {
+        const showPayload = job.data;
+        await getShowData(showPayload);
+        const processedData = await getCompletedShowDataBySession(
+          showPayload.SessionID,
+        );
+        const queueName = queueNames.QueryShowData as QueueName;
+        await updatedCompletedJobs(
+          showPayload.SessionID,
+          queueName,
+          processedData,
+        );
+      } catch (error) {
+        console.error("Error processing job:", error);
+      }
+    },
+    { connection: vercelKVClient, concurrency },
+  );
+};
+
+const starSignPickerWorker = () => {
+  new Worker(
+    queueNames.StarSignPicker,
+    async (job: Job) => {
+      try {
+        const { sessionID } = job.data;
+        const processedData = await getAndUpdateStarSignPicker(sessionID);
+        const queueName = queueNames.StarSignPicker as QueueName;
+        await incrementCompletedJobs(sessionID, queueName, processedData);
+      } catch (error) {
+        console.error("Error processing job:", error);
+      }
+    },
+    { connection: vercelKVClient, concurrency },
+  );
+};
+
+const tvBFFWorker = () => {
+  new Worker(
+    queueNames.TVBFF,
+    async (job: Job) => {
+      try {
+        const { sessionID } = job.data;
+        const processedData = await getAndUpdateTVBFF(sessionID);
+        const queueName = queueNames.TVBFF as QueueName;
+        await incrementCompletedJobs(sessionID, queueName, processedData);
+      } catch (error) {
+        console.error("Error processing job:", error);
+      }
+    },
+    { connection: vercelKVClient, concurrency },
+  );
+};
+
+const checkDependentQueuesThresoldWorker = () => {
+  stateThresholdCheckQueue.add(
+    queueNames.StateThresholdCheck,
+    {},
+    {
+      repeat: {
+        every: 30000,
+        limit: 100,
+      },
+    },
+  );
+
+  new Worker(
+    queueNames.StateThresholdCheck,
+    async (job: Job) => {
+      try {
+        console.log("> checking state threshold ");
+        const sessionIDs = await getSessionsByState(sessionStates.PROCESSING);
+        for (const sessionID of sessionIDs) {
+          if (await checkIndependentQueuesThresold(sessionID)) {
+            await setSessionIndex(sessionID, sessionStates.COMPLETED);
+            await updateUserStateBySession(sessionID, UserState.COMPLETED);
+            continue;
+          }
+
+          if (await checkDependentQueuesThresold(sessionID)) {
+            if (
+              !(await checkQueueThresold(
+                sessionID,
+                queueNames.TVBFF as QueueName,
+              ))
+            ) {
+              await enqueueTVBFF(sessionID);
+            }
+
+            if (
+              !(await checkQueueThresold(
+                sessionID,
+                queueNames.StarSignPicker as QueueName,
+              ))
+            ) {
+              await enqueueStarSignPicker(sessionID);
+            }
+          }
+        }
+      } catch (error) {
+        console.error("Error processing job:", error);
+      }
+    },
+    { connection: vercelKVClient },
+  );
+};
+
+export default () => {
+  console.log("> initiate server workers");
   queryActivitiesWorker();
   crawlRottenTomatoeWorker();
   queryShowDataWorker();
   starSignPickerWorker();
   tvBFFWorker();
   checkDependentQueuesThresoldWorker();
-  console.log("> server workers ready ")
-}
+  console.log("> server workers ready ");
+};

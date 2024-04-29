@@ -1,4 +1,3 @@
-import { MostWatchedTvShowWithEpisode, UserStats } from "../../types";
 import { createOrUpdateUsersAIResponse } from "./aiResponses";
 import {
   getUsersFirstShow,
@@ -9,6 +8,7 @@ import {
   getUserAverageRottenTomatoScore,
 } from "./show";
 import { findOrCreateUserBySessionID } from "./user";
+import { MostWatchedTvShowWithEpisode, UserStats } from "../../types";
 
 export async function getStatsResponse(sessionID: string) {
   const user = await findOrCreateUserBySessionID(sessionID);

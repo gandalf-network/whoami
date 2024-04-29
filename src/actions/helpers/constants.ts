@@ -1,4 +1,4 @@
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
 dotenv.config();
 
 export const TVDB_API_KEY = process.env.TVDB_API_KEY as string;

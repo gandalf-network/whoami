@@ -1,10 +1,17 @@
 /* eslint-disable @next/next/no-img-element */
 import { HalfEclipse, PentagramStar } from "@/components/icon";
-import { PageHeader, Progress, ShareButton, Text } from "@/components/themed";
+import {
+  PageHeader,
+  Progress,
+  ShareButton,
+  StoryDownloadContainer,
+  Text,
+  ThemedProgress,
+} from "@/components/themed";
 import { TVStatsMockedData } from "@/helpers/mocked";
+import { getStoryDownloadSelector } from "@/helpers/story";
 import { cn } from "@/helpers/utils";
-
-import { StoryContentProps } from "../base";
+import { StoryContentProps, StoryDownloadContentProps } from "@/types";
 
 export const GenreDistributionStory = ({
   storyProps,
@@ -21,15 +28,15 @@ export const GenreDistributionStory = ({
       )}
     >
       <div className="offset-content flex-1 flex-col flex-center">
-        <PageHeader name="tv Stats" />
+        <PageHeader storyProps={storyProps} name="tv Stats" />
 
-        <div className="gap-y-10 flex-1 flex-col flex-center text-center">
+        <div className="gap-y-8 story-content">
           <Text className="text-2xl uppercase" font="heading">
             Genre Distribution
           </Text>
 
-          <div className="max-w-80">
-            <Text className="text-lg">
+          <div className="max-w-96 px-8">
+            <Text className="text-lg mb-2.5 font-medium">
               Your top {genreDistribution.top.length} TV genres include:
             </Text>
             <div className="my-3 flex flex-col gap-y-0.5">
@@ -54,13 +61,58 @@ export const GenreDistributionStory = ({
         </div>
       </div>
 
-      <PentagramStar className="absolute w-24 right-8 top-[28%]" />
+      <PentagramStar className="absolute w-24 right-4 top-[23%]" />
 
       <HalfEclipse className="absolute w-16 rotate-[-40deg] -left-2 -bottom-6" />
 
       <div className="flex-center-x pb-4">
-        <ShareButton />
+        <ShareButton
+          storyProps={{
+            id: "tvGenre",
+            ...storyProps,
+          }}
+        />
       </div>
+
+      <GenreDistributionDownloadStory />
     </div>
+  );
+};
+
+export const GenreDistributionDownloadStory = ({
+  ...props
+}: StoryDownloadContentProps) => {
+  const { genreDistribution } = TVStatsMockedData;
+
+  return (
+    <StoryDownloadContainer
+      id={getStoryDownloadSelector("tvGenre").id}
+      className="bg-primary-orange"
+      title="My Genre Distribution"
+      titleClassName="max-w-full"
+      description={`My top ${genreDistribution.top.length} TV genres include:`}
+      {...props}
+    >
+      <div className="flex-1 relative z-20 w-full pt-14">
+        <div className="my-3 w-full flex flex-col gap-y-1.5">
+          {genreDistribution.top.map((genre, index) => {
+            const label = `${genre.title} - ${genre.percentage}%`;
+            return (
+              <ThemedProgress
+                key={`${label}-${index}`}
+                max={100}
+                value={genre.percentage}
+                label={label}
+                className="w-full h-16"
+                containerClassName="px-4"
+              />
+            );
+          })}
+        </div>
+      </div>
+
+      <PentagramStar className="absolute w-24 right-0 top-[20%]" />
+      <HalfEclipse className="absolute w-16 rotate-[-40deg] -left-2 -bottom-6" />
+    </StoryDownloadContainer>
   );
 };

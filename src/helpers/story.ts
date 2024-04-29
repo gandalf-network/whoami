@@ -1,3 +1,7 @@
+import { AllStoryIds } from "@/types";
+
+import { getEnvDetails } from "./utils";
+
 export const rottenTomatoeImages = {
   rotten:
     "https://res.cloudinary.com/dmsic9qmj/image/upload/v1712387317/gandalf/whoami/icons8-tomato-100-1_ubnrdh.png",
@@ -36,4 +40,50 @@ export const getRottenTomatoeScoreText = (score: number) => {
   }
   // If score is not within any range, return undefined or an appropriate value
   return "Score not available";
+};
+
+// get the story link
+export const getStoryLink = (storyId: AllStoryIds) => {
+  const { url } = getEnvDetails();
+
+  return `${url}/stories/?id=${storyId}`;
+};
+
+// get story index
+export const getStoryIndex = (storyId: AllStoryIds) => {
+  switch (storyId) {
+    // tv stats
+    case "firstTvShow":
+      return 1;
+    case "mostWatchedTvShow":
+      return 2;
+    case "totalShows":
+      return 3;
+    case "crossoverStar":
+      return 4;
+    case "tvGenre":
+      return 5;
+
+    // reports
+    case "rottenTomatoesScore":
+      return 7;
+    case "tvBff":
+      return 8;
+    case "starSign":
+      return 9;
+    case "overview":
+      return 10;
+
+    // default
+    default:
+      return 0;
+  }
+};
+
+export const getStoryDownloadSelector = (storyId: AllStoryIds) => {
+  const id = `${storyId}-story-download`;
+  return {
+    id,
+    selector: `#${id}`,
+  };
 };

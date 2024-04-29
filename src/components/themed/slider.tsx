@@ -3,15 +3,9 @@
 import { useEffect, useState } from "react";
 
 import { cn } from "@/helpers/utils";
+import { VerticalSliderProps } from "@/types";
 
 import { Circle } from "./container";
-
-export interface VerticalSliderProps {
-  options: { value: string; content: React.ReactNode }[];
-  value?: string;
-  containerClassName?: string;
-  className?: string;
-}
 
 export const VerticalSlider = ({
   className,
@@ -27,7 +21,15 @@ export const VerticalSlider = ({
 
     if (defaultValue) {
       const valuePosition = options.findIndex((v) => v.value === defaultValue);
-      const valueOffset = valuePosition === 0 ? 25 : 20;
+      const valueOffsets = {
+        0: 28, // certified fresh
+        1: 22, // fresh
+        2: 18, // rotten
+      };
+      const valueOffset =
+        valueOffsets?.[valuePosition as keyof typeof valueOffsets] ||
+        valueOffsets[2];
+
       const valueProgress =
         Math.round(100 / options.length) * (valuePosition + 1) - valueOffset;
 
@@ -54,7 +56,7 @@ export const VerticalSlider = ({
         containerClassName,
       )}
     >
-      <div className="relative h-full w-5 bg-background border-2 shadow-black shadow-[4px_4px_inset] rounded-full">
+      <div className="relative h-full w-4 bg-background border-2 shadow-black shadow-[4px_4px_inset] rounded-full">
         <Circle
           className={cn(
             "absolute top-0 left-2/4 -translate-x-1/2 w-7 h-7 shadow-[2px_2px] transition",

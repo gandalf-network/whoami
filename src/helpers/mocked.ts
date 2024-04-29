@@ -74,7 +74,7 @@ export const TVStatsMockedData = {
 
 export const ReportsCardMockedData = {
   rottenTomatoeScore: {
-    score: 40,
+    score: 10,
     summary:
       'With shows like "Breaking Bad" and "The Crown" leading the pack, your watchlist is a certified hit factory!',
   },
@@ -87,7 +87,7 @@ export const ReportsCardMockedData = {
       "https://res.cloudinary.com/dmsic9qmj/image/upload/v1712348909/gandalf/whoami/chandler_ya1dya.png",
   },
   realStarSign: {
-    name: "constellation",
+    name: "aries",
     show: "The Last Kingdom fanatic",
     reason:
       "With a penchant for epic battles and intricate plots, Uhtred of Bebbanburg would proudly claim you as his own.",

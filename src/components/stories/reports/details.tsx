@@ -1,8 +1,7 @@
 import { Flash } from "@/components/icon";
 import { PageHeader, PinkWaveBackground, Text } from "@/components/themed";
 import { cn } from "@/helpers/utils";
-
-import { StoryContentProps } from "../base";
+import { StoryContentProps } from "@/types";
 
 export const ReportstDetails = ({
   storyProps,
@@ -17,19 +16,22 @@ export const ReportstDetails = ({
       )}
     >
       <div className="offset-content flex-1 flex flex-col">
-        <PageHeader />
+        <PageHeader storyProps={storyProps} />
 
         <div className="gap-y-4 flex-1 flex-col flex-center text-center">
           <Text className="text-3xl" font="heading">
             Your TV Report Card
           </Text>
           <Text className="text-xl max-w-sm" font="caption">
-            Find out your Rotten Tomatoes Score, your TV BFF and more.
+            Find out your Rotten Tomatoes <br />
+            Score, your TV BFF and more.
           </Text>
         </div>
       </div>
 
-      <Flash className="absolute left-2/4 top-[10%] pointer-events-none opacity-50 w-20" />
+      <div className="overflow-hidden absolute left-2/4 top-[8.7%] pointer-events-none opacity-50 w-20">
+        <Flash className="w-20 -translate-y-6" />
+      </div>
 
       <PinkWaveBackground className="justify-end" />
     </div>

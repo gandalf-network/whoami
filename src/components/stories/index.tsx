@@ -1,4 +1,8 @@
-import { Stories, StoriesProps } from "./base";
+"use client";
+
+import { StoriesProps } from "@/types";
+
+import { Stories } from "./base";
 import { reportsStories } from "./reports";
 import { statsStories } from "./stats";
 

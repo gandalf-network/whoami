@@ -1,24 +1,8 @@
 "use client";
 
 import DefaultStories from "@enipx/react-insta-stories";
-import type {
-  ReactInstaStoriesProps,
-  Story,
-  Action,
-} from "@enipx/react-insta-stories/dist/interfaces";
 
-// --- types
-export type { Story };
-
-export interface StoriesProps extends ReactInstaStoriesProps {}
-
-export interface StoryContentProps
-  extends React.HTMLAttributes<HTMLDivElement> {
-  storyProps: {
-    action?: Action;
-    isPaused?: boolean;
-  };
-}
+import { StoriesProps } from "@/types";
 
 // --- component
 export const Stories = ({ ...props }: StoriesProps) => {
@@ -50,8 +34,9 @@ export const Stories = ({ ...props }: StoriesProps) => {
         marginTop: "4rem",
         filter: "none",
       }}
-      pauseDivStyles={{
-        flex: 1,
+      overlayStyles={{
+        bottom: "0",
+        height: "calc(100% - 4rem)",
       }}
       {...props}
     />

@@ -1,21 +1,20 @@
-import { cn } from "@/helpers/utils";
+import { Loader2 } from "lucide-react";
 
-export interface ButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
-  variant?: "primary" | "link";
-  size?: "sm" | "md" | "lg" | "icon";
-}
+import { cn } from "@/helpers/utils";
+import { ButtonProps } from "@/types";
 
 export const Button = ({
   children,
   className,
   variant = "primary",
   size = "md",
+  loading,
   ...props
 }: ButtonProps) => {
   // extends this variable to add multiple button styles
   const variants = {
     primary: "bg-primary text-primary-foreground hover:bg-primary-cyan",
-    link: "bg-transparent text-black underline border-none rounded-none shadow-none",
+    link: "bg-transparent text-black underline border-0 rounded-none shadow-none",
   };
 
   const sizes = {
@@ -28,14 +27,14 @@ export const Button = ({
   return (
     <button
       className={cn(
-        "inline-flex items-center justify-center gap-x-2 whitespace-nowrap transition-colors disabled:pointer-events-none disabled:opacity-50 focus-visible:outline-none border rounded-[50%] shadow-black",
+        "font-medium inline-flex items-center justify-center gap-x-2 whitespace-nowrap transition-colors disabled:pointer-events-none disabled:opacity-50 focus-visible:outline-none border rounded-[50%] shadow-black",
         sizes[size],
         variants[variant],
         className,
       )}
       {...props}
     >
-      {children}
+      {loading ? <Loader2 className="h-6 w-6 animate-spin" /> : children}
     </button>
   );
 };

@@ -3,20 +3,7 @@ import {
   AlertDialogContent,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-
-export interface DialogProps
-  extends React.ComponentPropsWithoutRef<typeof AlertDialog> {
-  children?: React.ReactNode;
-
-  /**Function */
-  onOverlayClick?: () => void;
-
-  /**Element */
-  triggerElement?: React.ReactNode;
-
-  /**class name */
-  contentClassName?: string;
-}
+import { DialogProps } from "@/types";
 
 export const Dialog = ({
   triggerElement,

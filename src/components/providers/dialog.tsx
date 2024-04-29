@@ -3,8 +3,9 @@
 import { useMemo, useState } from "react";
 
 import { createContext } from "@/helpers/context";
+import { DialogProps } from "@/types";
 
-import { Dialog, DialogProps } from "../themed/dailog";
+import { Dialog } from "../themed/dailog";
 
 export interface DialogContextProps {
   show: (content: DialogProps) => void;

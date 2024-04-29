@@ -7,7 +7,7 @@ import {
   FirstTVShowStory,
   MostRewatchTVShowStory,
   TotalTVShowStory,
-} from "./tv-show";
+} from "./tv";
 
 export const statsStories: Story[] = [
   { content: (props) => <TVStatDetails storyProps={props} /> },

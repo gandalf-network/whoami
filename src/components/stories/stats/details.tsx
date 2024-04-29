@@ -1,8 +1,7 @@
 import { Circle, Nonagram1Star } from "@/components/icon";
 import { BlueWaveBackground, PageHeader, Text } from "@/components/themed";
 import { cn } from "@/helpers/utils";
-
-import { StoryContentProps } from "../base";
+import { StoryContentProps } from "@/types";
 
 export const TVStatDetails = ({
   storyProps,
@@ -17,7 +16,7 @@ export const TVStatDetails = ({
       )}
     >
       <div className="offset-content flex-1 flex flex-col">
-        <PageHeader />
+        <PageHeader storyProps={storyProps} />
 
         <div className="gap-y-4 flex-1 flex-col flex-center text-center">
           <Text className="text-3xl" font="heading">

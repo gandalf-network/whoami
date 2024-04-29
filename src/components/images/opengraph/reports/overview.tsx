@@ -1,6 +1,10 @@
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable @next/next/no-img-element */
-import { PentagramStar, UpArrow, Heart } from "@/components/icon";
+import {
+  PentagramStar,
+  Heart,
+  RottenTomatoeScoreIcon,
+} from "@/components/icon";
 import { ogImageStlyingColors, ogStyles } from "@/helpers/metadata";
 import {
   getRottenTomatoeScoreText,
@@ -46,7 +50,10 @@ export const ReportOverviewOGImage = ({
             marginLeft: "-2.5rem",
           }}
         >
-          <UpArrow style={{ width: "64px", height: "64px" }} />
+          <RottenTomatoeScoreIcon
+            score={+score}
+            style={{ width: "64px", height: "64px" }}
+          />
         </div>
       ),
       divStyle: {

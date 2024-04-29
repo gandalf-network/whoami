@@ -10,7 +10,7 @@ export const DownloadIcon = ({
       fill="none"
       {...props}
     >
-      <rect width={38} height={38} x={2} y={2} fill="#B3D3AB" rx={8} />
+      <rect width={38} height={38} x={2} y={2} fill="#69d3e8" rx={8} />
       <rect
         width={38}
         height={38}

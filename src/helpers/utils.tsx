@@ -11,7 +11,9 @@ export const isProduction = () => process.env.NODE_ENV === "production";
 
 // this is a utility function that appends the protocol to the url
 export const appendProtocolToUrl = (url: string) => {
-  return url.startsWith("https:") ? url : `https://${url}`;
+  return url.startsWith("https:") || url.startsWith("http:")
+    ? url
+    : `https://${url}`;
 };
 
 // this is a utility function that gets the environment details
@@ -74,8 +76,7 @@ export const formatStringArrayToJSX = ({
         <>
           {isLastItem && <>and </>}
           <span className={className}>
-            {str}
-            {isLastItem ? "" : ", "}
+            “{str}”{isLastItem ? "" : ", "}
           </span>
         </>
       );
@@ -85,3 +86,42 @@ export const formatStringArrayToJSX = ({
 
 // this is a utility function that checks if the window is defined
 export const isWindowDefined = () => typeof window !== "undefined";
+
+// this is a utility function that converts a data url to a file
+export const dataURLtoFile = (dataurl: string, filename: string) => {
+  const arr = dataurl.split(",");
+  const mime = arr?.[0]?.match?.(/:(.*?);/)?.[1];
+  const bstr = atob(arr[arr.length - 1]);
+  let n = bstr.length;
+  const u8arr = new Uint8Array(n);
+
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n);
+  }
+
+  return new File([u8arr], filename, { type: mime });
+};
+
+export const objectToGetParams = (object: {
+  [key: string]: string | number | undefined | null;
+}) => {
+  const params = Object.entries(object)
+    .filter(([, value]) => value !== undefined && value !== null)
+    .map(
+      ([key, value]) =>
+        `${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`,
+    );
+
+  return params.length > 0 ? `?${params.join("&")}` : "";
+};
+
+export const isMobileOrTablet = () => {
+  return /(android|iphone|ipad|mobile)/i.test(navigator.userAgent);
+};
+
+export const openLinkInNewTab = (url: string) => {
+  // note: i'm using the timeout to fix window not opening on SAFARI browsers
+  setTimeout(() => {
+    window.open(url, "_blank");
+  }, 100);
+};

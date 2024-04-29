@@ -1,6 +1,6 @@
 import { getAndDumpActivities } from "@/actions";
 
-export async function GET(req: Request) {
+export async function POST(req: Request) {
   const { sessionID, dataKey } = (await req.json()) as {
     sessionID: string;
     dataKey: string;

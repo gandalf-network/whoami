@@ -1,7 +1,7 @@
 import { getShowData } from "@/actions";
 import { ShowPayload } from "@/actions/lib/queue/producers";
 
-export async function GET(req: Request) {
+export async function POST(req: Request) {
   const payload = (await req.json()) as ShowPayload;
   try {
     await getShowData(payload);

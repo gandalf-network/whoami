@@ -43,7 +43,7 @@ model show {
   rottenTomatoScore Int?   
   genre             String[]   @db.VarChar(255)
   imageURL          String?    @db.VarChar(255)
-  summary           String?    @db.VarChar(255)
+  summary           String?    @db.VarChar(1089)
   actors            showActor[]
   users             userShow[]
   createdAt         DateTime  @default(now())
@@ -65,11 +65,11 @@ model userShow {
 model userEpisode {
   id          String     @id @default(uuid())
   title       String
-  season      Int
-  episode     Int
+  season      Int?
+  episode     Int?
   datePlayed  DateTime
   userShowID  String
-  userShow    userShow?      @relation(fields: [userShowID], references: [id])
+  userShow    userShow? @relation(fields: [userShowID], references: [id])
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
@@ -79,7 +79,7 @@ model userEpisode {
 
 model actor {
   id        String    @id @default(uuid())
-  name      String    @unique @db.VarChar(255)
+  name      String    @unique
   imageURL  String?   @db.VarChar(255)
   shows     showActor[]
   createdAt DateTime  @default(now())
@@ -90,6 +90,7 @@ model showActor {
   actorID        String  
   showID         String  
   characterName  String
+  popularity     Int
 
   actor      actor   @relation(fields: [actorID], references: [id])
   show       show    @relation(fields: [showID], references: [id])
@@ -123,5 +124,5 @@ model aiResponse {
   bffQuip          String?
   bffImageURL      String?
   user             user   @relation(fields: [userID], references: [id])
-  userID           String @unique
+  userID           String    @unique
 }

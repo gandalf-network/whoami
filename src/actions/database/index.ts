@@ -1,6 +1,4 @@
-import { MostWatchedTvShowWithEpisode, UserStats } from "@/types";
-
-import { getActorsImageByCharacterNameAndShow } from "./actor";
+import { MostWatchedTvShowWithEpisode, UserStats } from "../../types";
 import { createOrUpdateUsersAIResponse } from "./aiResponses";
 import {
   getUsersFirstShow,
@@ -65,24 +63,12 @@ export async function getReportCardResponse(sessionID: string) {
   const topShows = await getTop5ShowsByUser(user.id);
   const topShow = topShows[0];
   const rtScore = await getUserAverageRottenTomatoScore(user.id);
-  let actorImageURL = aiResponses.bffImageURL;
-  if (!actorImageURL) {
-    actorImageURL = await getActorsImageByCharacterNameAndShow(
-      aiResponses.bff as string,
-      topShow.id,
-    );
-
-    await createOrUpdateUsersAIResponse({
-      userID: user.id,
-      bffImageURL: actorImageURL,
-    });
-  }
 
   const tvBFF = {
     show: topShow.title,
     name: aiResponses.bff,
     reason: aiResponses.bffQuip,
-    imageURL: actorImageURL,
+    imageURL: aiResponses.bffImageURL,
   };
 
   const starSign = {

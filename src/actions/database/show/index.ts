@@ -1,73 +1,55 @@
 import { PrismaClient } from "@prisma/client";
 
-import { Show, TopGenres, YourCrossoverStar } from "@/types";
+import { Show, TopGenres, YourCrossoverStar } from "../../../types";
 
 const prisma = new PrismaClient();
 
-type insertEpisodeInput = {
+export type insertEpisodeInput = {
   title: string;
-  datePlayed: string;
+  datePlayed: Date;
   userShowID: string;
-  season: number;
-  episode: number;
+  season: number | null;
+  episode: number | null;
 };
 
-export async function batchInertEpisodes(input: insertEpisodeInput[]) {
+export async function batchInsertEpisodes(input: insertEpisodeInput[]) {
   await prisma.userEpisode.createMany({
     data: input,
     skipDuplicates: true,
   });
 }
 
-type CreateShowInput = {
-  title: string;
-  userID: string;
-};
-
-export async function createAndConnectShowToUser(
-  createShowInput: CreateShowInput,
-) {
-  const showRes = await prisma.show.upsert({
-    where: {
-      title: createShowInput.title,
-    },
-    create: {
-      title: createShowInput.title,
-    },
-    update: {},
+export async function upsertShow(title: string) {
+  const show = await prisma.show.upsert({
+    where: { title },
+    create: { title },
+    update: { },
   });
 
-  if (!showRes)
+  if (!show){
     throw new Error(
-      `could not find or update this show: ${createShowInput.title}`,
+      `could not upsert this show: ${title}`,
     );
-
-  const userShow = await prisma.userShow.upsert({
-    where: {
-      userShowID: {
-        userID: createShowInput.userID,
-        showID: showRes.id,
-      },
-    },
-    create: {
-      userID: createShowInput.userID,
-      showID: showRes.id,
-    },
-    update: {},
-  });
-
-  const show = {
-    ...showRes,
-    userShowID: userShow.id,
-  };
-
+  }
   return show;
 }
 
-type UpdateShowInput = {
+export async function upsertUserShow(userID: string, showID: string) {
+  const userShow = await prisma.userShow.upsert({
+    where: {
+      userShowID: {userID, showID},
+    },
+    create: {userID, showID},
+    update: {},
+  });
+  return userShow;
+}
+
+export type UpdateShowInput = {
   id: string;
   imageURL?: string;
   summary?: string;
+  genres?: string[];
   rottenTomatoScore?: number;
   numberOfEpisodes?: number;
 };
@@ -83,6 +65,9 @@ export async function updateShow(updateShowInput: UpdateShowInput) {
       ...(updateShowInput.rottenTomatoScore && {
         rottenTomatoScore: updateShowInput.rottenTomatoScore,
       }),
+      ...(updateShowInput.genres && {
+        genre: updateShowInput.genres,
+      }),
       ...(updateShowInput.numberOfEpisodes && {
         numberOfEpisodes: updateShowInput.numberOfEpisodes,
       }),
@@ -95,6 +80,23 @@ export async function getTotalNumberOfShowsWatchedByUser(userID: string) {
   const watchCount = await prisma.userShow.count({
     where: {
       userID,
+    },
+  });
+  return watchCount;
+}
+
+export async function getNumberOfUpdatedShowsByUser(userID: string) {
+  const watchCount = await prisma.userShow.count({
+    where: {
+      userID,
+      show: {  
+        numberOfEpisodes: {
+          gt: 0 
+        },
+        genre: {
+          isEmpty: false,
+        },
+      }
     },
   });
   return watchCount;
@@ -290,6 +292,8 @@ export async function getUserAverageRottenTomatoScore(userID: string) {
     FROM
       EpisodeCounts;
     `;
+  console.log(result)
   const weightedScore = result[0].weightedScore as number;
+
   return Number(weightedScore.toPrecision(3));
 }

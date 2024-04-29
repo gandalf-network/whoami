@@ -3,7 +3,7 @@ import { VercelRequest, VercelResponse } from "@vercel/node";
 import { getAndUpdateRottenTomatoesScore } from "@/actions";
 import { ShowPayload } from "@/actions/lib/queue/producers";
 
-export default async function (req: VercelRequest, res: VercelResponse) {
+export async function GET(req: VercelRequest, res: VercelResponse) {
   const payload: ShowPayload = req.body;
   try {
     await getAndUpdateRottenTomatoesScore(payload);

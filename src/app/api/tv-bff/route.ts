@@ -2,7 +2,7 @@ import { VercelRequest, VercelResponse } from "@vercel/node";
 
 import { getAndUpdateTVBFF } from "@/actions";
 
-export default async function (req: VercelRequest, res: VercelResponse) {
+export async function GET(req: VercelRequest, res: VercelResponse) {
   const payload = req.body;
   try {
     await getAndUpdateTVBFF(payload);

@@ -7,12 +7,13 @@ export type UserReportCardType = Awaited<ReturnType<typeof getReportCard>>;
 export type Show = {
   id: string;
   title: string;
-  dateFirstPlayed: string;
+  dateFirstPlayed?: string;
   genres?: string[];
   summary?: string;
   watchCount?: number;
   numberOfEpisodes?: number;
   imageURL?: string;
+  actors?: Actor[];
 };
 
 export type YourCrossoverStar = {
@@ -75,4 +76,11 @@ export type TopGenresPersonalityAndStarSignAIResults = {
 export type TVShowQuips = {
   firstTVShowQuip: string;
   mostRewatchedTVShowQuip: string;
+};
+
+export type ParsedActivity = {
+  movieTitle: string | null;
+  seasonNumber: number | null;
+  episodeNumber: number | null;
+  episodeTitle: string | null;
 };

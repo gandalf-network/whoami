@@ -1,11 +1,12 @@
 import { VercelRequest, VercelResponse } from "@vercel/node";
 
-import { getAndDumpActivities } from "@/actions";
+import { getAndUpdateStarSignPicker } from "@/actions";
 
 export default async function (req: VercelRequest, res: VercelResponse) {
-  const { sessionID, dataKey } = req.body;
+  const payload = req.body;
   try {
-    await getAndDumpActivities(sessionID, dataKey);
+    await getAndUpdateStarSignPicker(payload);
+
     res.status(200).send("Job processed successfully");
   } catch (error) {
     console.error("Error processing job:", error);

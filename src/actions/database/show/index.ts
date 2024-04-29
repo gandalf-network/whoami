@@ -23,13 +23,11 @@ export async function upsertShow(title: string) {
   const show = await prisma.show.upsert({
     where: { title },
     create: { title },
-    update: { },
+    update: {},
   });
 
-  if (!show){
-    throw new Error(
-      `could not upsert this show: ${title}`,
-    );
+  if (!show) {
+    throw new Error(`could not upsert this show: ${title}`);
   }
   return show;
 }
@@ -37,9 +35,9 @@ export async function upsertShow(title: string) {
 export async function upsertUserShow(userID: string, showID: string) {
   const userShow = await prisma.userShow.upsert({
     where: {
-      userShowID: {userID, showID},
+      userShowID: { userID, showID },
     },
-    create: {userID, showID},
+    create: { userID, showID },
     update: {},
   });
   return userShow;
@@ -89,14 +87,14 @@ export async function getNumberOfUpdatedShowsByUser(userID: string) {
   const watchCount = await prisma.userShow.count({
     where: {
       userID,
-      show: {  
+      show: {
         numberOfEpisodes: {
-          gt: 0 
+          gt: 0,
         },
         genre: {
           isEmpty: false,
         },
-      }
+      },
     },
   });
   return watchCount;
@@ -292,7 +290,7 @@ export async function getUserAverageRottenTomatoScore(userID: string) {
     FROM
       EpisodeCounts;
     `;
-  console.log(result)
+  console.log(result);
   const weightedScore = result[0].weightedScore as number;
 
   return Number(weightedScore.toPrecision(3));

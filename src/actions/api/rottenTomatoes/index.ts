@@ -8,7 +8,10 @@ import {
 } from "@/actions/helpers/constants";
 import { standardizeName } from "@/actions/helpers/utils";
 
-export async function getRottenTomatoScore(title: string, cast: string[]): Promise<number | null> {
+export async function getRottenTomatoScore(
+  title: string,
+  cast: string[],
+): Promise<number | null> {
   const agentQuery =
     "x-algolia-agent=Algolia for JavaScript (4.23.3); Browser (lite)";
   const apiKey = `x-algolia-api-key=${ROTTEN_TOMATOES_ALGOLIA_API_KEY}`;
@@ -65,7 +68,10 @@ export async function getRottenTomatoScore(title: string, cast: string[]): Promi
     }
 
     const castIsSimilar = compareCastArrays(hit.castCrew.cast, cast);
-    const levenshteinDistance = levenshtein(normalizedTitle, title.toLowerCase());
+    const levenshteinDistance = levenshtein(
+      normalizedTitle,
+      title.toLowerCase(),
+    );
     const threshold = 0.25 * Math.max(normalizedTitle.length, title.length);
     if (levenshteinDistance > threshold) {
       continue;
@@ -74,7 +80,10 @@ export async function getRottenTomatoScore(title: string, cast: string[]): Promi
       continue;
     }
 
-    tomatoScore = (!hit.rottenTomatoes || !hit.rottenTomatoes.criticsScore) ? 0 : hit.rottenTomatoes.criticsScore;
+    tomatoScore =
+      !hit.rottenTomatoes || !hit.rottenTomatoes.criticsScore
+        ? 0
+        : hit.rottenTomatoes.criticsScore;
     break;
   }
 

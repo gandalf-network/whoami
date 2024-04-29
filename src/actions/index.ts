@@ -1,28 +1,60 @@
 import { UserState } from "@prisma/client";
-import { ParsedActivity } from "../types";
-import { getFirstAndMostRewatchedShowQuips, getStarSign, getTVBFF } from "./api/openai";
+
+import {
+  getFirstAndMostRewatchedShowQuips,
+  getStarSign,
+  getTVBFF,
+} from "./api/openai";
 import { getPersonalities } from "./api/perplexity";
 import { getRottenTomatoScore } from "./api/rottenTomatoes";
 import TMDBClient from "./api/tmdb";
 import { getReportCardResponse, getStatsResponse } from "./database";
-import {  ActorInput, createActorsAndConnectToShow, getActorsByShow, getActorsImageByCharacterNameAndShow } from "./database/actor";
-import {  createOrUpdateUsersAIResponse } from "./database/aiResponses";
-import { UpdateShowInput, batchInsertEpisodes, getNumberOfUpdatedShowsByUser, getTop5ShowsByUser, getTotalNumberOfShowsWatchedByUser, getUserAverageRottenTomatoScore, getUsersFirstShow, getUsersTopGenres, insertEpisodeInput, updateShow, upsertShow, upsertUserShow } from "./database/show";
+import {
+  ActorInput,
+  createActorsAndConnectToShow,
+  getActorsByShow,
+  getActorsImageByCharacterNameAndShow,
+} from "./database/actor";
+import { createOrUpdateUsersAIResponse } from "./database/aiResponses";
+import {
+  UpdateShowInput,
+  batchInsertEpisodes,
+  getNumberOfUpdatedShowsByUser,
+  getTop5ShowsByUser,
+  getTotalNumberOfShowsWatchedByUser,
+  getUserAverageRottenTomatoScore,
+  getUsersFirstShow,
+  getUsersTopGenres,
+  insertEpisodeInput,
+  updateShow,
+  upsertShow,
+  upsertUserShow,
+} from "./database/show";
 import { findOrCreateUserBySessionID, updateUser } from "./database/user";
 import Eye, { Source } from "./eyeofsauron";
-import {  NetflixActivityMetadata } from "./eyeofsauron/gql/__generated__";
-import { parseActivityInput, extractEpisodeNumberFromTitle, parseDate } from "./helpers/parser";
-import {  JobShow, ShowPayload, enqueueRottenTomatoes, enqueueShowData } from "./lib/queue/producers";
+import { NetflixActivityMetadata } from "./eyeofsauron/gql/__generated__";
+import {
+  parseActivityInput,
+  extractEpisodeNumberFromTitle,
+  parseDate,
+} from "./helpers/parser";
+import {
+  JobShow,
+  ShowPayload,
+  enqueueRottenTomatoes,
+  enqueueShowData,
+} from "./lib/queue/producers";
+import { ParsedActivity } from "../types";
 
 const eye = new Eye({
-    baseURL: process.env.GANDALF_SAURON_URL as string,
-    privateKey: process.env.GANDALF_APP_PRIVATE_KEY as string,
+  baseURL: process.env.GANDALF_SAURON_URL as string,
+  privateKey: process.env.GANDALF_APP_PRIVATE_KEY as string,
 });
 
 const tmdbClient = new TMDBClient(
-    process.env.TMDB_BASE_URL as string, 
-    process.env.TMDB_API_KEY as string
-)
+  process.env.TMDB_BASE_URL as string,
+  process.env.TMDB_API_KEY as string,
+);
 
 export async function findOrCreateUser(sessionID: string) {
   return findOrCreateUserBySessionID(sessionID);
@@ -36,218 +68,256 @@ export async function getReportCard(sessionID: string) {
   return getReportCardResponse(sessionID);
 }
 
-export async function updateUserStateBySession(sessionID: string, state: UserState) {
-    let user = await findOrCreateUserBySessionID(sessionID)
-    return await updateUser({state: state, id: user.id});
+export async function updateUserStateBySession(
+  sessionID: string,
+  state: UserState,
+) {
+  const user = await findOrCreateUserBySessionID(sessionID);
+  return await updateUser({ state, id: user.id });
 }
 
-export async function getAndUpdateRottenTomatoesScore(payload: ShowPayload): Promise<number> {
-    let processed: number = 0;
-    for (const show of payload.Shows) {
-        try {
-            let score = await getRottenTomatoScore(show.title, show.actors)
-            if(score != null) {
-                await updateShow({id: show.id, rottenTomatoScore: score })
-                processed += 1
-            }
-        }catch(error: any) {
-            console.log(`RottenTomatoesScore: title ${show.title} failed with error: `, error)
-        }
+export async function getAndUpdateRottenTomatoesScore(
+  payload: ShowPayload,
+): Promise<number> {
+  let processed: number = 0;
+  for (const show of payload.Shows) {
+    try {
+      const score = await getRottenTomatoScore(show.title, show.actors);
+      if (score != null) {
+        await updateShow({ id: show.id, rottenTomatoScore: score });
+        processed += 1;
+      }
+    } catch (error: any) {
+      console.log(
+        `RottenTomatoesScore: title ${show.title} failed with error: `,
+        error,
+      );
     }
+  }
 
-    return processed
+  return processed;
 }
 
-
-export async function getCompletedShowDataBySession(sessionID: string): Promise<number>  {
-    let user = await findOrCreateUserBySessionID(sessionID)
-    return getNumberOfUpdatedShowsByUser(user.id)
+export async function getCompletedShowDataBySession(
+  sessionID: string,
+): Promise<number> {
+  const user = await findOrCreateUserBySessionID(sessionID);
+  return getNumberOfUpdatedShowsByUser(user.id);
 }
 
-export async function getAndUpdateStarSignPicker(sessionID: string): Promise<number>  {
-    let user = await findOrCreateUserBySessionID(sessionID)
-    let topGenres = await getUsersTopGenres(user.id)
-    let averageRottenTomatoesScore = await getUserAverageRottenTomatoScore(user.id)
-    let starSigner = await getStarSign(topGenres, averageRottenTomatoesScore)
-   
-    await createOrUpdateUsersAIResponse({
-        ...starSigner,
-        rtScoreQuip: starSigner.RTScoreQuip,
-        userID: user.id,
-    })
+export async function getAndUpdateStarSignPicker(
+  sessionID: string,
+): Promise<number> {
+  const user = await findOrCreateUserBySessionID(sessionID);
+  const topGenres = await getUsersTopGenres(user.id);
+  const averageRottenTomatoesScore = await getUserAverageRottenTomatoScore(
+    user.id,
+  );
+  const starSigner = await getStarSign(topGenres, averageRottenTomatoesScore);
 
-    return await getTotalNumberOfShowsWatchedByUser(user.id)
+  await createOrUpdateUsersAIResponse({
+    ...starSigner,
+    rtScoreQuip: starSigner.RTScoreQuip,
+    userID: user.id,
+  });
+
+  return await getTotalNumberOfShowsWatchedByUser(user.id);
 }
 
-export async function getAndUpdateTVBFF(sessionID: string) : Promise<number>  {
-    let user = await findOrCreateUserBySessionID(sessionID)
-    let topGenres = await getUsersTopGenres(user.id)
-    let topShow = await getTop5ShowsByUser(user.id)
-    let showActors = await getActorsByShow(topShow[0].id)
-    let characters: string[] = showActors.map((actor)=> actor.characterName)
+export async function getAndUpdateTVBFF(sessionID: string): Promise<number> {
+  const user = await findOrCreateUserBySessionID(sessionID);
+  const topGenres = await getUsersTopGenres(user.id);
+  const topShow = await getTop5ShowsByUser(user.id);
+  const showActors = await getActorsByShow(topShow[0].id);
+  const characters: string[] = showActors.map((actor) => actor.characterName);
 
-    let characterPersonalities = await getPersonalities(characters.slice(0, 5), topShow[0].title)
-    let tvBFF = await getTVBFF(topGenres, characterPersonalities)
-    let firstShow = await getUsersFirstShow(user.id)
-    let mostRewatchedShowQuips = await getFirstAndMostRewatchedShowQuips(firstShow, topShow)
+  const characterPersonalities = await getPersonalities(
+    characters.slice(0, 5),
+    topShow[0].title,
+  );
+  const tvBFF = await getTVBFF(topGenres, characterPersonalities);
+  const firstShow = await getUsersFirstShow(user.id);
+  const mostRewatchedShowQuips = await getFirstAndMostRewatchedShowQuips(
+    firstShow,
+    topShow,
+  );
 
-    let actorImageURL = await getActorsImageByCharacterNameAndShow(
-        tvBFF.BFF as string,
-        topShow[0].id,
-    );
+  const actorImageURL = await getActorsImageByCharacterNameAndShow(
+    tvBFF.BFF as string,
+    topShow[0].id,
+  );
 
-    await createOrUpdateUsersAIResponse({
-        ...tvBFF,
-        ...mostRewatchedShowQuips,
-        bffImageURL: actorImageURL,
-        userID: user.id,
-    })
+  await createOrUpdateUsersAIResponse({
+    ...tvBFF,
+    ...mostRewatchedShowQuips,
+    bffImageURL: actorImageURL,
+    userID: user.id,
+  });
 
-    return await getTotalNumberOfShowsWatchedByUser(user.id)
+  return await getTotalNumberOfShowsWatchedByUser(user.id);
 }
 
 export async function getShowData(payload: ShowPayload): Promise<number> {
-    let jobShows: JobShow[] = []
-    let processed: number = 0;
-    console.log("> Number of shows:", payload?.Shows?.length);
+  const jobShows: JobShow[] = [];
+  let processed: number = 0;
+  console.log("> Number of shows:", payload?.Shows?.length);
 
-    for (const show of payload.Shows) {
-        try {
-            let showResponse = await tmdbClient.searchTVShows(show.title)
-            let showDetails = await tmdbClient.getTVShowDetails(showResponse.results[0].id)
-            let genres: string[] = [];
+  for (const show of payload.Shows) {
+    try {
+      const showResponse = await tmdbClient.searchTVShows(show.title);
+      const showDetails = await tmdbClient.getTVShowDetails(
+        showResponse.results[0].id,
+      );
+      const genres: string[] = [];
 
-            for (const genre of showDetails.genres) {
-                genres.push(genre.name)
-            }
+      for (const genre of showDetails.genres) {
+        genres.push(genre.name);
+      }
 
-            let actorNames: string[] = []
-            let actors: ActorInput[] = []
-            for (const currentActor of showDetails.aggregate_credits.cast) {
-                let actor = {
-                    name: currentActor.name,
-                    popularity: currentActor.popularity,
-                    characterName: (currentActor.roles && currentActor.roles.length > 0) ? currentActor.roles[0].character : "",
-                    imageURL:  currentActor.profile_path ? `https://image.tmdb.org/t/p/w1280/${currentActor.profile_path}` : ""
-                }
-                actors.push(actor)
-                actorNames.push(currentActor.name)
-            }
-            await createActorsAndConnectToShow(actors, show.id)
+      const actorNames: string[] = [];
+      const actors: ActorInput[] = [];
+      for (const currentActor of showDetails.aggregate_credits.cast) {
+        const actor = {
+          name: currentActor.name,
+          popularity: currentActor.popularity,
+          characterName:
+            currentActor.roles && currentActor.roles.length > 0
+              ? currentActor.roles[0].character
+              : "",
+          imageURL: currentActor.profile_path
+            ? `https://image.tmdb.org/t/p/w1280/${currentActor.profile_path}`
+            : "",
+        };
+        actors.push(actor);
+        actorNames.push(currentActor.name);
+      }
+      await createActorsAndConnectToShow(actors, show.id);
 
-            let updatedShow: UpdateShowInput = {
-                id: show.id,
-                genres: genres,
-                numberOfEpisodes: showDetails.number_of_episodes,
-                summary: showDetails.overview,
-                imageURL:  `https://image.tmdb.org/t/p/w1280/${showDetails.poster_path}` 
-            }
+      const updatedShow: UpdateShowInput = {
+        id: show.id,
+        genres,
+        numberOfEpisodes: showDetails.number_of_episodes,
+        summary: showDetails.overview,
+        imageURL: `https://image.tmdb.org/t/p/w1280/${showDetails.poster_path}`,
+      };
 
-            await updateShow(updatedShow)
+      await updateShow(updatedShow);
 
-            jobShows.push({
-                id: show.id, 
-                title: show.title, 
-                actors: actorNames,
-            })
-            processed += 1
-        }catch(error: any) {
-            console.log(`getShowData: show  title ${show.title} failed with error: `, error)
-        }
+      jobShows.push({
+        id: show.id,
+        title: show.title,
+        actors: actorNames,
+      });
+      processed += 1;
+    } catch (error: any) {
+      console.log(
+        `getShowData: show  title ${show.title} failed with error: `,
+        error,
+      );
     }
-    
-    payload.Shows = jobShows
-    await enqueueRottenTomatoes(payload)
-    return processed
+  }
+
+  payload.Shows = jobShows;
+  await enqueueRottenTomatoes(payload);
+  return processed;
 }
 
 function generateJobId(pageCount: number, sessionId: string): string {
-    return `PC${pageCount}-SID${sessionId}`;
+  return `PC${pageCount}-SID${sessionId}`;
 }
 
-export async function getAndDumpActivities(sessionID: string, dataKey: string): Promise<number> {
-    let page = 1;
-    const limit = 400;
-    let total: number = 0;
-    try {
-        const user = await findOrCreateUserBySessionID(sessionID)
-        const seenShows: Record<string, boolean>  = {}
-        let jobShows: JobShow[] = []
-        let totalShows: number = 0
-        const episodes: insertEpisodeInput[] = []
-        while (true) {
-            const activityResponse = await eye.getActivity({
-                dataKey: dataKey,
-                source: Source.Netflix,
-                limit: limit,
-                page: page,
+export async function getAndDumpActivities(
+  sessionID: string,
+  dataKey: string,
+): Promise<number> {
+  let page = 1;
+  const limit = 400;
+  let total: number = 0;
+  try {
+    const user = await findOrCreateUserBySessionID(sessionID);
+    const seenShows: Record<string, boolean> = {};
+    let jobShows: JobShow[] = [];
+    let totalShows: number = 0;
+    const episodes: insertEpisodeInput[] = [];
+    while (true) {
+      const activityResponse = await eye.getActivity({
+        dataKey,
+        source: Source.Netflix,
+        limit,
+        page,
+      });
+
+      total = total != 0 ? total : activityResponse.total;
+      if (activityResponse.data.length === 0) {
+        console.log("No more data to fetch.");
+        break;
+      }
+
+      console.log(
+        `Fetched page ${page} with ${activityResponse.data.length} activities.`,
+      );
+      for (const activity of activityResponse.data) {
+        const metadata = activity?.metadata as NetflixActivityMetadata;
+        const originalTitle = metadata.title;
+        const originalTitleSplit = originalTitle.split(":");
+        const title = originalTitleSplit[0];
+
+        if (originalTitleSplit.length >= 3) {
+          const parsedActivity: ParsedActivity | null =
+            parseActivityInput(originalTitle);
+          if (!parsedActivity) continue;
+
+          const updatedTitle = parsedActivity.movieTitle
+            ? parsedActivity.movieTitle
+            : title;
+          let updatedEpisodeNumber = parsedActivity.episodeNumber;
+          let updatedEpisodeTitle = parsedActivity.episodeTitle;
+
+          if (!parsedActivity.episodeNumber && parsedActivity.episodeTitle) {
+            [updatedEpisodeNumber, updatedEpisodeTitle] =
+              extractEpisodeNumberFromTitle(parsedActivity.episodeTitle);
+          }
+
+          const show = await upsertShow(title);
+          const userShow = await upsertUserShow(user.id, show.id);
+          const episode = {
+            title: updatedEpisodeTitle || "",
+            datePlayed: parseDate(metadata.date),
+            userShowID: userShow.id,
+            season: parsedActivity.seasonNumber,
+            episode: updatedEpisodeNumber,
+          };
+          episodes.push(episode);
+
+          if (!seenShows[title]) {
+            seenShows[title] = true;
+            jobShows.push({
+              id: show.id,
+              title: show.title,
+              actors: [],
             });
-
-            total = total != 0 ? total : activityResponse.total;
-            if (activityResponse.data.length === 0) {
-                console.log('No more data to fetch.');
-                break; 
-            }
-
-            console.log(`Fetched page ${page} with ${activityResponse.data.length} activities.`);
-            for (const activity of activityResponse.data) {
-                const metadata = activity?.metadata as NetflixActivityMetadata;
-                const originalTitle = metadata.title;
-                const originalTitleSplit = originalTitle.split(":");
-                const title = originalTitleSplit[0];
-        
-                if (originalTitleSplit.length >= 3) {
-                    const parsedActivity: ParsedActivity | null = parseActivityInput(originalTitle);
-                    if (!parsedActivity) continue;
-
-                    let updatedTitle = parsedActivity.movieTitle ? parsedActivity.movieTitle : title;
-                    let updatedEpisodeNumber = parsedActivity.episodeNumber;
-                    let updatedEpisodeTitle = parsedActivity.episodeTitle;
-
-                    if (!parsedActivity.episodeNumber && parsedActivity.episodeTitle ) {
-                        [updatedEpisodeNumber, updatedEpisodeTitle] = extractEpisodeNumberFromTitle( parsedActivity.episodeTitle);
-                    }
-                    
-                    let show = await upsertShow(title)
-                    let userShow = await upsertUserShow(user.id, show.id)
-                    let episode = {
-                        title: updatedEpisodeTitle || "",
-                        datePlayed: parseDate(metadata.date),
-                        userShowID: userShow.id,
-                        season: parsedActivity.seasonNumber,
-                        episode: updatedEpisodeNumber,
-                    }
-                    episodes.push(episode)
-
-                    if (!seenShows[title]) {
-                        seenShows[title] = true
-                        jobShows.push({
-                            id: show.id, 
-                            title: show.title, 
-                            actors: [],
-                        })
-                    }
-                }
-            }
-            
-            await batchInsertEpisodes(episodes)
-            let jobId = generateJobId(page, sessionID)
-
-            const showPayload: ShowPayload = {
-                SessionID: sessionID,
-                Shows: jobShows,
-                JobID: jobId,
-            };
-
-            await enqueueShowData(showPayload)
-            totalShows += jobShows.length
-            jobShows = []
-            page++;
+          }
         }
+      }
 
-        return totalShows
-    } catch (error: any) {
-        console.error('Failed to fetch data', error.message);
-        throw error; 
+      await batchInsertEpisodes(episodes);
+      const jobId = generateJobId(page, sessionID);
+
+      const showPayload: ShowPayload = {
+        SessionID: sessionID,
+        Shows: jobShows,
+        JobID: jobId,
+      };
+
+      await enqueueShowData(showPayload);
+      totalShows += jobShows.length;
+      jobShows = [];
+      page++;
     }
+
+    return totalShows;
+  } catch (error: any) {
+    console.error("Failed to fetch data", error.message);
+    throw error;
+  }
 }

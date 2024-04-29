@@ -16,6 +16,6 @@ export async function getPersonalities(characters: string[], topShow: string) {
       },
     ],
   });
-  
+
   return data?.choices[0]?.message?.content as string;
 }

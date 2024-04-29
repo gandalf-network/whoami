@@ -1,4 +1,6 @@
+import { AssistantName } from "@prisma/client";
 import OpenAI from "openai";
+import { AssistantCreateParams } from "openai/resources/beta/assistants";
 
 import {
   createAssistant,
@@ -15,8 +17,6 @@ import {
   TopGenres,
   TVShowQuips,
 } from "@/types";
-import { AssistantCreateParams } from "openai/resources/beta/assistants";
-import { AssistantName } from "@prisma/client";
 
 const openai = new OpenAI({
   apiKey: OPENAI_API_KEY,
@@ -89,6 +89,7 @@ async function callOpenAI(
   try {
     const savedAssistant = await getAssistantByName(assistantName);
     assistantID = savedAssistant.assistantID;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error: any) {
     // console.info(error);
 

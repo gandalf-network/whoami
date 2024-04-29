@@ -12,31 +12,36 @@ export type ActorInput = {
   popularity: number;
 };
 
-export async function createActorsAndConnectToShow(actors: ActorInput[], showID: string) {
+export async function createActorsAndConnectToShow(
+  actors: ActorInput[],
+  showID: string,
+) {
   try {
     await prisma.actor.createMany({
-      data: actors.map(actor => ({
+      data: actors.map((actor) => ({
         name: actor.name,
-        imageURL: actor.imageURL
+        imageURL: actor.imageURL,
       })),
       skipDuplicates: true,
     });
 
-    const actorNames = actors.map(actor => actor.name);
+    const actorNames = actors.map((actor) => actor.name);
     const createdActors = await prisma.actor.findMany({
       where: { name: { in: actorNames } },
-      select: { id: true, name: true }
+      select: { id: true, name: true },
     });
-    const actorMap = new Map(createdActors.map(actor => [actor.name, actor.id]));
+    const actorMap = new Map(
+      createdActors.map((actor) => [actor.name, actor.id]),
+    );
 
-    const showActors = actors.map(actor => {
+    const showActors = actors.map((actor) => {
       const actorID = actorMap.get(actor.name);
       if (!actorID) {
         throw new Error(`Failed to find ID for actor ${actor.name}`);
       }
       return {
-        actorID: actorID,
-        showID: showID,
+        actorID,
+        showID,
         characterName: actor.characterName,
         popularity: actor.popularity,
       };
@@ -44,14 +49,13 @@ export async function createActorsAndConnectToShow(actors: ActorInput[], showID:
 
     await prisma.showActor.createMany({
       data: showActors,
-      skipDuplicates: true, 
+      skipDuplicates: true,
     });
   } catch (error: any) {
     console.error("An error occurred:", error);
     throw error;
   }
 }
-
 
 export async function findActorByNameAndShow(name: string, showID: string) {
   const actorRes = await prisma.actor.findUnique({
@@ -84,13 +88,12 @@ export async function findActorByNameAndShow(name: string, showID: string) {
 export async function getActorIdsByNames(names: string[]) {
   const actors = await prisma.actor.findMany({
     where: {
-      name: { in: names }
+      name: { in: names },
     },
-    select: { id: true, name: true }  
+    select: { id: true, name: true },
   });
-  return actors;  
+  return actors;
 }
-
 
 export async function getActorsByShow(showID: string) {
   const actorsRes = await prisma.showActor.findMany({
@@ -107,7 +110,6 @@ export async function getActorsByShow(showID: string) {
 
   return actorsRes;
 }
-
 
 export async function getActorsImageByCharacterNameAndShow(
   name: string,

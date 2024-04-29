@@ -26,9 +26,6 @@ export const StarSignIcon = ({
     case "cancer":
       return <Cancer {...props} />;
 
-    case "constellation":
-      return <Constellation {...props} />;
-
     case "capricorn":
       return <Capricorn {...props} />;
 
@@ -57,6 +54,6 @@ export const StarSignIcon = ({
       return <Virgo {...props} />;
 
     default:
-      return null;
+      return <Constellation {...props} />;
   }
 };

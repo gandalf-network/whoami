@@ -1,6 +1,6 @@
 import { AssistantName } from "@prisma/client";
 import OpenAI from "openai";
-import { AssistantCreateParams } from "openai/resources/beta/assistants/assistants.mjs";
+import { AssistantCreateParams } from "openai/resources/beta/assistants";
 
 import {
   createAssistant,
@@ -89,14 +89,14 @@ async function callOpenAI(
   try {
     const savedAssistant = await getAssistantByName(assistantName);
     assistantID = savedAssistant.assistantID;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error: any) {
-    console.log(error);
+    // console.info(error);
 
     const assistant = await openai.beta.assistants.create(
       assistantCreateParams,
     );
     assistantID = assistant.id;
-
     await createAssistant({
       assistantID,
       name: assistantName,

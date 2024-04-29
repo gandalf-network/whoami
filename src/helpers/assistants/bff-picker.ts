@@ -1,4 +1,4 @@
-import { AssistantCreateParams } from "openai/resources/beta/assistants/assistants.mjs";
+import { AssistantCreateParams } from "openai/resources/beta/assistants";
 
 export const BFFAssistant: AssistantCreateParams = {
   name: "BFF Picker",

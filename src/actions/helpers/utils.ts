@@ -1,3 +1,9 @@
 export function standardizeName(name: string): string {
-  return name.split(" ").sort().join(" ").toLowerCase();
+  return name
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .split(" ")
+    .sort()
+    .join(" ")
+    .toLowerCase();
 }

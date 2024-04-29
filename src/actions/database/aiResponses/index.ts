@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
-type CreateOrUpdateUsersAIResponseInput = {
+export type CreateOrUpdateUsersAIResponseInput = {
   topGenresQuip?: string;
   starSign?: string;
   starSignQuip?: string;
@@ -10,10 +10,10 @@ type CreateOrUpdateUsersAIResponseInput = {
   personalityQuip?: string;
   firstTVShowQuip?: string;
   mostRewatchedTVShowQuip?: string;
-  bff?: string;
-  bffQuip?: string;
   bffImageURL?: string;
   userID: string;
+  BFF?: string;
+  BFFQuip?: string;
 };
 
 export async function createOrUpdateUsersAIResponse(
@@ -47,8 +47,8 @@ function getData(input: CreateOrUpdateUsersAIResponseInput) {
     ...(input.mostRewatchedTVShowQuip && {
       mostRewatchedTVShowQuip: input.mostRewatchedTVShowQuip,
     }),
-    ...(input.bff && { bff: input.bff }),
-    ...(input.bffQuip && { bffQuip: input.bffQuip }),
+    ...(input.BFF && { bff: input.BFF }),
+    ...(input.BFFQuip && { bffQuip: input.BFFQuip }),
     ...(input.bffImageURL && { bffImageURL: input.bffImageURL }),
   };
 }

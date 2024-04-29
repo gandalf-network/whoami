@@ -498,8 +498,9 @@ export type SdkFunctionWrapper = <T>(
   variables?: any,
 ) => Promise<T>;
 
-export type EyeInput = {
+export type EyeOptions = {
   privateKey: string;
+  baseURL: string;
 };
 
 const GetActivityDocumentString = print(GetActivityDocument);
@@ -507,17 +508,16 @@ const LookupActivityDocumentString = print(LookupActivityDocument);
 const GetAppByPublicKeyDocumentString = print(GetAppByPublicKeyDocument);
 const ec = new EC("secp256k1");
 export default class Eye {
-  private client: GraphQLClient = new GQLClient(
-    "https://sauron.gandalf.network/public/gql",
-  );
+  private client: GraphQLClient;
   private withWrapper: SdkFunctionWrapper = (action) => action();
   privateKey: string;
 
-  constructor(input: EyeInput) {
-    if (/^0x/i.test(input.privateKey)) {
-      input.privateKey = input.privateKey.slice(2);
+  constructor(opts: EyeOptions) {
+    if (/^0x/i.test(opts.privateKey)) {
+      opts.privateKey = opts.privateKey.slice(2);
     }
-    this.privateKey = input.privateKey;
+    this.client = new GQLClient(opts.baseURL);
+    this.privateKey = opts.privateKey;
   }
 
   private async signRequestBody(requestBody: any): Promise<string> {
@@ -583,9 +583,8 @@ export default class Eye {
         "query",
         variables,
       );
-      return {
-        data: data["getActivity"],
-      };
+
+      return data["getActivity"];
     } catch (error: any) {
       throw handleErrors(error);
     }

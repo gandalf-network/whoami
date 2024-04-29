@@ -1,3 +1,5 @@
+import { enqueueActivityData } from "@/actions/lib/queue/producers";
+
 export async function GET(req: Request) {
   const url = new URL(req.url);
   const searchParams = url.searchParams;
@@ -16,7 +18,7 @@ export async function GET(req: Request) {
     );
   }
 
-  // Add vercel function here
+  await enqueueActivityData(sessionID, dataKey);
 
   return new Response(JSON.stringify({ message: "Crunching you data..." }), {
     status: 200,

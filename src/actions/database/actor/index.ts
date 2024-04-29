@@ -5,42 +5,55 @@ import { standardizeName } from "@/actions/helpers/utils";
 import { Actor } from "@/types";
 const prisma = new PrismaClient();
 
-type CreateActorInput = {
+export type ActorInput = {
   name: string;
-  characterName: string;
-  showID: string;
   imageURL?: string;
+  characterName: string;
+  popularity: number;
 };
 
-export async function createAndConnectActorToShow(
-  createActorInput: CreateActorInput,
+export async function createActorsAndConnectToShow(
+  actors: ActorInput[],
+  showID: string,
 ) {
   try {
-    await prisma.show.update({
-      where: {
-        id: createActorInput.showID,
-      },
-      data: {
-        actors: {
-          create: {
-            characterName: createActorInput.characterName,
-            actor: {
-              connectOrCreate: {
-                where: {
-                  name: createActorInput.name,
-                },
-                create: {
-                  name: createActorInput.name,
-                  imageURL: createActorInput.imageURL,
-                },
-              },
-            },
-          },
-        },
-      },
+    await prisma.actor.createMany({
+      data: actors.map((actor) => ({
+        name: actor.name,
+        imageURL: actor.imageURL,
+      })),
+      skipDuplicates: true,
+    });
+
+    const actorNames = actors.map((actor) => actor.name);
+    const createdActors = await prisma.actor.findMany({
+      where: { name: { in: actorNames } },
+      select: { id: true, name: true },
+    });
+    const actorMap = new Map(
+      createdActors.map((actor) => [actor.name, actor.id]),
+    );
+
+    const showActors = actors.map((actor) => {
+      const actorID = actorMap.get(actor.name);
+      if (!actorID) {
+        throw new Error(`Failed to find ID for actor ${actor.name}`);
+      }
+      return {
+        actorID,
+        showID,
+        characterName: actor.characterName,
+        popularity: actor.popularity,
+      };
+    });
+
+    await prisma.showActor.createMany({
+      data: showActors,
+      skipDuplicates: true,
     });
   } catch (error: any) {
-    if (error.code !== "P2002") throw error;
+    console.error("An error occurred:", error);
+    throw error;
   }
 }
 
@@ -62,7 +75,6 @@ export async function findActorByNameAndShow(name: string, showID: string) {
   });
 
   if (!actorRes) throw new Error(`"actor ${name} not found`);
-
   const actor: Actor = {
     id: actorRes.id,
     name: actorRes.name,
@@ -71,6 +83,32 @@ export async function findActorByNameAndShow(name: string, showID: string) {
   };
 
   return actor;
+}
+
+export async function getActorIdsByNames(names: string[]) {
+  const actors = await prisma.actor.findMany({
+    where: {
+      name: { in: names },
+    },
+    select: { id: true, name: true },
+  });
+  return actors;
+}
+
+export async function getActorsByShow(showID: string) {
+  const actorsRes = await prisma.showActor.findMany({
+    where: { showID },
+    include: {
+      actor: true,
+    },
+    orderBy: {
+      popularity: "desc",
+    },
+  });
+
+  if (!actorsRes) throw new Error(`"actor ${name} not found`);
+
+  return actorsRes;
 }
 
 export async function getActorsImageByCharacterNameAndShow(
@@ -91,15 +129,13 @@ export async function getActorsImageByCharacterNameAndShow(
   let imageURL = "";
   for (const actor of actorRes) {
     const levenshteinDistance = levenshtein(
-      standardizeName(actor.actor.name),
+      standardizeName(actor.characterName),
       standardizeName(name),
     );
-    const threshold = 0.25 * Math.max(actor.actor.name.length, name.length);
-
+    const threshold = 0.25 * Math.max(actor.characterName.length, name.length);
     if (levenshteinDistance > threshold) {
       continue;
     }
-
     imageURL = actor.actor.imageURL ? actor.actor.imageURL : "";
   }
 

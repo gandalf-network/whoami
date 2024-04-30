@@ -38,7 +38,7 @@ export const TVBFFStory = ({
           <Heart className="absolute w-12 -top-5 -right-5 z-30" />
           <Cross className="absolute w-[250px] rotate-45 bottom-10 -left-[80%] z-10" />
           <img
-            src={imageURL}
+            src={imageURL || ""}
             alt="image"
             className="rounded-lg w-full h-full object-cover border-2 shadow-black shadow-[4px_4px] relative z-20 bg-background"
           />
@@ -91,7 +91,7 @@ export const TVBFFDownloadStory = ({ ...props }: StoryDownloadContentProps) => {
           <Heart className="absolute w-12 -top-5 -right-5 z-30" />
           <Cross className="absolute w-[250px] rotate-45 bottom-10 -left-[80%] z-10" />
           <img
-            src={imageURL}
+            src={imageURL || ""}
             alt="image"
             className="rounded-lg w-full h-full object-cover border-2 shadow-black shadow-[4px_4px] relative z-20"
           />

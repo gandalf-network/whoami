@@ -82,6 +82,7 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
     const sessionId = getSessionId();
 
     if (dataKey && sessionId) {
+      console.log({ dataKey, sessionId });
       // this will make a request to the server
       await fetch(`/api/callback?sessionID=${sessionId}&dataKey=${dataKey}`);
 
@@ -89,6 +90,8 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
       const timer = setInterval(async () => {
         const stats = await getStats(sessionId);
         const reportCard = await getReportCard(sessionId);
+
+        console.log({ stats, reportCard });
 
         if (stats && reportCard) {
           setStats(stats);

@@ -1,18 +1,17 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
+import { createOrGetSessionId } from "@/helpers/storage";
 import { openLinkInNewTab } from "@/helpers/utils";
 import { useGandalfConnect } from "@/hooks/use-connect";
 import { useIsMobile } from "@/hooks/use-is-mobile";
-import { useSession } from "@/hooks/use-session";
 import { ButtonProps } from "@/types";
 
 import { Button } from "./button";
 
 export const StartButton = (props: ButtonProps) => {
-  useSession();
-
   const { url, loading } = useGandalfConnect();
 
   const isMobile = useIsMobile();
@@ -26,6 +25,10 @@ export const StartButton = (props: ButtonProps) => {
       router.push("/connect");
     }
   };
+
+  useEffect(() => {
+    createOrGetSessionId();
+  }, []);
 
   if (url && isMobile) {
     return (

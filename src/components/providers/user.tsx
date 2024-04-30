@@ -1,11 +1,5 @@
 "use client";
-
-import { useEffect, useState } from "react";
-
-import { getReportCard, getStats } from "@/actions";
 import { createContext } from "@/helpers/context";
-import { ReportsCardMockedData, TVStatsMockedData } from "@/helpers/mocked";
-import { createOrGetSessionId } from "@/helpers/storage";
 import { useSession } from "@/hooks/use-session";
 import { UserReportCardType, UserStatsType } from "@/types";
 
@@ -26,25 +20,9 @@ export const [UserDataContextProvider, useUserDataContext] =
 export const UserDataProvider = (props: UserDataProviderProps) => {
   const { children } = props;
 
-  const sessionId = createOrGetSessionId();
-
-  const { user } = useSession({ loadOnMount: true, refetchInterval: 5000 });
-
-  const [stats, setStats] = useState<UserStatsType | null>(TVStatsMockedData);
-
-  const [reportCard, setReportCard] = useState<UserReportCardType | null>(
-    ReportsCardMockedData,
-  );
+  const { stats, reportCard } = useSession();
 
   const loading = !stats || !reportCard;
-
-  useEffect(() => {
-    // ...
-    if (user && user?.state === "COMPLETED") {
-      getStats(sessionId).then(setStats);
-      getReportCard(sessionId).then(setReportCard);
-    }
-  }, [user?.state]);
 
   return (
     <UserDataContextProvider value={{ stats, reportCard }}>

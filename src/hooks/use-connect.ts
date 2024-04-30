@@ -14,9 +14,7 @@ export const useGandalfConnect = () => {
 
     const res = new Connect({
       publicKey: process.env.NEXT_PUBLIC_GANDALF_PUBLIC_KEY as string,
-      redirectURL:
-        process.env.NEXT_PUBLIC_GANDALF_REDIRECT_URL ||
-        `${getEnvDetails().url}/stories`,
+      redirectURL: `${getEnvDetails().url}/stories`,
       services: { netflix: true },
     });
     return res;

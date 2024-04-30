@@ -5,7 +5,6 @@ import { LandingScreen } from "@/components/screens/landing";
 import { UserStories } from "@/components/stories";
 import { Container } from "@/components/themed";
 import { buildOgImageUrl, sharedMetadata } from "@/helpers/metadata";
-import { ReportsCardMockedData, TVStatsMockedData } from "@/helpers/mocked";
 import { AllStoryIds } from "@/types";
 
 type PageProps = {
@@ -44,21 +43,21 @@ export async function generateMetadata(
     ).includes(story)
   ) {
     // @note: this is the mocked data and should be replaced with the actual data
-    const {
-      firstTvShow,
-      mostWatchedTvShow,
-      watchHistory,
-      genreDistribution,
-      yourCrossoverStar,
-    } = TVStatsMockedData;
-
     // const {
     //   firstTvShow,
     //   mostWatchedTvShow,
     //   watchHistory,
     //   genreDistribution,
     //   yourCrossoverStar,
-    // } = await getStats(id);
+    // } = TVStatsMockedData;
+
+    const {
+      firstTvShow,
+      mostWatchedTvShow,
+      watchHistory,
+      genreDistribution,
+      yourCrossoverStar,
+    } = await getStats(id);
 
     switch (story) {
       case "firstTvShow":
@@ -121,9 +120,9 @@ export async function generateMetadata(
     ).includes(story)
   ) {
     // @note: this is the mocked data and should be replaced with the actual data
-    const { personality, tvBFF, starSign } = ReportsCardMockedData;
+    // const { personality, tvBFF, starSign } = ReportsCardMockedData;
 
-    // const { personality, tvBFF, starSign } = await getReportCard(id);
+    const { personality, tvBFF, starSign } = await getReportCard(id);
 
     switch (story) {
       case "rottenTomatoesScore":

@@ -48,7 +48,9 @@ export const FirstTVShowStory = ({
         <div>
           <Text className="text-xl font-bold">{firstTvShow.show?.title}</Text>
           <Text className="text-base my-3 font-medium">
-            {getDate(firstTvShow.show?.dateFirstPlayed).format("MMMM DD, YYYY")}
+            {getDate(firstTvShow.show?.dateFirstPlayed || "").format(
+              "MMMM DD, YYYY",
+            )}
           </Text>
           <Text className="text-base" font="caption">
             {firstTvShow.quip}
@@ -101,7 +103,9 @@ export const FirstTVShowDownloadStory = ({
           </Text>
           <Text className="text-muted text-base">Date watched</Text>
           <Text className="text-xl font-semibold">
-            {getDate(firstTvShow.show?.dateFirstPlayed).format("MMMM DD, YYYY")}
+            {getDate(firstTvShow.show?.dateFirstPlayed || "").format(
+              "MMMM DD, YYYY",
+            )}
           </Text>
         </div>
       </div>

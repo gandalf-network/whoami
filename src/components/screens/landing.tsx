@@ -36,6 +36,10 @@ export const LandingScreen = () => {
           <StartButton className="mt-8 uppercase font-semibold">
             Start
           </StartButton>
+
+          <p className="text-center font-regular my-8 text-sm opacity-60">
+            Available for only iPhones & iPads <br /> Android coming soon
+          </p>
         </div>
 
         <div className="flex-center-y gap-x-2 mb-8">

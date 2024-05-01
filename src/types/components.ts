@@ -28,6 +28,7 @@ export interface ButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
   variant?: "primary" | "link";
   size?: "sm" | "md" | "lg" | "icon";
   loading?: boolean;
+  disabled?: boolean;
 }
 
 export interface ShareButtonProps extends ButtonProps {

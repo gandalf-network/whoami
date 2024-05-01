@@ -7,7 +7,7 @@ import instantiateWorkers from "./src/actions/worker";
 
 const dev = process.env.NODE_ENV !== "production";
 const hostname = "localhost";
-const port = Number(process.env.PORT) || 3000;
+const port = Number(process.env.PORT) || 3001;
 
 const app = next({ dev, hostname, port });
 const handle = app.getRequestHandler();

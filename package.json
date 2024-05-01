@@ -4,11 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "ts-node server.ts",
-    "build": "npm run prisma-migrate && next build",
-    "start": "npm run prisma-migrate && && next start",
+    "build": "npm run prisma-deploy && next build",
+    "start": "npm run prisma-deploy && && next start",
     "lint": "next lint",
     "prisma-migrate": "npx prisma migrate dev",
-    "prisma-generate": "npx prisma generate"
+    "prisma-generate": "npx prisma generate",
+    "prisma-deploy": "npx prisma migrate deploy"
   },
   "dependencies": {
     "@enipx/react-insta-stories": "^1.0.2",

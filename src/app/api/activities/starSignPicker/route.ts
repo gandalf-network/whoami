@@ -5,7 +5,7 @@ export async function POST(req: Request) {
     sessionID: string;
   };
   try {
-    let processedData =  await getAndUpdateStarSignPicker(sessionID);
+    const processedData = await getAndUpdateStarSignPicker(sessionID);
     return new Response(
       JSON.stringify({ message: "Job processed successfully", processedData }),
       {

@@ -5,7 +5,7 @@ export async function POST(req: Request) {
     sessionID: string;
   };
   try {
-    let processedData = await getAndUpdateTVBFF(sessionID);
+    const processedData = await getAndUpdateTVBFF(sessionID);
     return new Response(
       JSON.stringify({ message: "Job processed successfully", processedData }),
       {

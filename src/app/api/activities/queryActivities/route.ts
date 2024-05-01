@@ -6,7 +6,7 @@ export async function POST(req: Request) {
     dataKey: string;
   };
   try {
-    let totalData = await getAndDumpActivities(sessionID, dataKey);
+    const totalData = await getAndDumpActivities(sessionID, dataKey);
     return new Response(
       JSON.stringify({ message: "Job processed successfully", totalData }),
       {

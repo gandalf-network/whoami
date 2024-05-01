@@ -6,10 +6,7 @@ import {
   queueNames,
 } from "@/actions/lib/queue/queues";
 
-import {
-  getCompletedShowDataBySession,
-  updateUserStateBySession,
-} from "..";
+import { getCompletedShowDataBySession, updateUserStateBySession } from "..";
 import {
   ActivityDataPayload,
   ShowPayload,
@@ -37,21 +34,23 @@ const queryActivitiesWorker = async () => {
     async (job: Job<ActivityDataPayload>) => {
       try {
         const { sessionID } = job.data;
-        const url = `${process.env.VERCEL_BASE_URL}/api/activities/queryActivities`
+        const url = `${process.env.VERCEL_BASE_URL}/api/activities/queryActivities`;
         const response = await fetch(url, {
-          method: 'POST', 
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
-          body: JSON.stringify(job.data), 
+          body: JSON.stringify(job.data),
         });
-      
+
         if (!response.ok) {
           const message = `An error has occurred: ${response.status}`;
           throw new Error(message);
         }
-       
-        var { totalData } = await response.json() as { totalData: number};
+
+        const { totalData } = (await response.json()) as {
+          totalData: number;
+        };
         await setSessionIndex(sessionID, sessionStates.PROCESSING);
         await updateUserStateBySession(sessionID, UserState.CRUNCHING_DATA);
         await setAllQueueTotalJobs(sessionID, totalData);
@@ -73,21 +72,23 @@ const crawlRottenTomatoeWorker = () => {
     async (job: Job<ShowPayload>) => {
       try {
         const showPayload = job.data;
-        const url = `${process.env.VERCEL_BASE_URL}/api/activities/queryRottenTomatoes`
+        const url = `${process.env.VERCEL_BASE_URL}/api/activities/queryRottenTomatoes`;
         const response = await fetch(url, {
-          method: 'POST', 
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
-          body: JSON.stringify(job.data), 
+          body: JSON.stringify(job.data),
         });
-      
+
         if (!response.ok) {
           const message = `An error has occurred: ${response.status}`;
           throw new Error(message);
         }
 
-        var { processedData } = await response.json() as { processedData: number};
+        const { processedData } = (await response.json()) as {
+          processedData: number;
+        };
         const queueName = queueNames.CrawlRottenTomatoes as QueueName;
         await incrementCompletedJobs(
           showPayload.SessionID,
@@ -108,20 +109,20 @@ const queryShowDataWorker = () => {
     async (job: Job<ShowPayload>) => {
       try {
         const showPayload = job.data;
-        const url = `${process.env.VERCEL_BASE_URL}/api/activities/queryShowData`
+        const url = `${process.env.VERCEL_BASE_URL}/api/activities/queryShowData`;
         const response = await fetch(url, {
-          method: 'POST', 
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
-          body: JSON.stringify(job.data), 
+          body: JSON.stringify(job.data),
         });
-      
+
         if (!response.ok) {
           const message = `An error has occurred: ${response.status}`;
           throw new Error(message);
         }
-        
+
         const processedData = await getCompletedShowDataBySession(
           showPayload.SessionID,
         );
@@ -145,21 +146,23 @@ const starSignPickerWorker = () => {
     async (job: Job) => {
       try {
         const { sessionID } = job.data;
-        const url = `${process.env.VERCEL_BASE_URL}/api/activities/starSignPicker`
+        const url = `${process.env.VERCEL_BASE_URL}/api/activities/starSignPicker`;
         const response = await fetch(url, {
-          method: 'POST', 
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
-          body: JSON.stringify(job.data), 
+          body: JSON.stringify(job.data),
         });
-      
+
         if (!response.ok) {
           const message = `An error has occurred: ${response.status}`;
           throw new Error(message);
         }
 
-        var { processedData } = await response.json() as { processedData: number};
+        const { processedData } = (await response.json()) as {
+          processedData: number;
+        };
         const queueName = queueNames.StarSignPicker as QueueName;
         await incrementCompletedJobs(sessionID, queueName, processedData);
       } catch (error) {
@@ -176,21 +179,23 @@ const tvBFFWorker = () => {
     async (job: Job) => {
       try {
         const { sessionID } = job.data;
-        const url = `${process.env.VERCEL_BASE_URL}/api/activities/tvBFF`
+        const url = `${process.env.VERCEL_BASE_URL}/api/activities/tvBFF`;
         const response = await fetch(url, {
-          method: 'POST', 
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
-          body: JSON.stringify(job.data), 
+          body: JSON.stringify(job.data),
         });
-      
+
         if (!response.ok) {
           const message = `An error has occurred: ${response.status}`;
           throw new Error(message);
         }
 
-        var { processedData } = await response.json() as { processedData: number};
+        const { processedData } = (await response.json()) as {
+          processedData: number;
+        };
         const queueName = queueNames.TVBFF as QueueName;
         await incrementCompletedJobs(sessionID, queueName, processedData);
       } catch (error) {

@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "nodemon",
     "build": "npm run prisma-generate && npm run prisma-deploy && next build && tsc --project tsconfig.server.json",
-    "start": "npm run prisma-generate && npm run prisma-deploy && cross-env NODE_ENV=production node dist/server.js",
+    "start": "npm run prisma-generate && npm run prisma-deploy && cross-env NODE_ENV=production node dist/fugazi.js",
     "lint": "next lint",
     "prisma-migrate": "npx prisma migrate dev",
     "prisma-generate": "npx prisma generate",

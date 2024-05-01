@@ -4,12 +4,13 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "npm run prisma-generate && next build",
-    "start": "npm run prisma-generate && next start",
     "server": "ts-node server.ts",
+    "build": "npm run prisma-generate && npm run prisma-deploy && next build",
+    "start": "npm run prisma-generate && npm run prisma-deploy && next start",
     "lint": "next lint",
     "prisma-migrate": "npx prisma migrate dev",
-    "prisma-generate": "npx prisma generate"
+    "prisma-generate": "npx prisma generate",
+    "prisma-deploy": "npx prisma migrate deploy"
   },
   "dependencies": {
     "@enipx/react-insta-stories": "^1.0.2",
@@ -42,7 +43,7 @@
     "module-alias": "^2.2.3",
     "next": "14.1.0",
     "next-themes": "^0.2.1",
-    "openai": "^4.33.0",
+    "openai": "^4.39.0",
     "qr-code-styling": "^1.6.0-rc.1",
     "react": "^18",
     "react-dom": "^18",

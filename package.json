@@ -7,7 +7,7 @@
     "build": "npm run prisma-migrate && next build",
     "start": "npm run prisma-migrate && && next start",
     "lint": "next lint",
-    "prisma-migrate": "npx prisma migrate dev --name",
+    "prisma-migrate": "npx prisma migrate dev",
     "prisma-generate": "npx prisma generate"
   },
   "dependencies": {

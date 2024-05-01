@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "ts-node server.ts",
-    "build": "npm run prisma-deploy && next build",
-    "start": "npm run prisma-deploy && && next start",
+    "build": "npm run prisma-generate && npm run prisma-deploy && next build",
+    "start": "npm run prisma-generate && npm run prisma-deploy && && next start",
     "lint": "next lint",
     "prisma-migrate": "npx prisma migrate dev",
     "prisma-generate": "npx prisma generate",

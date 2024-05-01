@@ -5,13 +5,14 @@
   "scripts": {
     "dev": "ts-node server.ts",
     "build": "npm run prisma-generate && npm run prisma-deploy && next build",
-    "start": "npm run prisma-generate && npm run prisma-deploy && next start",
+    "start": "npm run prisma-generate && npm run prisma-deploy && cross-env NODE_ENV=production node dist/server.js",
     "lint": "next lint",
     "prisma-migrate": "npx prisma migrate dev",
     "prisma-generate": "npx prisma generate",
     "prisma-deploy": "npx prisma migrate deploy"
   },
   "dependencies": {
+    "cross-env": "^7.0.3",
     "@enipx/react-insta-stories": "^1.0.2",
     "@gandalf-network/connect": "^1.0.5",
     "@prisma/client": "^5.13.0",

@@ -1,8 +1,15 @@
 import instantiateWorkers from "@/actions/worker";
 
 export async function GET(req: Request) {
+  const url = new URL(req.url);
+  console.log(url);
+
   // instantiate workers
-  instantiateWorkers();
+  try {
+    instantiateWorkers();
+  } catch (error) {
+    console.log(error);
+  }
 
   return new Response(JSON.stringify({ message: "Worker initiate" }), {
     status: 200,

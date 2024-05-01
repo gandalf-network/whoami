@@ -247,7 +247,7 @@ export async function getAndDumpActivities(
         page,
       });
 
-      total = total != 0 ? total : activityResponse.total;
+      total = total !== 0 ? total : activityResponse.total;
       if (activityResponse.data.length === 0) {
         console.log("No more data to fetch.");
         break;

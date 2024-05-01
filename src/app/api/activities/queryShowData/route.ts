@@ -4,9 +4,9 @@ import { ShowPayload } from "@/actions/lib/queue/producers";
 export async function POST(req: Request) {
   const payload = (await req.json()) as ShowPayload;
   try {
-    await getShowData(payload);
+    const processedData = await getShowData(payload);
     return new Response(
-      JSON.stringify({ message: "Job processed successfully" }),
+      JSON.stringify({ message: "Job processed successfully", processedData }),
       {
         status: 200,
         headers: {

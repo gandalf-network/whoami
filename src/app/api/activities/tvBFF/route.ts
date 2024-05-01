@@ -1,11 +1,13 @@
 import { getAndUpdateTVBFF } from "@/actions";
 
 export async function POST(req: Request) {
-  const payload = await req.json();
+  const { sessionID } = (await req.json()) as {
+    sessionID: string;
+  };
   try {
-    await getAndUpdateTVBFF(payload);
+    const processedData = await getAndUpdateTVBFF(sessionID);
     return new Response(
-      JSON.stringify({ message: "Job processed successfully" }),
+      JSON.stringify({ message: "Job processed successfully", processedData }),
       {
         status: 200,
         headers: {

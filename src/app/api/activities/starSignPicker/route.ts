@@ -1,11 +1,13 @@
 import { getAndUpdateStarSignPicker } from "@/actions";
 
 export async function POST(req: Request) {
-  const payload = await req.json();
+  const { sessionID } = (await req.json()) as {
+    sessionID: string;
+  };
   try {
-    await getAndUpdateStarSignPicker(payload);
+    let processedData =  await getAndUpdateStarSignPicker(sessionID);
     return new Response(
-      JSON.stringify({ message: "Job processed successfully" }),
+      JSON.stringify({ message: "Job processed successfully", processedData }),
       {
         status: 200,
         headers: {

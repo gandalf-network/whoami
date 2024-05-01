@@ -29,8 +29,18 @@ export const StartButton = (props: ButtonProps) => {
     }
   };
 
+  const triggerJob = async () => {
+    try {
+      await fetch("/api/worker");
+      console.log("job successful");
+    } catch {
+      console.log("job failed");
+    }
+  };
+
   useEffect(() => {
     createOrGetSessionId();
+    triggerJob();
   }, []);
 
   if (url && isMobile) {

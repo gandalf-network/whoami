@@ -3,7 +3,6 @@
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
-import instantiateWorkers from "@/actions/worker";
 import { createOrGetSessionId } from "@/helpers/storage";
 import { openLinkInNewTab } from "@/helpers/utils";
 import { useIsAndroid } from "@/hooks/use-android";
@@ -32,7 +31,6 @@ export const StartButton = (props: ButtonProps) => {
 
   useEffect(() => {
     createOrGetSessionId();
-    instantiateWorkers();
   }, []);
 
   if (url && isMobile) {

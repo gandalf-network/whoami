@@ -1,6 +1,6 @@
 import 'module-alias/register';
 import { parse } from "url"
-import { IncomingMessage, ServerResponse, createServer } from "http"
+import { createServer } from "http"
 import instantiateWorkers from './src/actions/worker';
 import next from "next"
  
@@ -19,7 +19,6 @@ app.prepare().then(() => {
     const parsedUrl = parse(req.url!, true);
     handle(req, res, parsedUrl);
   }).listen(port);
-
   console.log(
     `> Server listening at http://localhost:${port} as ${
       dev ? "development" : process.env.NODE_ENV

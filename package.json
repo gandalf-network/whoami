@@ -8,7 +8,7 @@
     "start": "npm run prisma-generate && next start",
     "server": "ts-node server.ts",
     "lint": "next lint",
-    "db-migrate": "npx prisma migrate dev --name",
+    "prisma-migrate": "npx prisma migrate dev",
     "prisma-generate": "npx prisma generate"
   },
   "dependencies": {

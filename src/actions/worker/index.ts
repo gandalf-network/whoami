@@ -34,7 +34,7 @@ const queryActivitiesWorker = async () => {
     async (job: Job<ActivityDataPayload>) => {
       try {
         const { sessionID } = job.data;
-        const url = `${process.env.VERCEL_BASE_URL}/api/activities/queryActivities`;
+        const url = `${process.env.NEXT_PUBLIC_VERCEL_URL}/api/activities/queryActivities`;
         const response = await fetch(url, {
           method: "POST",
           headers: {
@@ -72,7 +72,7 @@ const crawlRottenTomatoeWorker = () => {
     async (job: Job<ShowPayload>) => {
       try {
         const showPayload = job.data;
-        const url = `${process.env.VERCEL_BASE_URL}/api/activities/queryRottenTomatoes`;
+        const url = `${process.env.NEXT_PUBLIC_VERCEL_URL}/api/activities/queryRottenTomatoes`;
         const response = await fetch(url, {
           method: "POST",
           headers: {
@@ -109,7 +109,7 @@ const queryShowDataWorker = () => {
     async (job: Job<ShowPayload>) => {
       try {
         const showPayload = job.data;
-        const url = `${process.env.VERCEL_BASE_URL}/api/activities/queryShowData`;
+        const url = `${process.env.NEXT_PUBLIC_VERCEL_URL}/api/activities/queryShowData`;
         const response = await fetch(url, {
           method: "POST",
           headers: {
@@ -146,7 +146,7 @@ const starSignPickerWorker = () => {
     async (job: Job) => {
       try {
         const { sessionID } = job.data;
-        const url = `${process.env.VERCEL_BASE_URL}/api/activities/starSignPicker`;
+        const url = `${process.env.NEXT_PUBLIC_VERCEL_URL}/api/activities/starSignPicker`;
         const response = await fetch(url, {
           method: "POST",
           headers: {
@@ -179,7 +179,7 @@ const tvBFFWorker = () => {
     async (job: Job) => {
       try {
         const { sessionID } = job.data;
-        const url = `${process.env.VERCEL_BASE_URL}/api/activities/tvBFF`;
+        const url = `${process.env.NEXT_PUBLIC_VERCEL_URL}/api/activities/tvBFF`;
         const response = await fetch(url, {
           method: "POST",
           headers: {

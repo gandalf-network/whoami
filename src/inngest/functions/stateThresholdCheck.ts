@@ -46,6 +46,7 @@ async function stateThresholdCheck() {
         }
       }
     }
+    return sessionIDs
   } catch (error) {
     console.error("Error processing job:", error);
   }
@@ -53,17 +54,9 @@ async function stateThresholdCheck() {
 
 export const stateThresholdCheckTask = inngest.createFunction(
   { id: "state-threshold-check" },
-  { cron: "*/1 * * * *" },
+  { cron: "10 * * * *" },
   async ({ event }) => {
     const result = await stateThresholdCheck();
-    const executeEveryTenSeconds = () => {
-      stateThresholdCheck();
-      setTimeout(executeEveryTenSeconds, 10000);
-    };
-
-    executeEveryTenSeconds();
-
-    await new Promise((resolve) => setTimeout(resolve, 60000));
-    return { event, processed: result };
+    return { event, sessions: result };
   },
 );

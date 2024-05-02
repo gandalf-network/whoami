@@ -1,12 +1,12 @@
 /* eslint-disable @next/next/no-img-element */
 import { Circle, GridDots, Rectangle } from "@/components/icon";
+import { useUserData } from "@/components/providers/user";
 import {
   PageHeader,
   ShareButton,
   StoryDownloadContainer,
   Text,
 } from "@/components/themed";
-import { TVStatsMockedData } from "@/helpers/mocked";
 import { getStoryDownloadSelector } from "@/helpers/story";
 import { cn, formatStringArrayToJSX } from "@/helpers/utils";
 import { StoryContentProps, StoryDownloadContentProps } from "@/types";
@@ -16,7 +16,9 @@ export const CrossOverStarStory = ({
   className,
   ...props
 }: StoryContentProps) => {
-  const { yourCrossoverStar } = TVStatsMockedData;
+  const { stats } = useUserData();
+
+  const crossoverStar = stats?.yourCrossoverStar;
 
   return (
     <div
@@ -40,23 +42,23 @@ export const CrossOverStarStory = ({
             strokeWidth={1.5}
           />
           <img
-            src={yourCrossoverStar.imageURL}
+            src={crossoverStar.imageURL}
             alt="image"
             className="bg-background rounded-full w-full h-full object-cover border-2 shadow-black shadow-[6px_6px] relative z-10"
           />
         </div>
 
         <div className="mt-8">
-          <Text className="text-xl font-bold">{yourCrossoverStar.name}</Text>
+          <Text className="text-xl font-bold">{crossoverStar.name}</Text>
           <Text className="text-base my-3 font-medium">
             Has appeared in{" "}
             <strong>
-              {yourCrossoverStar.totalAppearance} show
-              {yourCrossoverStar.totalAppearance > 1 ? "s " : " "}
+              {crossoverStar.topShows.length} show
+              {crossoverStar.topShows.length > 1 ? "s " : " "}
             </strong>
             you&apos;ve watched, including{" "}
             {formatStringArrayToJSX({
-              strings: yourCrossoverStar.topShows,
+              strings: crossoverStar.topShows,
               className: "font-bold",
             })}
           </Text>
@@ -80,7 +82,9 @@ export const CrossOverStarStory = ({
 export const CrossOverStarDownloadStory = ({
   ...props
 }: StoryDownloadContentProps) => {
-  const { yourCrossoverStar } = TVStatsMockedData;
+  const { stats } = useUserData();
+
+  const crossoverStar = stats?.yourCrossoverStar;
 
   return (
     <StoryDownloadContainer
@@ -95,7 +99,7 @@ export const CrossOverStarDownloadStory = ({
           <Circle className="absolute w-16 -top-0 -left-0" />
           <Rectangle className="absolute w-12 bottom-6 -right-2 z-20" />
           <img
-            src={yourCrossoverStar.imageURL}
+            src={crossoverStar.imageURL}
             alt="image"
             className="bg-background rounded-full w-full h-full object-cover border-2 shadow-black shadow-[6px_6px] relative z-10"
           />
@@ -103,16 +107,16 @@ export const CrossOverStarDownloadStory = ({
 
         <div className="mt-8">
           <Text className="text-2xl font-bold mt-2 mb-4">
-            {yourCrossoverStar.name}
+            {crossoverStar.name}
           </Text>
           <Text className="font-medium text-base">Has appeared in</Text>
           <Text className="text-xl font-semibold">
-            {yourCrossoverStar.totalAppearance} shows
+            {crossoverStar.topShows.length} shows
           </Text>
           <Text className="text-lg mt-4 font-medium">
             I’ve watched including{" "}
             {formatStringArrayToJSX({
-              strings: yourCrossoverStar.topShows,
+              strings: crossoverStar.topShows,
               className: "",
             })}
           </Text>

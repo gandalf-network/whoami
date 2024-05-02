@@ -1,5 +1,6 @@
-import { AllStoryIds } from "@/types";
+import { AllStoryIds, TopGenres } from "@/types";
 
+import { createOrGetSessionId } from "./storage";
 import { getEnvDetails } from "./utils";
 
 export const rottenTomatoeImages = {
@@ -46,7 +47,9 @@ export const getRottenTomatoeScoreText = (score: number) => {
 export const getStoryLink = (storyId: AllStoryIds) => {
   const { url } = getEnvDetails();
 
-  return `${url}/stories/?id=${storyId}`;
+  const sessionID = createOrGetSessionId();
+
+  return `${url}/stories?story=${storyId}&id=${sessionID}`;
 };
 
 // get story index
@@ -86,4 +89,21 @@ export const getStoryDownloadSelector = (storyId: AllStoryIds) => {
     id,
     selector: `#${id}`,
   };
+};
+
+export const getHighestPercentageGenre = (genres: TopGenres) => {
+  // Initialize variables to first genre in the array
+  let highestGenre = genres?.[0];
+
+  // Iterate over the array of genres
+  genres.forEach((genre) => {
+    // If the current genre's percentage is higher than the current highest percentage
+    if (genre.percentage > highestGenre.percentage) {
+      // Update the highest percentage and corresponding genre
+      highestGenre = genre;
+    }
+  });
+
+  // Return the genre with the highest percentage
+  return highestGenre;
 };

@@ -1,12 +1,12 @@
 /* eslint-disable @next/next/no-img-element */
 import { NonagramStar, PentagramStar } from "@/components/icon";
+import { useUserData } from "@/components/providers/user";
 import {
   PageHeader,
   ShareButton,
   StoryDownloadContainer,
   Text,
 } from "@/components/themed";
-import { TVStatsMockedData } from "@/helpers/mocked";
 import { getStoryDownloadSelector } from "@/helpers/story";
 import { cn } from "@/helpers/utils";
 import { StoryContentProps, StoryDownloadContentProps } from "@/types";
@@ -16,7 +16,15 @@ export const MostRewatchTVShowStory = ({
   className,
   ...props
 }: StoryContentProps) => {
-  const { mostWatchedTvShow } = TVStatsMockedData;
+  const { stats } = useUserData();
+
+  const mostWatchedTvShow = stats?.mostWatchedTvShow;
+
+  const watchCount = mostWatchedTvShow.show?.watchCount;
+  const numberOfEpisodes = mostWatchedTvShow.show?.numberOfEpisodes;
+
+  const hasCompletedShow =
+    watchCount && numberOfEpisodes ? watchCount >= numberOfEpisodes : false;
 
   return (
     <div
@@ -29,31 +37,40 @@ export const MostRewatchTVShowStory = ({
 
       <div className="gap-y-10 story-content">
         <Text className="text-2xl uppercase" font="heading">
-          Most Rewatched TV Show
+          Most Watched TV Show
         </Text>
 
         <div className="relative p-0 w-52 h-72">
           <NonagramStar className="absolute w-12 -top-4 -right-8 z-30" />
           <PentagramStar className="absolute w-24 -bottom-10 -left-12 z-10" />
           <img
-            src={mostWatchedTvShow.imageURL}
+            src={mostWatchedTvShow.show?.imageURL}
             alt="image"
             className="rounded-lg w-full h-full object-cover border-2 shadow-black shadow-[4px_4px] relative z-20 bg-background"
           />
         </div>
 
         <div>
-          <Text className="text-xl font-bold">{mostWatchedTvShow.title}</Text>
+          <Text className="text-xl font-bold">
+            {mostWatchedTvShow.show?.title}
+          </Text>
           <Text className="text-base my-3 font-medium">
-            You have played{" "}
-            <strong>
-              S{mostWatchedTvShow.season}:E
-              {mostWatchedTvShow.episode}
-            </strong>{" "}
-            {mostWatchedTvShow.numberOfTimes} times
+            You have watched{" "}
+            {hasCompletedShow ? (
+              <>
+                All <strong>{numberOfEpisodes}</strong> episode
+                {numberOfEpisodes && numberOfEpisodes > 1 && "s"}
+              </>
+            ) : (
+              <>
+                <strong>{watchCount}</strong> out of{" "}
+                <strong>{numberOfEpisodes}</strong> episode
+                {numberOfEpisodes && numberOfEpisodes > 1 && "s"}
+              </>
+            )}
           </Text>
           <Text className="text-base" font="caption">
-            {mostWatchedTvShow.summary}
+            {mostWatchedTvShow.quip}
           </Text>
         </div>
       </div>
@@ -75,13 +92,21 @@ export const MostRewatchTVShowStory = ({
 export const MostRewatchTVShowDownloadStory = ({
   ...props
 }: StoryDownloadContentProps) => {
-  const { mostWatchedTvShow } = TVStatsMockedData;
+  const { stats } = useUserData();
+
+  const mostWatchedTvShow = stats?.mostWatchedTvShow;
+
+  const watchCount = mostWatchedTvShow.show?.watchCount;
+  const numberOfEpisodes = mostWatchedTvShow.show?.numberOfEpisodes;
+
+  const hasCompletedShow =
+    watchCount && numberOfEpisodes ? watchCount >= numberOfEpisodes : false;
 
   return (
     <StoryDownloadContainer
       id={getStoryDownloadSelector("mostWatchedTvShow").id}
       className="bg-primary-green"
-      title="My Most Rewatched TV Show"
+      title="My Most Watched TV Show"
       {...props}
     >
       <div className="gap-y-10 flex-1 flex-col flex-center text-center">
@@ -89,7 +114,7 @@ export const MostRewatchTVShowDownloadStory = ({
           <NonagramStar className="absolute w-12 -top-4 -right-8 z-30" />
           <PentagramStar className="absolute w-24 -bottom-10 -left-12 z-10" />
           <img
-            src={mostWatchedTvShow.imageURL}
+            src={mostWatchedTvShow.show?.imageURL}
             alt="image"
             className="rounded-lg w-full h-full object-cover border-2 shadow-black shadow-[4px_4px] relative z-20"
           />
@@ -97,18 +122,23 @@ export const MostRewatchTVShowDownloadStory = ({
 
         <div>
           <Text className="text-2xl font-bold mt-2 mb-4">
-            {mostWatchedTvShow.title}
-          </Text>
-          <Text className="text-muted text-base font-medium">
-            Most played episode
-          </Text>
-          <Text className="text-xl font-bold">
-            S{mostWatchedTvShow.season}:E
-            {mostWatchedTvShow.episode}
+            {mostWatchedTvShow.show?.title}
           </Text>
 
-          <Text className="mt-6 text-lg font-medium">
-            Played {mostWatchedTvShow.numberOfTimes} times
+          <Text className="mt-2 text-lg font-medium">
+            You have watched{" "}
+            {hasCompletedShow ? (
+              <>
+                All <strong>{numberOfEpisodes}</strong> episode
+                {numberOfEpisodes && numberOfEpisodes > 1 && "s"}
+              </>
+            ) : (
+              <>
+                <strong>{watchCount}</strong> out of{" "}
+                <strong>{numberOfEpisodes}</strong> episode
+                {numberOfEpisodes && numberOfEpisodes > 1 && "s"}
+              </>
+            )}
           </Text>
         </div>
       </div>

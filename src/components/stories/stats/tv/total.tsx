@@ -1,12 +1,12 @@
 /* eslint-disable @next/next/no-img-element */
 import { Nonagram1Star, Quadrilateral1Star } from "@/components/icon";
+import { useUserData } from "@/components/providers/user";
 import {
   PageHeader,
   ShareButton,
   StoryDownloadContainer,
   Text,
 } from "@/components/themed";
-import { TVStatsMockedData } from "@/helpers/mocked";
 import { getStoryDownloadSelector } from "@/helpers/story";
 import { cn } from "@/helpers/utils";
 import { StoryContentProps, StoryDownloadContentProps } from "@/types";
@@ -16,7 +16,9 @@ export const TotalTVShowStory = ({
   className,
   ...props
 }: StoryContentProps) => {
-  const { totalShows } = TVStatsMockedData;
+  const { stats } = useUserData();
+
+  const watchHistory = stats?.watchHistory;
 
   return (
     <div
@@ -30,26 +32,26 @@ export const TotalTVShowStory = ({
       <div className="gap-y-10 story-content">
         <Text className="text-xl uppercase" font="heading">
           You have watched a total of <br />
-          {totalShows.length} show
-          {totalShows.length > 1 ? "s" : ""}
+          {watchHistory.totalShowsWatched} show
+          {watchHistory.totalShowsWatched > 1 ? "s" : ""}
         </Text>
 
         <div className="relative flex items-center gap-x-8 p-0 w-[90%] h-72">
           <img
-            src={totalShows.top[0].imageUrl}
+            src={watchHistory.topShows[0].imageURL}
             alt="image"
             className="w-full h-64 rounded-lg object-cover border-2 shadow-black shadow-[4px_4px] bg-background"
           />
 
           <div className="flex flex-col gap-y-4 w-32 h-72 flex-shrink-0 relative z-10">
             <img
-              src={totalShows.top[1].imageUrl}
+              src={watchHistory.topShows[1].imageURL}
               alt="image"
               className="w-full h-[48%] rounded-lg object-cover border-2 shadow-black shadow-[4px_4px] bg-background"
             />
 
             <img
-              src={totalShows.top[2].imageUrl}
+              src={watchHistory.topShows[2].imageURL}
               alt="image"
               className="w-full h-[48%] rounded-lg object-cover border-2 shadow-black shadow-[4px_4px] bg-background"
             />
@@ -63,7 +65,7 @@ export const TotalTVShowStory = ({
         <div>
           <Text className="text-base my-3">Your most watched shows are:</Text>
           <div className="pl-8">
-            {totalShows.top.map((show, index) => {
+            {watchHistory.topShows.map((show, index) => {
               return (
                 <div
                   key={`${show.title}-${index}`}
@@ -95,32 +97,34 @@ export const TotalTVShowStory = ({
 export const TotalTVShowDownloadStory = ({
   ...props
 }: StoryDownloadContentProps) => {
-  const { totalShows } = TVStatsMockedData;
+  const { stats } = useUserData();
+
+  const watchHistory = stats?.watchHistory;
 
   return (
     <StoryDownloadContainer
       id={getStoryDownloadSelector("totalShows").id}
       className="bg-primary-pink"
-      title={`I have watched a total of ${totalShows.length} show${totalShows.length > 1 ? "s" : ""}`}
+      title={`I have watched a total of ${watchHistory.totalShowsWatched} show${watchHistory.totalShowsWatched > 1 ? "s" : ""}`}
       {...props}
     >
       <div className="gap-y-10 flex-1 flex-col flex-center text-center">
         <div className="relative flex items-center gap-x-6 p-0 w-[90%] h-72">
           <img
-            src={totalShows.top[0].imageUrl}
+            src={watchHistory.topShows[0].imageURL}
             alt="image"
             className="w-full h-64 rounded-lg object-cover border-2 shadow-black shadow-[4px_4px]"
           />
 
           <div className="flex flex-col gap-y-4 w-24 h-72 flex-shrink-0 relative z-10">
             <img
-              src={totalShows.top[1].imageUrl}
+              src={watchHistory.topShows[1].imageURL}
               alt="image"
               className="w-full h-[48%] rounded-lg object-cover border-2 shadow-black shadow-[4px_4px]"
             />
 
             <img
-              src={totalShows.top[2].imageUrl}
+              src={watchHistory.topShows[2].imageURL}
               alt="image"
               className="w-full h-[48%] rounded-lg object-cover border-2 shadow-black shadow-[4px_4px]"
             />
@@ -136,7 +140,7 @@ export const TotalTVShowDownloadStory = ({
             Most watched shows:
           </Text>
           <div>
-            {totalShows.top.map((show, index) => {
+            {watchHistory.topShows.map((show, index) => {
               return (
                 <div
                   key={`${show.title}-${index}`}

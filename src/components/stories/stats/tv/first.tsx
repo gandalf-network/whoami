@@ -1,5 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { DodecagramStar, QuadrilateralStar } from "@/components/icon";
+import { useUserData } from "@/components/providers/user";
 import {
   PageHeader,
   ShareButton,
@@ -7,7 +8,6 @@ import {
   Text,
 } from "@/components/themed";
 import { getDate } from "@/helpers/date";
-import { TVStatsMockedData } from "@/helpers/mocked";
 import { getStoryDownloadSelector } from "@/helpers/story";
 import { cn } from "@/helpers/utils";
 import { StoryContentProps, StoryDownloadContentProps } from "@/types";
@@ -17,7 +17,9 @@ export const FirstTVShowStory = ({
   className,
   ...props
 }: StoryContentProps) => {
-  const { firstTvShow } = TVStatsMockedData;
+  const { stats } = useUserData();
+
+  const firstTvShow = stats?.firstTvShow;
 
   return (
     <div
@@ -37,19 +39,21 @@ export const FirstTVShowStory = ({
           <QuadrilateralStar className="absolute w-10 -top-5 -left-5" />
           <DodecagramStar className="absolute w-24 -bottom-10 -right-12 z-10" />
           <img
-            src={firstTvShow.imageURL}
+            src={firstTvShow.show?.imageURL}
             alt="image"
             className="rounded-lg w-full h-full object-cover border-2 shadow-black shadow-[4px_4px] relative z-20 bg-background"
           />
         </div>
 
         <div>
-          <Text className="text-xl font-bold">{firstTvShow.title}</Text>
+          <Text className="text-xl font-bold">{firstTvShow.show?.title}</Text>
           <Text className="text-base my-3 font-medium">
-            {getDate(firstTvShow.date).format("MMMM DD, YYYY")}
+            {getDate(firstTvShow.show?.dateFirstPlayed || "").format(
+              "MMMM DD, YYYY",
+            )}
           </Text>
           <Text className="text-base" font="caption">
-            {firstTvShow.summary}
+            {firstTvShow.quip}
           </Text>
         </div>
       </div>
@@ -71,7 +75,9 @@ export const FirstTVShowStory = ({
 export const FirstTVShowDownloadStory = ({
   ...props
 }: StoryDownloadContentProps) => {
-  const { firstTvShow } = TVStatsMockedData;
+  const { stats } = useUserData();
+
+  const firstTvShow = stats?.firstTvShow;
 
   return (
     <StoryDownloadContainer
@@ -85,7 +91,7 @@ export const FirstTVShowDownloadStory = ({
           <QuadrilateralStar className="absolute w-10 -top-5 -left-5" />
           <DodecagramStar className="absolute w-24 -bottom-10 -right-12 z-10" />
           <img
-            src={firstTvShow.imageURL}
+            src={firstTvShow.show?.imageURL}
             alt="image"
             className="rounded-lg w-full h-full object-cover border-2 shadow-black shadow-[4px_4px] relative z-20"
           />
@@ -93,11 +99,13 @@ export const FirstTVShowDownloadStory = ({
 
         <div>
           <Text className="text-2xl font-bold mt-2 mb-4">
-            {firstTvShow.title}
+            {firstTvShow.show?.title}
           </Text>
           <Text className="text-muted text-base">Date watched</Text>
           <Text className="text-xl font-semibold">
-            {getDate(firstTvShow.date).format("MMMM DD, YYYY")}
+            {getDate(firstTvShow.show?.dateFirstPlayed || "").format(
+              "MMMM DD, YYYY",
+            )}
           </Text>
         </div>
       </div>

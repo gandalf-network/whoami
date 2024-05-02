@@ -1,3 +1,5 @@
+"use server";
+
 import { UserState } from "@prisma/client";
 
 import {

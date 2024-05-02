@@ -14,6 +14,7 @@ import {
   TotalShowOGImage,
   TvBFFOGImage,
 } from "./tv";
+import { TVGenreOGImage } from "./tv/genre";
 
 const OGImage = ({ id, data }: OpenGraphImageProps) => {
   // convert data from string to object
@@ -43,6 +44,11 @@ const OGImage = ({ id, data }: OpenGraphImageProps) => {
   const tvBFFData = id === "tvBff" ? parsedData : undefined;
   if (tvBFFData) {
     return <TvBFFOGImage {...tvBFFData} />;
+  }
+
+  const tvGenreData = id === "tvGenre" ? parsedData : undefined;
+  if (tvGenreData) {
+    return <TVGenreOGImage {...tvGenreData} />;
   }
 
   // crossover star data

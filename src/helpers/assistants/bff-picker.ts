@@ -12,7 +12,7 @@ export const BFFAssistant: AssistantCreateParams = {
             {"drama": "60%"},
             {"action": "25%"},
             {"comedy": "15%"}
-             ...etc
+              ...etc
           ],
           "characterPersonalities": "Ross Geller: Portrayed by David Schwimmer, Ross is known for his love of dinosaurs and paleontology, as well as his awkwardness around women. He is a devoted friend and a loving father, but his relationships are often complicated. Monica Geller: Played by Courteney Cox, Monica is a perfectionist who takes pride in her home and cooking skills. She struggles with her weight and body image, and her relationships are often influenced by her need for control and order. Phoebe Buffay-Hannigan: Lisa Kudrow portrays Phoebe...etc"
         }

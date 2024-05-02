@@ -1,83 +1,88 @@
-export const TVStatsMockedData = {
+import { UserReportCardType, UserStatsType } from "@/types";
+
+export const TVStatsMockedData: UserStatsType = {
   firstTvShow: {
-    date: "10/11/2022",
-    title: "Stranger Things",
-    imageURL:
-      "https://res.cloudinary.com/dmsic9qmj/image/upload/v1712250918/gandalf/whoami/st_ijxdwk.png",
-    summary:
-      "Who knew that spooky intro would kick off your binge-watching addiction?",
+    show: {
+      id: "1",
+      dateFirstPlayed: "10/11/2022",
+      title: "Stranger Things",
+      imageURL:
+        "https://res.cloudinary.com/dmsic9qmj/image/upload/v1712250918/gandalf/whoami/st_ijxdwk.png",
+    },
+    quip: "Who knew that spooky intro would kick off your binge-watching addiction?",
   },
   mostWatchedTvShow: {
-    numberOfTimes: 20,
-    title: "Friends",
-    episode: "10",
-    season: "5",
-    imageURL:
-      "https://res.cloudinary.com/dmsic9qmj/image/upload/v1712250921/gandalf/whoami/fr_fn7ebw.png",
-    summary:
-      "Looks like those coffee-fueled shenanigans keep calling you back for more!",
+    show: {
+      watchCount: 78,
+      numberOfEpisodes: 100,
+      id: "1",
+      dateFirstPlayed: "",
+      title: "Friends",
+      imageURL:
+        "https://res.cloudinary.com/dmsic9qmj/image/upload/v1712250921/gandalf/whoami/fr_fn7ebw.png",
+    },
+    quip: "Looks like those coffee-fueled shenanigans keep calling you back for more!",
   },
   yourCrossoverStar: {
     name: "Jennifer Aniston",
-    totalAppearance: 8,
     topShows: ["Friends", "The Morning Show", "The Break-Up"],
     imageURL:
       "https://res.cloudinary.com/dmsic9qmj/image/upload/v1712250919/gandalf/whoami/ja_pefc4y.png",
   },
   genreDistribution: {
-    top: [
+    genres: [
       {
-        title: "😂 Comedy",
+        genre: "😂 Comedy",
         percentage: 35,
       },
       {
-        title: "👀 Drama",
+        genre: "👀 Drama",
         percentage: 25,
       },
       {
-        title: "🕵️‍♂️ Mystery",
+        genre: "🕵️‍♂️ Mystery",
         percentage: 20,
       },
       {
-        title: " 😱 Thriller",
+        genre: " 😱 Thriller",
         percentage: 12,
       },
       {
-        title: "🚀 Sci-fi ",
+        genre: "🚀 Sci-fi ",
         percentage: 8,
       },
     ],
-    summary:
-      "Looks like you're a well-rounded viewer with a penchant for a good laugh and an adrenaline rush!",
+    quip: "Looks like you're a well-rounded viewer with a penchant for a good laugh and an adrenaline rush!",
   },
-  totalShows: {
-    length: 78,
-    top: [
+  watchHistory: {
+    totalShowsWatched: 78,
+    topShows: [
       {
+        id: "1",
+        dateFirstPlayed: "",
         title: "The Last Kingdom",
-        imageUrl:
+        imageURL:
           "https://res.cloudinary.com/dmsic9qmj/image/upload/v1712250917/gandalf/whoami/tlk_djxkxl.png",
       },
       {
+        id: "1",
+        dateFirstPlayed: "",
         title: "Friends",
-        imageUrl:
+        imageURL:
           "https://res.cloudinary.com/dmsic9qmj/image/upload/v1712250921/gandalf/whoami/fr_fn7ebw.png",
       },
       {
+        id: "1",
+        dateFirstPlayed: "",
         title: "The Crown",
-        imageUrl:
+        imageURL:
           "https://res.cloudinary.com/dmsic9qmj/image/upload/v1712250926/gandalf/whoami/tc_bhh31q.png",
       },
     ],
   },
 };
 
-export const ReportsCardMockedData = {
-  rottenTomatoeScore: {
-    score: 10,
-    summary:
-      'With shows like "Breaking Bad" and "The Crown" leading the pack, your watchlist is a certified hit factory!',
-  },
+export const ReportsCardMockedData: UserReportCardType = {
   tvBFF: {
     name: "Chandler Bing",
     show: "Friends",
@@ -86,18 +91,21 @@ export const ReportsCardMockedData = {
     imageURL:
       "https://res.cloudinary.com/dmsic9qmj/image/upload/v1712348909/gandalf/whoami/chandler_ya1dya.png",
   },
-  realStarSign: {
+  starSign: {
     name: "aries",
-    show: "The Last Kingdom fanatic",
+    show: "The Last Kingdom",
     reason:
       "With a penchant for epic battles and intricate plots, Uhtred of Bebbanburg would proudly claim you as his own.",
-    imageURL: "",
   },
-  overview: {
-    title: "The Adventurer",
-    summary:
+  personality: {
+    personality: "The Adventurer",
+    reason:
       "You always seek thrills and excitement, with a taste for the unexpected in every TV journey.",
-    imageUrl:
-      "https://res.cloudinary.com/dmsic9qmj/image/upload/v1712397962/gandalf/whoami/883d1a3cf3e5c533e89eb3095ffb0d8f_umcc2z.gif",
+    rtScore: 10,
+  },
+  rottenTomato: {
+    rtScore: 10,
+    reason:
+      "You have a taste for the finest shows, with a keen eye for quality and a love for the classics.",
   },
 };

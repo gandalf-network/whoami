@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 
+import { AllStoryIds } from "@/types";
+
 import { getEnvDetails, isProduction } from "./utils";
 
 // this is the og image urls for the project
@@ -7,13 +9,25 @@ export const ogImageUrls = {
   default: `${getEnvDetails().url}/api/og`,
 };
 
+// this is the function to build the og image url
+export const buildOgImageUrl = (options?: {
+  story: AllStoryIds;
+  data: Record<string, any>;
+}) => {
+  if (!options) return ogImageUrls.default;
+
+  const { story, data } = options;
+
+  return `${getEnvDetails().url}/api/og?id=${story}&data=${encodeURIComponent(JSON.stringify(data))}`;
+};
+
 // this is the base metadata for the project
 export const baseMetadataInfo = {
-  title: "WhoAmI",
+  title: "whoami.tv",
   description:
-    "A fun, sharable web application that shows users all kinds of cool facts and stats about their TV tastes.",
+    "Connect your Netflix profile to learn more about your TV watching habits",
   url: "https://whoami.tv",
-  siteName: "WhoAmI",
+  siteName: "whoami",
 };
 
 // shared metadata for all pages
@@ -56,6 +70,8 @@ export const ogImageStlyingUrls = {
     "https://res.cloudinary.com/dmsic9qmj/image/upload/v1712589928/gandalf/whoami/og/tvBffBg_bygewg.png",
   scoreBg:
     "https://res.cloudinary.com/dmsic9qmj/image/upload/v1712594091/gandalf/whoami/og/score-bg_i35mqo.png",
+  tvGenreBg:
+    "https://res.cloudinary.com/dmsic9qmj/image/upload/v1713430911/gandalf/whoami/og/tvgenre_tusfrr.png",
 };
 
 // @note: this og image colors were only used in the OG image generation
@@ -71,6 +87,7 @@ export const ogImageStlyingColors = {
   purple: "#C5A1FF",
   blue: "#88CEEB",
   tomatoe: "#FF541F",
+  progress: "#F6D7B2",
 };
 
 // --- OG Styles for reusable styling ---

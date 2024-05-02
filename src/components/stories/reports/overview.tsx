@@ -4,6 +4,7 @@ import {
   PentagramStar,
   RottenTomatoeScoreIcon,
 } from "@/components/icon";
+import { useUserData } from "@/components/providers/user";
 import {
   Box,
   GridLineBackground,
@@ -12,7 +13,6 @@ import {
   StoryDownloadContainer,
   Text,
 } from "@/components/themed";
-import { ReportsCardMockedData } from "@/helpers/mocked";
 import {
   getRottenTomatoeScoreText,
   getStoryDownloadSelector,
@@ -93,13 +93,14 @@ export const ReportOverviewStory = ({
   className,
   ...props
 }: StoryContentProps) => {
-  const { overview, rottenTomatoeScore, tvBFF, realStarSign } =
-    ReportsCardMockedData;
+  const { reportCard } = useUserData();
+
+  const { personality, tvBFF, starSign } = reportCard;
 
   const overviewSummary = getOverviewSummary({
-    score: +rottenTomatoeScore.score,
-    tvBFF: tvBFF.name,
-    sign: realStarSign.name,
+    score: personality?.rtScore,
+    tvBFF: tvBFF?.name || "",
+    sign: starSign?.name || "",
   });
 
   return (
@@ -115,11 +116,11 @@ export const ReportOverviewStory = ({
         <div className="gap-y-3 story-content">
           <div>
             <Text className="text-2xl uppercase mb-1.5" font="heading">
-              {overview.title}
+              {personality?.personality}
             </Text>
 
             <Text className="max-w-sm text-base" font="caption">
-              {overview.summary}
+              {personality?.reason}
             </Text>
           </div>
 
@@ -165,25 +166,26 @@ export const ReportOverviewStory = ({
 export const ReportOverviewDownloadStory = ({
   ...props
 }: StoryDownloadContentProps) => {
-  const { overview, rottenTomatoeScore, tvBFF, realStarSign } =
-    ReportsCardMockedData;
+  const { reportCard } = useUserData();
+
+  const { personality, tvBFF, starSign } = reportCard;
 
   const overviewSummary = getOverviewSummary({
-    score: +rottenTomatoeScore.score,
-    tvBFF: tvBFF.name,
-    sign: realStarSign.name,
+    score: personality?.rtScore,
+    tvBFF: tvBFF?.name || "",
+    sign: starSign?.name || "",
   });
 
   return (
     <StoryDownloadContainer
       id={getStoryDownloadSelector("overview").id}
       className="bg-background"
-      title={overview.title}
+      title={personality?.personality || ""}
       {...props}
     >
       <div className="gap-y-10 flex-1 flex-col flex-center text-center relative z-20">
         <Text className="max-w-sm text-lg -translate-y-8" font="caption">
-          {overview.summary}
+          {personality?.reason}
         </Text>
 
         <div className="w-full -translate-y-4 grid grid-cols-1 gap-5">

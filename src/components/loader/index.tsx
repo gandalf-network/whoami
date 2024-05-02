@@ -15,15 +15,28 @@ export interface LoadingScreenProps
   description?: string[];
 }
 
+export const loadingTexts = [
+  "Decrypting your binge DNA",
+  "Compiling your watch matrix",
+  "Evaluating your episode entropy.",
+  "Optimizing your genre vectors",
+  "Quantifying your drama doses",
+  "Refining your comedy catalysts",
+  "Extrapolating your entertainment essence",
+  "Amplifying your action arcs",
+  "Transcoding your TV temperament",
+  "Charting your character chemistry",
+  "Unpacking your plot packages",
+  "Navigating your narrative networks",
+  "Cross-referencing your cinematic cues",
+  "Synthesizing your suspense spectrum",
+  "Scanning for show signatures",
+];
+
 export const LoadingScreen = ({
   className,
   title = "Hold tight...",
-  description = [
-    "Decoding your Netflix habits",
-    "Crunching numbers for your TV Stats",
-    "Crafting your TV Report Card",
-    "Unveiling your binge persona soon",
-  ],
+  description = loadingTexts,
   ...props
 }: LoadingScreenProps) => {
   return (

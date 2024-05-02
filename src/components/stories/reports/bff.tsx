@@ -1,12 +1,12 @@
 /* eslint-disable @next/next/no-img-element */
 import { Cross, Heart, QuadrilateralStar } from "@/components/icon";
+import { useUserData } from "@/components/providers/user";
 import {
   StoryDownloadContainer,
   PageHeader,
   ShareButton,
   Text,
 } from "@/components/themed";
-import { ReportsCardMockedData } from "@/helpers/mocked";
 import { getStoryDownloadSelector } from "@/helpers/story";
 import { cn } from "@/helpers/utils";
 import { StoryContentProps, StoryDownloadContentProps } from "@/types";
@@ -16,7 +16,9 @@ export const TVBFFStory = ({
   className,
   ...props
 }: StoryContentProps) => {
-  const { tvBFF } = ReportsCardMockedData;
+  const { reportCard } = useUserData();
+
+  const { show, name, reason, imageURL } = reportCard?.tvBFF;
 
   return (
     <div
@@ -36,19 +38,19 @@ export const TVBFFStory = ({
           <Heart className="absolute w-12 -top-5 -right-5 z-30" />
           <Cross className="absolute w-[250px] rotate-45 bottom-10 -left-[80%] z-10" />
           <img
-            src={tvBFF.imageURL}
+            src={imageURL || ""}
             alt="image"
             className="rounded-lg w-full h-full object-cover border-2 shadow-black shadow-[4px_4px] relative z-20 bg-background"
           />
         </div>
 
         <div>
-          <Text className="text-xl font-bold">{tvBFF.name}</Text>
+          <Text className="text-xl font-bold">{name}</Text>
           <Text className="text-base my-3 font-medium">
-            From &quot;<span className="capitalize">{tvBFF.show}</span>&quot;
+            From &quot;<span className="capitalize">{show}</span>&quot;
           </Text>
           <Text className="max-w-xs text-base" font="caption">
-            {tvBFF.reason}
+            {reason}
           </Text>
         </div>
       </div>
@@ -73,7 +75,9 @@ export const TVBFFStory = ({
 };
 
 export const TVBFFDownloadStory = ({ ...props }: StoryDownloadContentProps) => {
-  const { tvBFF } = ReportsCardMockedData;
+  const { reportCard } = useUserData();
+
+  const { show, name, imageURL } = reportCard?.tvBFF;
 
   return (
     <StoryDownloadContainer
@@ -87,16 +91,16 @@ export const TVBFFDownloadStory = ({ ...props }: StoryDownloadContentProps) => {
           <Heart className="absolute w-12 -top-5 -right-5 z-30" />
           <Cross className="absolute w-[250px] rotate-45 bottom-10 -left-[80%] z-10" />
           <img
-            src={tvBFF.imageURL}
+            src={imageURL || ""}
             alt="image"
             className="rounded-lg w-full h-full object-cover border-2 shadow-black shadow-[4px_4px] relative z-20"
           />
         </div>
 
         <div>
-          <Text className="text-2xl font-bold mb-3">{tvBFF.name}</Text>
+          <Text className="text-2xl font-bold mb-3">{name}</Text>
           <Text className="text-xl font-semibold">
-            From &quot;<span className="capitalize">{tvBFF.show}</span>&quot;
+            From &quot;<span className="capitalize">{show}</span>&quot;
           </Text>
         </div>
 

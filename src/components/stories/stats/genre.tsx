@@ -1,5 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { HalfEclipse, PentagramStar } from "@/components/icon";
+import { useUserData } from "@/components/providers/user";
 import {
   PageHeader,
   Progress,
@@ -8,7 +9,6 @@ import {
   Text,
   ThemedProgress,
 } from "@/components/themed";
-import { TVStatsMockedData } from "@/helpers/mocked";
 import { getStoryDownloadSelector } from "@/helpers/story";
 import { cn } from "@/helpers/utils";
 import { StoryContentProps, StoryDownloadContentProps } from "@/types";
@@ -18,7 +18,9 @@ export const GenreDistributionStory = ({
   className,
   ...props
 }: StoryContentProps) => {
-  const { genreDistribution } = TVStatsMockedData;
+  const { stats } = useUserData();
+
+  const genreDistribution = stats?.genreDistribution;
 
   return (
     <div
@@ -37,11 +39,11 @@ export const GenreDistributionStory = ({
 
           <div className="max-w-96 px-8">
             <Text className="text-lg mb-2.5 font-medium">
-              Your top {genreDistribution.top.length} TV genres include:
+              Your top {genreDistribution.genres.length} TV genres include:
             </Text>
             <div className="my-3 flex flex-col gap-y-0.5">
-              {genreDistribution.top.map((genre, index) => {
-                const label = `${genre.title} - ${genre.percentage}%`;
+              {genreDistribution.genres.map((genre, index) => {
+                const label = `${genre.genre} - ${genre.percentage}%`;
                 return (
                   <Progress
                     key={`${label}-${index}`}
@@ -55,7 +57,7 @@ export const GenreDistributionStory = ({
               })}
             </div>
             <Text className="text-base" font="caption">
-              {genreDistribution.summary}
+              {genreDistribution.quip}
             </Text>
           </div>
         </div>
@@ -82,7 +84,9 @@ export const GenreDistributionStory = ({
 export const GenreDistributionDownloadStory = ({
   ...props
 }: StoryDownloadContentProps) => {
-  const { genreDistribution } = TVStatsMockedData;
+  const { stats } = useUserData();
+
+  const genreDistribution = stats?.genreDistribution;
 
   return (
     <StoryDownloadContainer
@@ -90,13 +94,13 @@ export const GenreDistributionDownloadStory = ({
       className="bg-primary-orange"
       title="My Genre Distribution"
       titleClassName="max-w-full"
-      description={`My top ${genreDistribution.top.length} TV genres include:`}
+      description={`My top ${genreDistribution.genres.length} TV genres include:`}
       {...props}
     >
       <div className="flex-1 relative z-20 w-full pt-14">
         <div className="my-3 w-full flex flex-col gap-y-1.5">
-          {genreDistribution.top.map((genre, index) => {
-            const label = `${genre.title} - ${genre.percentage}%`;
+          {genreDistribution.genres.map((genre, index) => {
+            const label = `${genre.genre} - ${genre.percentage}%`;
             return (
               <ThemedProgress
                 key={`${label}-${index}`}

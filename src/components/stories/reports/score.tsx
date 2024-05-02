@@ -1,5 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { Circle } from "@/components/icon";
+import { useUserData } from "@/components/providers/user";
 import {
   PageHeader,
   ShareButton,
@@ -7,7 +8,6 @@ import {
   Text,
 } from "@/components/themed";
 import { VerticalSlider } from "@/components/themed/slider";
-import { ReportsCardMockedData } from "@/helpers/mocked";
 import {
   getRottenTomatoeScoreText,
   getStoryDownloadSelector,
@@ -62,7 +62,9 @@ export const RottenTomatoeStory = ({
   className,
   ...props
 }: StoryContentProps) => {
-  const { rottenTomatoeScore } = ReportsCardMockedData;
+  const { reportCard } = useUserData();
+
+  const { rtScore, reason } = reportCard?.rottenTomato;
 
   return (
     <div
@@ -90,25 +92,18 @@ export const RottenTomatoeStory = ({
             </div>
             <VerticalSlider
               options={sliderOptions}
-              value={getRottenTomatoeScoreText(
-                rottenTomatoeScore.score,
-              ).toLowerCase()}
+              value={getRottenTomatoeScoreText(rtScore).toLowerCase()}
             />
           </div>
 
           <div className="pt-4">
-            <Text className="text-xl font-bold">
-              {rottenTomatoeScore.score}%
-            </Text>
+            <Text className="text-xl font-bold">{rtScore}%</Text>
             <Text className="text-base my-3 font-medium">
               Your taste is{" "}
-              <strong>
-                {getRottenTomatoeScoreText(rottenTomatoeScore.score)}
-              </strong>
-              !
+              <strong>{getRottenTomatoeScoreText(rtScore)}</strong>!
             </Text>
             <Text className="text-base" font="caption">
-              {rottenTomatoeScore.summary}
+              {reason}
             </Text>
           </div>
         </div>
@@ -136,7 +131,9 @@ export const RottenTomatoeStory = ({
 export const RottenTomatoeScoreDownloadStory = ({
   ...props
 }: StoryDownloadContentProps) => {
-  const { rottenTomatoeScore } = ReportsCardMockedData;
+  const { reportCard } = useUserData();
+
+  const { rtScore } = reportCard?.personality;
 
   return (
     <StoryDownloadContainer
@@ -157,22 +154,14 @@ export const RottenTomatoeScoreDownloadStory = ({
           </div>
           <VerticalSlider
             options={sliderOptions}
-            value={getRottenTomatoeScoreText(
-              rottenTomatoeScore.score,
-            ).toLowerCase()}
+            value={getRottenTomatoeScoreText(rtScore).toLowerCase()}
           />
         </div>
 
         <div>
-          <Text className="text-2xl font-bold">
-            {rottenTomatoeScore.score}%
-          </Text>
+          <Text className="text-2xl font-bold">{rtScore}%</Text>
           <Text className="text-xl my-3 font-medium">
-            My taste is{" "}
-            <strong>
-              {getRottenTomatoeScoreText(rottenTomatoeScore.score)}
-            </strong>
-            !
+            My taste is <strong>{getRottenTomatoeScoreText(rtScore)}</strong>!
           </Text>
         </div>
 

@@ -45,7 +45,7 @@ async function stateThresholdCheck() {
         }
       }
     }
-    return sessionIDs
+    return sessionIDs;
   } catch (error) {
     console.error("Error processing job:", error);
   }
@@ -53,17 +53,17 @@ async function stateThresholdCheck() {
 
 export const stateThresholdCheckTask = inngest.createFunction(
   { id: "state-threshold-check" },
-  { cron: "*/1 * * * *" }, 
+  { cron: "*/1 * * * *" },
   async ({ event }) => {
     console.log("> Initiating state threshold checks...");
     const startTime = Date.now();
-    const maxDuration = 10000;  
+    const maxDuration = 10000;
     let results;
 
     const check = async () => {
       if (Date.now() - startTime > maxDuration) {
         console.log("Reached maximum execution time. Ending checks.");
-        return; 
+        return;
       }
 
       results = await stateThresholdCheck();
@@ -71,7 +71,7 @@ export const stateThresholdCheckTask = inngest.createFunction(
     };
     await check();
 
-    await new Promise(resolve => setTimeout(resolve, maxDuration));
+    await new Promise((resolve) => setTimeout(resolve, maxDuration));
     return { event, sessions: results };
   },
 );

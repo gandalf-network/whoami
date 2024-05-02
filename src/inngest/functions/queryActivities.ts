@@ -3,13 +3,13 @@ import { UserState } from "@prisma/client";
 import { getAndDumpActivities, updateUserStateBySession } from "@/actions";
 import { eventNames } from "@/actions/lib/queue/event";
 import { ActivityDataPayload } from "@/actions/lib/queue/producers";
-import { queueNames } from "@/actions/lib/queue/queues";
 import {
   setSessionIndex,
   setAllQueueTotalJobs,
   incrementCompletedJobs,
   sessionStates,
   QueueName,
+  queueNames,
 } from "@/actions/lib/queue/state";
 
 import { inngest } from "../client";

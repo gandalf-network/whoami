@@ -1,8 +1,7 @@
 import { getCompletedShowDataBySession, getShowData } from "@/actions";
 import { eventNames } from "@/actions/lib/queue/event";
 import { ShowPayload } from "@/actions/lib/queue/producers";
-import { queueNames } from "@/actions/lib/queue/queues";
-import { QueueName, updatedCompletedJobs } from "@/actions/lib/queue/state";
+import { QueueName, queueNames, updatedCompletedJobs } from "@/actions/lib/queue/state";
 
 import { inngest } from "../client";
 

@@ -1,7 +1,6 @@
 import { getAndUpdateTVBFF } from "@/actions";
 import { eventNames } from "@/actions/lib/queue/event";
-import { queueNames } from "@/actions/lib/queue/queues";
-import { QueueName, incrementCompletedJobs } from "@/actions/lib/queue/state";
+import { QueueName, incrementCompletedJobs, queueNames } from "@/actions/lib/queue/state";
 
 import { inngest } from "../client";
 

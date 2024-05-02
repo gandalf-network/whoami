@@ -5,13 +5,13 @@ import {
   enqueueStarSignPicker,
   enqueueTVBFF,
 } from "@/actions/lib/queue/producers";
-import { queueNames } from "@/actions/lib/queue/queues";
 import {
   QueueName,
   checkDependentQueuesThresold,
   checkIndependentQueuesThresold,
   checkQueueThresold,
   getSessionsByState,
+  queueNames,
   sessionStates,
   setSessionIndex,
 } from "@/actions/lib/queue/state";

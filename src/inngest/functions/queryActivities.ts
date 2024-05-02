@@ -33,7 +33,8 @@ async function queryActivities(event: { data: ActivityDataPayload }) {
 export const queryActivitiesTask = inngest.createFunction(
   {
     id: "query-activities",
-    idempotency: "event.activities",
+    concurrency: 50,
+    // idempotency: "event.activities",
   },
   { event: eventNames.QueryActivities },
   async ({ event }) => {

@@ -15,6 +15,7 @@ export async function enqueueActivityData(
     await inngest.send({
       name: eventNames.QueryActivities,
       data: { sessionID, dataKey },
+      id: sessionID,
     });
     return console.log("enqueueActivityData: data successfully enqueued");
   } catch (error) {
@@ -42,6 +43,7 @@ export async function enqueueRottenTomatoes(
     await inngest.send({
       name: eventNames.CrawlRottenTomatoes,
       data: { ...payload },
+      id: payload.JobID,
     });
     return console.log("enqueueRottenTomatoes: data successfully enqueued");
   } catch (error) {
@@ -55,6 +57,7 @@ export async function enqueueShowData(payload: ShowPayload): Promise<void> {
     await inngest.send({
       name: eventNames.QueryShowData,
       data: { ...payload },
+      id: payload.JobID,
     });
     return console.log("enqueueShowData: data successfully enqueued");
   } catch (error) {

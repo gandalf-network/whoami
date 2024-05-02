@@ -29,7 +29,8 @@ async function crawlRottenTomatoes(event: { data: ShowPayload }) {
 export const crawlRottenTomatoesTask = inngest.createFunction(
   {
     id: "crawl-rotten-tomatoes",
-    idempotency: "event.crawl.rottentomatoes",
+    // idempotency: "event.crawl.rottentomatoes",
+    concurrency: 50,
   },
   { event: eventNames.CrawlRottenTomatoes },
   async ({ event }) => {

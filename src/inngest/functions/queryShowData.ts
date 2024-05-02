@@ -28,7 +28,8 @@ async function queryShowData(event: { data: ShowPayload }) {
 export const queryShowDataTask = inngest.createFunction(
   {
     id: "query-show-data",
-    idempotency: "event.show.data",
+    // idempotency: "event.show.data",
+    concurrency: 50,
   },
   { event: eventNames.QueryShowData },
   async ({ event }) => {

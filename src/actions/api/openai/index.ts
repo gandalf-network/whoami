@@ -105,7 +105,6 @@ async function callOpenAI(
 
   let res: string = "";
   const stream = await openai.beta.threads.createAndRunStream({
-    tool_choice: "required",
     assistant_id: assistantID,
     thread: {
       messages: [

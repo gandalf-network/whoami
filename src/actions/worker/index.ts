@@ -1,10 +1,6 @@
 import { UserState } from "@prisma/client";
 import { Worker, Job } from "bullmq";
 
-import {
-  stateThresholdCheckQueue,
-  queueNames,
-} from "@/actions/lib/queue/queues";
 import { getEnvDetails } from "@/helpers/base";
 
 import { getCompletedShowDataBySession, updateUserStateBySession } from "..";
@@ -27,6 +23,11 @@ import {
   updatedCompletedJobs,
 } from "../lib/queue/state";
 import { vercelKVClient } from "../store/vercelkv";
+
+import {
+  stateThresholdCheckQueue,
+  queueNames,
+} from "@/actions/lib/queue/queues";
 
 const concurrency = 50;
 const queryActivitiesWorker = async () => {

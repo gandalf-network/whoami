@@ -1,6 +1,10 @@
 import { getAndUpdateStarSignPicker } from "@/actions";
 import { eventNames } from "@/actions/lib/queue/event";
-import { QueueName, incrementCompletedJobs, queueNames } from "@/actions/lib/queue/state";
+import {
+  QueueName,
+  incrementCompletedJobs,
+  queueNames,
+} from "@/actions/lib/queue/state";
 
 import { inngest } from "../client";
 

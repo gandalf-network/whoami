@@ -1,7 +1,11 @@
 import { getAndUpdateRottenTomatoesScore } from "@/actions";
 import { eventNames } from "@/actions/lib/queue/event";
 import { ShowPayload } from "@/actions/lib/queue/producers";
-import { QueueName, incrementCompletedJobs, queueNames } from "@/actions/lib/queue/state";
+import {
+  QueueName,
+  incrementCompletedJobs,
+  queueNames,
+} from "@/actions/lib/queue/state";
 
 import { inngest } from "../client";
 

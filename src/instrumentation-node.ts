@@ -1,2 +1,2 @@
-import instantiateWorkers from './actions/worker';
+import instantiateWorkers from "./actions/worker";
 instantiateWorkers();

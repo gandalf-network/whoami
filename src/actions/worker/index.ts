@@ -34,6 +34,7 @@ const queryActivitiesWorker = async () => {
     queueNames.QueryActivities,
     async (job: Job<ActivityDataPayload>) => {
       try {
+        console.log("Recv new QueryActivities request...");
         const { sessionID } = job.data;
         const url = `${getEnvDetails().url}/api/activities/queryActivities`;
         const response = await fetch(url, {

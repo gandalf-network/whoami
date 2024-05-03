@@ -30,6 +30,15 @@ async function stateThresholdCheck() {
 
       if (await checkDependentQueuesThresold(sessionID)) {
         if (
+          await checkQueueThresold(
+            sessionID,
+            queueNames.QueryShowData as QueueName,
+          )
+        ) {
+          await updateUserStateBySession(sessionID, UserState.STATS_DATA_READY);
+        }
+
+        if (
           !(await checkQueueThresold(sessionID, queueNames.TVBFF as QueueName))
         ) {
           await enqueueTVBFF(sessionID);

@@ -8,6 +8,11 @@ import { starSignPickerTask } from "@/inngest/functions/starSignPicker";
 import { stateThresholdCheckTask } from "@/inngest/functions/stateThresholdCheck";
 import { tvBFFTask } from "@/inngest/functions/tvBFF";
 
+
+export const config = {
+  runtime: 'experimental-edge',
+}
+
 export const { GET, POST, PUT } = serve({
   client: inngest,
   functions: [

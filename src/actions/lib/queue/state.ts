@@ -212,11 +212,13 @@ export async function checkIndependentQueuesThresold(
 }
 
 export async function checkQueueThresold(
-  sessionId: string,
+  sessionID: string,
   queueName: QueueName,
 ): Promise<boolean> {
-  const completion = await getQueueCompletion(sessionId, queueName);
-  if (completion < COMPLETION_THRESHOLD) {
+  const completion = await getQueueCompletion(sessionID, queueName);
+  const [, executedChunks] = await getQueueSessionState(sessionID, queueName);
+  const [, totalChunks] = await getSessionGlobalState(sessionID);
+  if (completion < COMPLETION_THRESHOLD && executedChunks < totalChunks) {
     return false;
   }
 

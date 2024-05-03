@@ -18,7 +18,10 @@ import { inngest } from "../client";
 async function queryActivities(event: { data: ActivityDataPayload }) {
   const { sessionID, dataKey } = event.data;
   try {
-    const [totalData, totalChunks] = await getAndDumpActivities(sessionID, dataKey);
+    const [totalData, totalChunks] = await getAndDumpActivities(
+      sessionID,
+      dataKey,
+    );
     await setSessionIndex(sessionID, sessionStates.PROCESSING);
     await updateUserStateBySession(sessionID, UserState.CRUNCHING_DATA);
     await setSessionGlobalState(sessionID, totalData, totalChunks);
@@ -26,7 +29,12 @@ async function queryActivities(event: { data: ActivityDataPayload }) {
     const queueName = queueNames.QueryActivities as QueueName;
     await setQueueSessionState(sessionID, queueName, totalData, totalChunks);
 
-    console.log(`${sessionID}> [totalData]:`, totalData, "[totalChunks]:", totalChunks);
+    console.log(
+      `${sessionID}> [totalData]:`,
+      totalData,
+      "[totalChunks]:",
+      totalChunks,
+    );
     return totalData;
   } catch (error) {
     console.error("Error processing job:", error);

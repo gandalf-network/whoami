@@ -33,7 +33,11 @@ import {
   upsertShow,
   upsertUserShow,
 } from "./database/show";
-import { findOrCreateUserBySessionID, updateUser, findOrCreateUpsert } from "./database/user";
+import {
+  findOrCreateUserBySessionID,
+  updateUser,
+  findOrCreateUpsert,
+} from "./database/user";
 import Eye, { Source } from "./eyeofsauron";
 import { NetflixActivityMetadata } from "./eyeofsauron/gql/__generated__";
 import {
@@ -251,7 +255,7 @@ export async function getAndDumpActivities(
     total = initialActivityResponse.total;
     if (initialActivityResponse.data.length === 0) {
       console.log("No data to fetch.");
-      return [0,0];
+      return [0, 0];
     }
 
     const totalPages = Math.ceil(total / limit);

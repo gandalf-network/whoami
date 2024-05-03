@@ -90,43 +90,41 @@ export async function setSessionGlobalState(
   totalJobs: number,
   totalChunks: number,
 ) {
-  await kv.set(
-    makeGlobalKey(sessionId, "totalJobs"),
-    totalJobs.toString(),
-  );
-  await kv.set(
-    makeGlobalKey(sessionId, "totalChunks"),
-    totalChunks.toString(),
-  );
+  await kv.set(makeGlobalKey(sessionId, "totalJobs"), totalJobs.toString());
+  await kv.set(makeGlobalKey(sessionId, "totalChunks"), totalChunks.toString());
 }
 
-
-export async function getSessionGlobalState(sessionId: string): Promise<number[]>{
-  const totalJobString:  string | null = await kv.get(
-    makeGlobalKey(sessionId, "totalJobs")
+export async function getSessionGlobalState(
+  sessionId: string,
+): Promise<number[]> {
+  const totalJobString: string | null = await kv.get(
+    makeGlobalKey(sessionId, "totalJobs"),
   );
-  const totalChunkString:  string | null = await kv.get(
+  const totalChunkString: string | null = await kv.get(
     makeGlobalKey(sessionId, "totalChunks"),
   );
 
   const totalJobs = parseInt(totalJobString || "0");
   const totalChunks = parseInt(totalChunkString || "0");
 
-  return[ totalJobs, totalChunks]
+  return [totalJobs, totalChunks];
 }
 
-export async function getQueueSessionState(sessionId: string, queueName: QueueName): Promise<number[]>{
-  const completedJobString:  string | null = await kv.get(
-    makeKey(sessionId, queueName, "completedJobs")
+export async function getQueueSessionState(
+  sessionId: string,
+  queueName: QueueName,
+): Promise<number[]> {
+  const completedJobString: string | null = await kv.get(
+    makeKey(sessionId, queueName, "completedJobs"),
   );
-  const executedChunkString:  string | null = await kv.get(
+  const executedChunkString: string | null = await kv.get(
     makeKey(sessionId, queueName, "executedChunks"),
   );
 
   const completedJobs = parseInt(completedJobString || "0");
   const executedChunks = parseInt(executedChunkString || "0");
 
-  return [ completedJobs, executedChunks]
+  return [completedJobs, executedChunks];
 }
 
 export async function setQueueSessionState(
@@ -164,7 +162,6 @@ export async function getQueueCompletion(
   return (completedJobs / totalJobs) * 100;
 }
 
-
 export async function checkDependentQueuesThresold(
   sessionID: string,
 ): Promise<boolean> {
@@ -180,10 +177,10 @@ export async function checkDependentQueuesThresold(
       sessionID,
       queueName as QueueName,
     );
-    
-    const [, executedChunks] = await getQueueSessionState(sessionID, queueName)
-    const [, totalChunks] = await getSessionGlobalState(sessionID)
-    
+
+    const [, executedChunks] = await getQueueSessionState(sessionID, queueName);
+    const [, totalChunks] = await getSessionGlobalState(sessionID);
+
     console.log(`${queueName}`, "<>", completion);
     if (completion < COMPLETION_THRESHOLD && executedChunks < totalChunks) {
       canTrigger = false;

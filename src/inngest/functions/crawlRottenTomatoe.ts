@@ -17,8 +17,16 @@ async function crawlRottenTomatoes(event: { data: ShowPayload }) {
     const processedData = await getAndUpdateRottenTomatoesScore(showPayload);
     const queueName = queueNames.CrawlRottenTomatoes as QueueName;
 
-    const [, executedChunks] = await getQueueSessionState(showPayload.SessionID, queueName)
-    await setQueueSessionState(showPayload.SessionID, queueName, processedData, executedChunks + 1);
+    const [, executedChunks] = await getQueueSessionState(
+      showPayload.SessionID,
+      queueName,
+    );
+    await setQueueSessionState(
+      showPayload.SessionID,
+      queueName,
+      processedData,
+      executedChunks + 1,
+    );
     return processedData;
   } catch (error) {
     console.error("Error processing job:", error);

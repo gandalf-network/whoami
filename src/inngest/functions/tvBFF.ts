@@ -15,8 +15,13 @@ async function tvBFF(event: { data: any }) {
   try {
     const processedData = await getAndUpdateTVBFF(sessionID);
     const queueName = queueNames.TVBFF as QueueName;
-    const [, executedChunks] = await getQueueSessionState(sessionID, queueName)
-    await setQueueSessionState(sessionID, queueName, processedData, executedChunks + 1);
+    const [, executedChunks] = await getQueueSessionState(sessionID, queueName);
+    await setQueueSessionState(
+      sessionID,
+      queueName,
+      processedData,
+      executedChunks + 1,
+    );
   } catch (error) {
     console.error("Error processing job:", error);
   }

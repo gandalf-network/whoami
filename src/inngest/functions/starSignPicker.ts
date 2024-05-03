@@ -15,8 +15,13 @@ async function starSignPicker(event: { data: any }) {
   try {
     const processedData = await getAndUpdateStarSignPicker(sessionID);
     const queueName = queueNames.StarSignPicker as QueueName;
-    const [, executedChunks] = await getQueueSessionState(sessionID, queueName)
-    await setQueueSessionState(sessionID, queueName, processedData, executedChunks + 1);
+    const [, executedChunks] = await getQueueSessionState(sessionID, queueName);
+    await setQueueSessionState(
+      sessionID,
+      queueName,
+      processedData,
+      executedChunks + 1,
+    );
   } catch (error) {
     console.error("Error processing job:", error);
   }

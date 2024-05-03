@@ -23,7 +23,6 @@ async function tvBFF(event: { data: any }) {
 export const tvBFFTask = inngest.createFunction(
   {
     id: "tv-bff",
-    idempotency: "event.tv.bff",
   },
   { event: eventNames.TVBFF },
   async ({ event }) => {

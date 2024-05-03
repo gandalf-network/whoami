@@ -23,7 +23,6 @@ async function starSignPicker(event: { data: any }) {
 export const starSignPickerTask = inngest.createFunction(
   {
     id: "star-sign-picker",
-    idempotency: "event.sign.picker",
   },
   { event: eventNames.StarSignPicker },
   async ({ event }) => {

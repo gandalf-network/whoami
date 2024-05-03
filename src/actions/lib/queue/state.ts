@@ -37,7 +37,7 @@ export type QueueCompletion = number;
 const makeKey = (sessionId: string, queueName: QueueName, suffix: string) =>
   `session:${sessionId}:queue:${queueName}:${suffix}`;
 
-const COMPLETION_THRESHOLD = 97;
+const COMPLETION_THRESHOLD = 95;
 
 export const sessionStates: Record<string, SessionState> = {
   NOT_STARTED: "NOT_STARTED",

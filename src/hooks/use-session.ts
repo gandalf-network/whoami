@@ -62,7 +62,20 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
       const timer = setInterval(async () => {
         const data = await getUser();
 
+        if (data.state === "STATS_DATA_READY") {
+          const stats = await getStats(sessionId);
+
+          if (stats) {
+            setStats(stats);
+          }
+        }
+
         if (data.state === "COMPLETED") {
+          const reportCard = await getReportCard(sessionId);
+
+          if (reportCard) {
+            setReportCard(reportCard);
+          }
           clearInterval(timer);
         }
       }, interval);
@@ -107,7 +120,9 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
   }, []);
 
   useEffect(() => {
-    getUserStatsAndReportCard();
+    if (dataKey) {
+      refetch(options?.refetchInterval);
+    }
   }, [dataKey]);
 
   return {

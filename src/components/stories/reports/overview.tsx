@@ -4,6 +4,7 @@ import {
   PentagramStar,
   RottenTomatoeScoreIcon,
 } from "@/components/icon";
+import { StoryLoader } from "@/components/loader/story";
 import { useUserData } from "@/components/providers/user";
 import {
   Box,
@@ -103,6 +104,8 @@ export const ReportOverviewStory = ({
     sign: starSign?.name || "",
   });
 
+  const isLoading = !reportCard;
+
   return (
     <div
       className={cn(
@@ -110,53 +113,64 @@ export const ReportOverviewStory = ({
         className,
       )}
     >
-      <div className="flex-1 flex flex-col relative z-10">
-        <PageHeader storyProps={storyProps} name="tv Report Card" />
+      {isLoading ? (
+        <>
+          <PageHeader storyProps={storyProps} name="tv Report Card" />
+          <StoryLoader title="TV Overview" />
+        </>
+      ) : (
+        <>
+          <div className="flex-1 flex flex-col relative z-10">
+            <PageHeader storyProps={storyProps} name="tv Report Card" />
 
-        <div className="gap-y-3 story-content">
-          <div>
-            <Text className="text-2xl uppercase mb-1.5" font="heading">
-              {personality?.personality}
-            </Text>
+            <div className="gap-y-3 story-content">
+              <div>
+                <Text className="text-2xl uppercase mb-1.5" font="heading">
+                  {personality?.personality}
+                </Text>
 
-            <Text className="max-w-sm text-base" font="caption">
-              {personality?.reason}
-            </Text>
+                <Text className="max-w-sm text-base" font="caption">
+                  {personality?.reason}
+                </Text>
+              </div>
+
+              <div className="w-full mt-8 grid grid-cols-1 gap-5">
+                {overviewSummary.map((summary, index) => {
+                  return (
+                    <Box
+                      key={`w-full summary-${index}`}
+                      className={cn(
+                        "flex-center flex-col gap-y-2 px-5 py-4 shadow-[1px_2px] rounded-2xl h-[5.7rem] relative",
+                        summary.className,
+                      )}
+                    >
+                      {summary.icon}
+                      <Text className="text-sm font-medium">
+                        {summary.title}
+                      </Text>
+                      <Text className="text-lg capitalize" font="heading">
+                        {summary.value}
+                      </Text>
+                    </Box>
+                  );
+                })}
+              </div>
+            </div>
           </div>
 
-          <div className="w-full mt-8 grid grid-cols-1 gap-5">
-            {overviewSummary.map((summary, index) => {
-              return (
-                <Box
-                  key={`w-full summary-${index}`}
-                  className={cn(
-                    "flex-center flex-col gap-y-2 px-5 py-4 shadow-[1px_2px] rounded-2xl h-[5.7rem] relative",
-                    summary.className,
-                  )}
-                >
-                  {summary.icon}
-                  <Text className="text-sm font-medium">{summary.title}</Text>
-                  <Text className="text-lg capitalize" font="heading">
-                    {summary.value}
-                  </Text>
-                </Box>
-              );
-            })}
+          <GridLineBackground iconClassName="scale-110" />
+
+          <div className="flex-center-x pb-4">
+            <ShareButton
+              className="bg-background"
+              storyProps={{
+                id: "overview",
+                ...storyProps,
+              }}
+            />
           </div>
-        </div>
-      </div>
-
-      <GridLineBackground iconClassName="scale-110" />
-
-      <div className="flex-center-x pb-4">
-        <ShareButton
-          className="bg-background"
-          storyProps={{
-            id: "overview",
-            ...storyProps,
-          }}
-        />
-      </div>
+        </>
+      )}
 
       <ReportOverviewDownloadStory />
     </div>

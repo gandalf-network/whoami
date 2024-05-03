@@ -39,3 +39,6 @@ export type ShareMediumType =
   | "x"
   | "whatsapp"
   | "share";
+
+export interface StoryLoaderProps
+  extends React.HTMLAttributes<HTMLDivElement> {}

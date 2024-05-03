@@ -1,4 +1,8 @@
+import { Loader2 } from "lucide-react";
+import { useEffect } from "react";
+
 import { Flash } from "@/components/icon";
+import { useUserData } from "@/components/providers/user";
 import { PageHeader, PinkWaveBackground, Text } from "@/components/themed";
 import { cn } from "@/helpers/utils";
 import { StoryContentProps } from "@/types";
@@ -8,6 +12,20 @@ export const ReportstDetails = ({
   className,
   ...props
 }: StoryContentProps) => {
+  const { reportCard } = useUserData();
+
+  const isLoading = !reportCard;
+
+  useEffect(() => {
+    if (reportCard) {
+      // play animation
+      storyProps?.action?.("play");
+    } else {
+      // pause animation
+      storyProps?.action?.("pause");
+    }
+  }, [reportCard]);
+
   return (
     <div
       className={cn(
@@ -26,6 +44,12 @@ export const ReportstDetails = ({
             Find out your Rotten Tomatoes <br />
             Score, your TV BFF and more.
           </Text>
+
+          {isLoading && (
+            <div className="my-4">
+              <Loader2 className="w-8 h-8 animate-spin" />
+            </div>
+          )}
         </div>
       </div>
 

@@ -1,5 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { Circle } from "@/components/icon";
+import { StoryLoader } from "@/components/loader/story";
 import { useUserData } from "@/components/providers/user";
 import {
   PageHeader,
@@ -66,6 +67,8 @@ export const RottenTomatoeStory = ({
 
   const { rtScore, reason } = reportCard?.rottenTomato || {};
 
+  const isLoading = !reportCard;
+
   return (
     <div
       className={cn(
@@ -73,55 +76,64 @@ export const RottenTomatoeStory = ({
         className,
       )}
     >
-      <div className="offset-content flex-1 flex-col flex-center">
-        <PageHeader storyProps={storyProps} name="tv Report Card" />
+      {isLoading ? (
+        <>
+          <PageHeader storyProps={storyProps} name="tv Report Card" />
+          <StoryLoader title="Rotten Tomatoes Score" />
+        </>
+      ) : (
+        <>
+          <div className="offset-content flex-1 flex-col flex-center">
+            <PageHeader storyProps={storyProps} name="tv Report Card" />
 
-        <div className="gap-y-10 story-content">
-          <Text className="text-2xl uppercase" font="heading">
-            Rotten Tomatoes Score
-          </Text>
-
-          <div className="flex-center-y gap-2 py-5">
-            <div className="relative translate-y-10">
-              <Text
-                className="w-16 text-sm -rotate-90 uppercase whitespace-nowrap opacity-50"
-                font="heading"
-              >
-                The tomatometer ©
+            <div className="gap-y-10 story-content">
+              <Text className="text-2xl uppercase" font="heading">
+                Rotten Tomatoes Score
               </Text>
+
+              <div className="flex-center-y gap-2 py-5">
+                <div className="relative translate-y-10">
+                  <Text
+                    className="w-16 text-sm -rotate-90 uppercase whitespace-nowrap opacity-50"
+                    font="heading"
+                  >
+                    The tomatometer ©
+                  </Text>
+                </div>
+                <VerticalSlider
+                  options={sliderOptions}
+                  value={getRottenTomatoeScoreText(rtScore).toLowerCase()}
+                />
+              </div>
+
+              <div className="pt-4">
+                <Text className="text-xl font-bold">{rtScore}%</Text>
+                <Text className="text-base my-3 font-medium">
+                  Your taste is{" "}
+                  <strong>{getRottenTomatoeScoreText(rtScore)}</strong>!
+                </Text>
+                <Text className="text-base" font="caption">
+                  {reason}
+                </Text>
+              </div>
             </div>
-            <VerticalSlider
-              options={sliderOptions}
-              value={getRottenTomatoeScoreText(rtScore).toLowerCase()}
+          </div>
+
+          <Circle
+            className="absolute top-[7%] -left-[85%] w-[65vh] h-[60vh] pointer-events-none"
+            strokeWidth={0.2}
+          />
+
+          <div className="flex-center-x pb-4">
+            <ShareButton
+              storyProps={{
+                id: "rottenTomatoesScore",
+                ...storyProps,
+              }}
             />
           </div>
-
-          <div className="pt-4">
-            <Text className="text-xl font-bold">{rtScore}%</Text>
-            <Text className="text-base my-3 font-medium">
-              Your taste is{" "}
-              <strong>{getRottenTomatoeScoreText(rtScore)}</strong>!
-            </Text>
-            <Text className="text-base" font="caption">
-              {reason}
-            </Text>
-          </div>
-        </div>
-      </div>
-
-      <Circle
-        className="absolute top-[7%] -left-[85%] w-[65vh] h-[60vh] pointer-events-none"
-        strokeWidth={0.2}
-      />
-
-      <div className="flex-center-x pb-4">
-        <ShareButton
-          storyProps={{
-            id: "rottenTomatoesScore",
-            ...storyProps,
-          }}
-        />
-      </div>
+        </>
+      )}
 
       <RottenTomatoeScoreDownloadStory />
     </div>

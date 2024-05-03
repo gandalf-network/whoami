@@ -22,7 +22,7 @@ export const UserDataProvider = (props: UserDataProviderProps) => {
 
   const { stats, reportCard } = useSession();
 
-  const loading = !stats || !reportCard;
+  const loading = !stats && !reportCard;
 
   return (
     <UserDataContextProvider value={{ stats, reportCard }}>

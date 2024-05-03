@@ -1,5 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { Cross, Heart, QuadrilateralStar } from "@/components/icon";
+import { StoryLoader } from "@/components/loader/story";
 import { useUserData } from "@/components/providers/user";
 import {
   StoryDownloadContainer,
@@ -20,6 +21,8 @@ export const TVBFFStory = ({
 
   const { show, name, reason, imageURL } = reportCard?.tvBFF || {};
 
+  const isLoading = !reportCard;
+
   return (
     <div
       className={cn(
@@ -29,45 +32,51 @@ export const TVBFFStory = ({
     >
       <PageHeader name="tv Report Card" storyProps={storyProps} />
 
-      <div className="gap-y-10 story-content">
-        <Text className="text-2xl uppercase" font="heading">
-          TV BFF
-        </Text>
+      {isLoading ? (
+        <StoryLoader title="TV BFF" />
+      ) : (
+        <>
+          <div className="gap-y-10 story-content">
+            <Text className="text-2xl uppercase" font="heading">
+              TV BFF
+            </Text>
 
-        <div className="relative p-0 w-52 h-72">
-          <Heart className="absolute w-12 -top-5 -right-5 z-30" />
-          <Cross className="absolute w-[250px] rotate-45 bottom-10 -left-[80%] z-10" />
-          <img
-            src={imageURL || ""}
-            alt="image"
-            className="rounded-lg w-full h-full object-cover border-2 shadow-black shadow-[4px_4px] relative z-20 bg-background"
+            <div className="relative p-0 w-52 h-72">
+              <Heart className="absolute w-12 -top-5 -right-5 z-30" />
+              <Cross className="absolute w-[250px] rotate-45 bottom-10 -left-[80%] z-10" />
+              <img
+                src={imageURL || ""}
+                alt="image"
+                className="rounded-lg w-full h-full object-cover border-2 shadow-black shadow-[4px_4px] relative z-20 bg-background"
+              />
+            </div>
+
+            <div>
+              <Text className="text-xl font-bold">{name}</Text>
+              <Text className="text-base my-3 font-medium">
+                From &quot;<span className="capitalize">{show}</span>&quot;
+              </Text>
+              <Text className="max-w-xs text-base" font="caption">
+                {reason}
+              </Text>
+            </div>
+          </div>
+
+          <QuadrilateralStar
+            className="absolute w-28 -right-8 -bottom-8"
+            strokeWidth={1}
           />
-        </div>
 
-        <div>
-          <Text className="text-xl font-bold">{name}</Text>
-          <Text className="text-base my-3 font-medium">
-            From &quot;<span className="capitalize">{show}</span>&quot;
-          </Text>
-          <Text className="max-w-xs text-base" font="caption">
-            {reason}
-          </Text>
-        </div>
-      </div>
-
-      <QuadrilateralStar
-        className="absolute w-28 -right-8 -bottom-8"
-        strokeWidth={1}
-      />
-
-      <div className="flex-center-x pb-4">
-        <ShareButton
-          storyProps={{
-            id: "tvBff",
-            ...storyProps,
-          }}
-        />
-      </div>
+          <div className="flex-center-x pb-4">
+            <ShareButton
+              storyProps={{
+                id: "tvBff",
+                ...storyProps,
+              }}
+            />
+          </div>
+        </>
+      )}
 
       <TVBFFDownloadStory />
     </div>

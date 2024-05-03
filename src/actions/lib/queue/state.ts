@@ -18,6 +18,7 @@ import { kv } from "@vercel/kv";
 export type QueueName =
   | "queryActivities"
   | "queryShowData"
+  | "tvShowQuips"
   | "tvBFF"
   | "starSignPicker"
   | "crawlRottenTomatoe";

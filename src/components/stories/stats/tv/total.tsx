@@ -38,20 +38,20 @@ export const TotalTVShowStory = ({
 
         <div className="relative flex items-center gap-x-8 p-0 w-[90%] h-72">
           <img
-            src={watchHistory.topShows[0].imageURL}
+            src={watchHistory?.topShows[0]?.imageURL}
             alt="image"
             className="w-full h-64 rounded-lg object-cover border-2 shadow-black shadow-[4px_4px] bg-background"
           />
 
           <div className="flex flex-col gap-y-4 w-32 h-72 flex-shrink-0 relative z-10">
             <img
-              src={watchHistory.topShows[1].imageURL}
+              src={watchHistory?.topShows[1]?.imageURL}
               alt="image"
               className="w-full h-[48%] rounded-lg object-cover border-2 shadow-black shadow-[4px_4px] bg-background"
             />
 
             <img
-              src={watchHistory.topShows[2].imageURL}
+              src={watchHistory?.topShows[2]?.imageURL}
               alt="image"
               className="w-full h-[48%] rounded-lg object-cover border-2 shadow-black shadow-[4px_4px] bg-background"
             />
@@ -65,7 +65,7 @@ export const TotalTVShowStory = ({
         <div>
           <Text className="text-base my-3">Your most watched shows are:</Text>
           <div className="pl-8">
-            {watchHistory.topShows.map((show, index) => {
+            {watchHistory?.topShows?.map((show, index) => {
               return (
                 <div
                   key={`${show.title}-${index}`}
@@ -111,20 +111,20 @@ export const TotalTVShowDownloadStory = ({
       <div className="gap-y-10 flex-1 flex-col flex-center text-center">
         <div className="relative flex items-center gap-x-6 p-0 w-[90%] h-72">
           <img
-            src={watchHistory.topShows[0].imageURL}
+            src={watchHistory?.topShows?.[0]?.imageURL}
             alt="image"
             className="w-full h-64 rounded-lg object-cover border-2 shadow-black shadow-[4px_4px]"
           />
 
           <div className="flex flex-col gap-y-4 w-24 h-72 flex-shrink-0 relative z-10">
             <img
-              src={watchHistory.topShows[1].imageURL}
+              src={watchHistory?.topShows?.[1]?.imageURL}
               alt="image"
               className="w-full h-[48%] rounded-lg object-cover border-2 shadow-black shadow-[4px_4px]"
             />
 
             <img
-              src={watchHistory.topShows[2].imageURL}
+              src={watchHistory?.topShows?.[2]?.imageURL}
               alt="image"
               className="w-full h-[48%] rounded-lg object-cover border-2 shadow-black shadow-[4px_4px]"
             />
@@ -140,7 +140,7 @@ export const TotalTVShowDownloadStory = ({
             Most watched shows:
           </Text>
           <div>
-            {watchHistory.topShows.map((show, index) => {
+            {watchHistory?.topShows?.map((show, index) => {
               return (
                 <div
                   key={`${show.title}-${index}`}

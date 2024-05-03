@@ -91,3 +91,16 @@ export async function enqueueStarSignPicker(sessionID: string): Promise<void> {
     throw error;
   }
 }
+
+export async function enqueueTVShowQuips(sessionID: string): Promise<void> {
+  try {
+    await inngest.send({
+      name: eventNames.TVShowQuips,
+      data: { sessionID },
+    });
+    return console.log("enqueueTVShowQuips: data successfully enqueued");
+  } catch (error) {
+    console.error("Failed to enqueue data", error);
+    throw error;
+  }
+}

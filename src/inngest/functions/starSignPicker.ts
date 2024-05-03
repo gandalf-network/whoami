@@ -2,7 +2,7 @@ import { getAndUpdateStarSignPicker } from "@/actions";
 import { eventNames } from "@/actions/lib/queue/event";
 import {
   QueueName,
-  getQueueSessionState,
+  getSessionGlobalState,
   queueNames,
   setQueueSessionState,
 } from "@/actions/lib/queue/state";
@@ -15,12 +15,12 @@ async function starSignPicker(event: { data: any }) {
   try {
     const processedData = await getAndUpdateStarSignPicker(sessionID);
     const queueName = queueNames.StarSignPicker as QueueName;
-    const [, executedChunks] = await getQueueSessionState(sessionID, queueName);
+    const [, totalChunks] = await getSessionGlobalState(sessionID);
     await setQueueSessionState(
       sessionID,
       queueName,
       processedData,
-      executedChunks + 1,
+      totalChunks,
     );
   } catch (error) {
     console.error("Error processing job:", error);

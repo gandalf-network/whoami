@@ -1,9 +1,13 @@
-import { getAndUpdateTVShowQuips } from "@/actions";
+import { UserState } from "@prisma/client";
+
+import { getAndUpdateTVShowQuips, updateUserStateBySession } from "@/actions";
 import { eventNames } from "@/actions/lib/queue/event";
 import {
   QueueName,
-  incrementCompletedJobs,
+  getQueueSessionState,
+  getSessionGlobalState,
   queueNames,
+  setQueueSessionState,
 } from "@/actions/lib/queue/state";
 
 import { inngest } from "../client";
@@ -14,7 +18,14 @@ async function tvShowQuips(event: { data: any }) {
   try {
     const processedData = await getAndUpdateTVShowQuips(sessionID);
     const queueName = queueNames.TVShowQuips as QueueName;
-    await incrementCompletedJobs(sessionID, queueName, processedData);
+    const [, totalChunks] = await getSessionGlobalState(sessionID);
+    await setQueueSessionState(
+      sessionID,
+      queueName,
+      processedData,
+      totalChunks,
+    );
+    await updateUserStateBySession(sessionID, UserState.STATS_DATA_READY);
   } catch (error) {
     console.error("Error processing job:", error);
   }

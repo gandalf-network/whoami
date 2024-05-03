@@ -4,6 +4,7 @@ import { updateUserStateBySession } from "@/actions";
 import {
   enqueueStarSignPicker,
   enqueueTVBFF,
+  enqueueTVShowQuips,
 } from "@/actions/lib/queue/producers";
 import {
   QueueName,
@@ -28,16 +29,16 @@ async function stateThresholdCheck() {
         continue;
       }
 
-      if (await checkDependentQueuesThresold(sessionID)) {
-        if (
-          await checkQueueThresold(
-            sessionID,
-            queueNames.TVShowQuips as QueueName,
-          )
-        ) {
-          await updateUserStateBySession(sessionID, UserState.STATS_DATA_READY);
-        }
+      if (
+        await checkQueueThresold(
+          sessionID,
+          queueNames.QueryShowData as QueueName,
+        )
+      ) {
+        await enqueueTVShowQuips(sessionID);
+      }
 
+      if (await checkDependentQueuesThresold(sessionID)) {
         if (
           !(await checkQueueThresold(sessionID, queueNames.TVBFF as QueueName))
         ) {

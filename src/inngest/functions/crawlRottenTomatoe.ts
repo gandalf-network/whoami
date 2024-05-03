@@ -5,21 +5,19 @@ import {
   QueueName,
   incrementCompletedJobs,
   queueNames,
+  updatedCompletedJobs,
 } from "@/actions/lib/queue/state";
 
 import { inngest } from "../client";
 
 async function crawlRottenTomatoes(event: { data: ShowPayload }) {
   try {
+    console.log("Recv crawlRottenTomatoes request...");
     const showPayload = event.data;
     const processedData = await getAndUpdateRottenTomatoesScore(showPayload);
     const queueName = queueNames.CrawlRottenTomatoes as QueueName;
 
-    await incrementCompletedJobs(
-      showPayload.SessionID,
-      queueName,
-      processedData,
-    );
+    await updatedCompletedJobs(showPayload.SessionID, queueName, processedData);
     return processedData;
   } catch (error) {
     console.error("Error processing job:", error);

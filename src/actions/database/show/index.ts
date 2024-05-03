@@ -60,7 +60,7 @@ export async function updateShow(updateShowInput: UpdateShowInput) {
     data: {
       ...(updateShowInput.imageURL && { imageURL: updateShowInput.imageURL }),
       ...(updateShowInput.summary && { summary: updateShowInput.summary }),
-      ...(updateShowInput.rottenTomatoScore && {
+      ...(updateShowInput.rottenTomatoScore !== undefined && {
         rottenTomatoScore: updateShowInput.rottenTomatoScore,
       }),
       ...(updateShowInput.genres && {
@@ -93,6 +93,20 @@ export async function getNumberOfUpdatedShowsByUser(userID: string) {
         },
         genre: {
           isEmpty: false,
+        },
+      },
+    },
+  });
+  return watchCount;
+}
+
+export async function getNumberOfUpdatedTomatoeScores(userID: string) {
+  const watchCount = await prisma.userShow.count({
+    where: {
+      userID,
+      show: {
+        rottenTomatoScore: {
+          gte: 0,
         },
       },
     },

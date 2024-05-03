@@ -22,6 +22,7 @@ import {
   UpdateShowInput,
   batchInsertEpisodes,
   getNumberOfUpdatedShowsByUser,
+  getNumberOfUpdatedTomatoeScores,
   getTop5ShowsByUser,
   getTotalNumberOfShowsWatchedByUser,
   getUserAverageRottenTomatoScore,
@@ -81,6 +82,7 @@ export async function updateUserStateBySession(
 export async function getAndUpdateRottenTomatoesScore(
   payload: ShowPayload,
 ): Promise<number> {
+  const user = await findOrCreateUserBySessionID(payload.SessionID);
   let processed: number = 0;
   for (const show of payload.Shows) {
     try {
@@ -97,7 +99,7 @@ export async function getAndUpdateRottenTomatoesScore(
     }
   }
 
-  return processed;
+  return await getNumberOfUpdatedTomatoeScores(user.id);
 }
 
 export async function getCompletedShowDataBySession(

@@ -72,6 +72,7 @@ export async function getRottenTomatoScore(
       normalizedTitle,
       title.toLowerCase(),
     );
+
     const threshold = 0.25 * Math.max(normalizedTitle.length, title.length);
     if (levenshteinDistance > threshold) {
       continue;

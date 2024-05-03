@@ -18,7 +18,7 @@ export const CrossOverStarStory = ({
 }: StoryContentProps) => {
   const { stats } = useUserData();
 
-  const crossoverStar = stats?.yourCrossoverStar;
+  const crossoverStar = stats?.yourCrossoverStar || {};
 
   return (
     <div
@@ -42,23 +42,25 @@ export const CrossOverStarStory = ({
             strokeWidth={1.5}
           />
           <img
-            src={crossoverStar.imageURL}
+            src={crossoverStar?.imageURL}
             alt="image"
             className="bg-background rounded-full w-full h-full object-cover border-2 shadow-black shadow-[6px_6px] relative z-10"
           />
         </div>
 
         <div className="mt-8">
-          <Text className="text-xl font-bold">{crossoverStar.name}</Text>
+          <Text className="text-xl font-bold">
+            {crossoverStar?.name || "-"}
+          </Text>
           <Text className="text-base my-3 font-medium">
             Has appeared in{" "}
             <strong>
-              {crossoverStar.topShows.length} show
-              {crossoverStar.topShows.length > 1 ? "s " : " "}
+              {crossoverStar?.topShows?.length} show
+              {crossoverStar?.topShows?.length > 1 ? "s " : " "}
             </strong>
             you&apos;ve watched, including{" "}
             {formatStringArrayToJSX({
-              strings: crossoverStar.topShows,
+              strings: crossoverStar?.topShows,
               className: "font-bold",
             })}
           </Text>
@@ -84,7 +86,7 @@ export const CrossOverStarDownloadStory = ({
 }: StoryDownloadContentProps) => {
   const { stats } = useUserData();
 
-  const crossoverStar = stats?.yourCrossoverStar;
+  const crossoverStar = stats?.yourCrossoverStar || {};
 
   return (
     <StoryDownloadContainer
@@ -99,7 +101,7 @@ export const CrossOverStarDownloadStory = ({
           <Circle className="absolute w-16 -top-0 -left-0" />
           <Rectangle className="absolute w-12 bottom-6 -right-2 z-20" />
           <img
-            src={crossoverStar.imageURL}
+            src={crossoverStar?.imageURL}
             alt="image"
             className="bg-background rounded-full w-full h-full object-cover border-2 shadow-black shadow-[6px_6px] relative z-10"
           />
@@ -107,16 +109,16 @@ export const CrossOverStarDownloadStory = ({
 
         <div className="mt-8">
           <Text className="text-2xl font-bold mt-2 mb-4">
-            {crossoverStar.name}
+            {crossoverStar?.name}
           </Text>
           <Text className="font-medium text-base">Has appeared in</Text>
           <Text className="text-xl font-semibold">
-            {crossoverStar.topShows.length} shows
+            {crossoverStar?.topShows?.length} shows
           </Text>
           <Text className="text-lg mt-4 font-medium">
             I’ve watched including{" "}
             {formatStringArrayToJSX({
-              strings: crossoverStar.topShows,
+              strings: crossoverStar?.topShows,
               className: "",
             })}
           </Text>

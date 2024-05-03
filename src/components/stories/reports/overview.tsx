@@ -95,7 +95,7 @@ export const ReportOverviewStory = ({
 }: StoryContentProps) => {
   const { reportCard } = useUserData();
 
-  const { personality, tvBFF, starSign } = reportCard;
+  const { personality, tvBFF, starSign } = reportCard || {};
 
   const overviewSummary = getOverviewSummary({
     score: personality?.rtScore,
@@ -168,7 +168,7 @@ export const ReportOverviewDownloadStory = ({
 }: StoryDownloadContentProps) => {
   const { reportCard } = useUserData();
 
-  const { personality, tvBFF, starSign } = reportCard;
+  const { personality, tvBFF, starSign } = reportCard || {};
 
   const overviewSummary = getOverviewSummary({
     score: personality?.rtScore,

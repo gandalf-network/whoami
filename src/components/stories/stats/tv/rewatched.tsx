@@ -18,10 +18,10 @@ export const MostRewatchTVShowStory = ({
 }: StoryContentProps) => {
   const { stats } = useUserData();
 
-  const mostWatchedTvShow = stats?.mostWatchedTvShow;
+  const mostWatchedTvShow = stats?.mostWatchedTvShow || {};
 
-  const watchCount = Number(mostWatchedTvShow.show?.watchCount);
-  const numberOfEpisodes = mostWatchedTvShow.show?.numberOfEpisodes;
+  const watchCount = Number(mostWatchedTvShow?.show?.watchCount);
+  const numberOfEpisodes = mostWatchedTvShow?.show?.numberOfEpisodes;
 
   const hasCompletedShow =
     watchCount && numberOfEpisodes ? watchCount >= numberOfEpisodes : false;
@@ -44,7 +44,7 @@ export const MostRewatchTVShowStory = ({
           <NonagramStar className="absolute w-12 -top-4 -right-8 z-30" />
           <PentagramStar className="absolute w-24 -bottom-10 -left-12 z-10" />
           <img
-            src={mostWatchedTvShow.show?.imageURL}
+            src={mostWatchedTvShow?.show?.imageURL}
             alt="image"
             className="rounded-lg w-full h-full object-cover border-2 shadow-black shadow-[4px_4px] relative z-20 bg-background"
           />
@@ -52,7 +52,7 @@ export const MostRewatchTVShowStory = ({
 
         <div>
           <Text className="text-xl font-bold">
-            {mostWatchedTvShow.show?.title}
+            {mostWatchedTvShow?.show?.title}
           </Text>
           <Text className="text-base my-3 font-medium">
             You have watched{" "}
@@ -94,10 +94,10 @@ export const MostRewatchTVShowDownloadStory = ({
 }: StoryDownloadContentProps) => {
   const { stats } = useUserData();
 
-  const mostWatchedTvShow = stats?.mostWatchedTvShow;
+  const mostWatchedTvShow = stats?.mostWatchedTvShow || {};
 
-  const watchCount = Number(mostWatchedTvShow.show?.watchCount);
-  const numberOfEpisodes = mostWatchedTvShow.show?.numberOfEpisodes;
+  const watchCount = Number(mostWatchedTvShow?.show?.watchCount);
+  const numberOfEpisodes = mostWatchedTvShow?.show?.numberOfEpisodes;
 
   const hasCompletedShow =
     watchCount && numberOfEpisodes ? watchCount >= numberOfEpisodes : false;
@@ -114,7 +114,7 @@ export const MostRewatchTVShowDownloadStory = ({
           <NonagramStar className="absolute w-12 -top-4 -right-8 z-30" />
           <PentagramStar className="absolute w-24 -bottom-10 -left-12 z-10" />
           <img
-            src={mostWatchedTvShow.show?.imageURL}
+            src={mostWatchedTvShow?.show?.imageURL}
             alt="image"
             className="rounded-lg w-full h-full object-cover border-2 shadow-black shadow-[4px_4px] relative z-20"
           />
@@ -122,7 +122,7 @@ export const MostRewatchTVShowDownloadStory = ({
 
         <div>
           <Text className="text-2xl font-bold mt-2 mb-4">
-            {mostWatchedTvShow.show?.title}
+            {mostWatchedTvShow?.show?.title}
           </Text>
 
           <Text className="mt-2 text-lg font-medium">

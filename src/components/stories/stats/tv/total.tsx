@@ -18,7 +18,7 @@ export const TotalTVShowStory = ({
 }: StoryContentProps) => {
   const { stats } = useUserData();
 
-  const watchHistory = stats?.watchHistory;
+  const watchHistory = stats?.watchHistory || {};
   const firstShowImage = watchHistory?.topShows?.[0]?.imageURL;
   const secondShowImage = watchHistory?.topShows?.[1]?.imageURL;
   const thirdShowImage = watchHistory?.topShows?.[2]?.imageURL;
@@ -35,8 +35,8 @@ export const TotalTVShowStory = ({
       <div className="gap-y-10 story-content">
         <Text className="text-xl uppercase" font="heading">
           You have watched a total of <br />
-          {watchHistory.totalShowsWatched} show
-          {watchHistory.totalShowsWatched > 1 ? "s" : ""}
+          {watchHistory?.totalShowsWatched} show
+          {watchHistory?.totalShowsWatched > 1 ? "s" : ""}
         </Text>
 
         <div className="relative flex items-center gap-x-8 p-0 w-[90%] h-72">
@@ -70,14 +70,14 @@ export const TotalTVShowStory = ({
         <div>
           <Text className="text-base my-3">Your most watched shows are:</Text>
           <div className="pl-8">
-            {watchHistory?.topShows?.map((show, index) => {
+            {watchHistory?.topShows?.map?.((show, index) => {
               return (
                 <div
-                  key={`${show.title}-${index}`}
+                  key={`${show?.title}-${index}`}
                   className="flex-center-y font-bold"
                 >
                   <p className="w-6">{index + 1}</p>
-                  <p className="capitalize">{show.title}</p>
+                  <p className="capitalize">{show?.title}</p>
                 </div>
               );
             })}
@@ -104,7 +104,7 @@ export const TotalTVShowDownloadStory = ({
 }: StoryDownloadContentProps) => {
   const { stats } = useUserData();
 
-  const watchHistory = stats?.watchHistory;
+  const watchHistory = stats?.watchHistory || {};
   const firstShowImage = watchHistory?.topShows?.[0]?.imageURL;
   const secondShowImage = watchHistory?.topShows?.[1]?.imageURL;
   const thirdShowImage = watchHistory?.topShows?.[2]?.imageURL;
@@ -113,7 +113,7 @@ export const TotalTVShowDownloadStory = ({
     <StoryDownloadContainer
       id={getStoryDownloadSelector("totalShows").id}
       className="bg-primary-pink"
-      title={`I have watched a total of ${watchHistory.totalShowsWatched} show${watchHistory.totalShowsWatched > 1 ? "s" : ""}`}
+      title={`I have watched a total of ${watchHistory?.totalShowsWatched} show${watchHistory?.totalShowsWatched > 1 ? "s" : ""}`}
       {...props}
     >
       <div className="gap-y-10 flex-1 flex-col flex-center text-center">
@@ -150,14 +150,14 @@ export const TotalTVShowDownloadStory = ({
             Most watched shows:
           </Text>
           <div>
-            {watchHistory?.topShows?.map((show, index) => {
+            {watchHistory?.topShows?.map?.((show, index) => {
               return (
                 <div
-                  key={`${show.title}-${index}`}
+                  key={`${show?.title}-${index}`}
                   className="flex-center-y font-semibold text-2xl mb-1.5"
                 >
                   <p className="w-6">{index + 1}</p>
-                  <p className="capitalize">{show.title}</p>
+                  <p className="capitalize">{show?.title}</p>
                 </div>
               );
             })}

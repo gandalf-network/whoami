@@ -39,10 +39,10 @@ export const GenreDistributionStory = ({
 
           <div className="max-w-96 px-8">
             <Text className="text-lg mb-2.5 font-medium">
-              Your top {genreDistribution.genres.length} TV genres include:
+              Your top {genreDistribution?.genres?.length} TV genres include:
             </Text>
             <div className="my-3 flex flex-col gap-y-0.5 w-full">
-              {genreDistribution.genres.map((genre, index) => {
+              {genreDistribution?.genres?.map?.((genre, index) => {
                 const label = `${genre.genre} - ${parseInt((genre?.percentage || 0).toString(), 10)}%`;
                 return (
                   <Progress
@@ -57,7 +57,7 @@ export const GenreDistributionStory = ({
               })}
             </div>
             <Text className="text-base" font="caption">
-              {genreDistribution.quip}
+              {genreDistribution?.quip}
             </Text>
           </div>
         </div>
@@ -94,12 +94,12 @@ export const GenreDistributionDownloadStory = ({
       className="bg-primary-orange"
       title="My Genre Distribution"
       titleClassName="max-w-full"
-      description={`My top ${genreDistribution.genres.length} TV genres include:`}
+      description={`My top ${genreDistribution?.genres?.length} TV genres include:`}
       {...props}
     >
       <div className="flex-1 relative z-20 w-full pt-14">
         <div className="my-3 w-full flex flex-col gap-y-1.5">
-          {genreDistribution.genres.map((genre, index) => {
+          {genreDistribution?.genres?.map?.((genre, index) => {
             const label = `${genre.genre} - ${parseInt((genre?.percentage || 0).toString(), 10)}%`;
             return (
               <ThemedProgress

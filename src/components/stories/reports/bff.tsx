@@ -18,7 +18,7 @@ export const TVBFFStory = ({
 }: StoryContentProps) => {
   const { reportCard } = useUserData();
 
-  const { show, name, reason, imageURL } = reportCard?.tvBFF;
+  const { show, name, reason, imageURL } = reportCard?.tvBFF || {};
 
   return (
     <div
@@ -77,7 +77,7 @@ export const TVBFFStory = ({
 export const TVBFFDownloadStory = ({ ...props }: StoryDownloadContentProps) => {
   const { reportCard } = useUserData();
 
-  const { show, name, imageURL } = reportCard?.tvBFF;
+  const { show, name, imageURL } = reportCard?.tvBFF || {};
 
   return (
     <StoryDownloadContainer

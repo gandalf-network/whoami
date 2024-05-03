@@ -19,7 +19,7 @@ export const FirstTVShowStory = ({
 }: StoryContentProps) => {
   const { stats } = useUserData();
 
-  const firstTvShow = stats?.firstTvShow;
+  const firstTvShow = stats?.firstTvShow || {};
 
   return (
     <div
@@ -39,21 +39,21 @@ export const FirstTVShowStory = ({
           <QuadrilateralStar className="absolute w-10 -top-5 -left-5" />
           <DodecagramStar className="absolute w-24 -bottom-10 -right-12 z-10" />
           <img
-            src={firstTvShow.show?.imageURL}
+            src={firstTvShow?.show?.imageURL}
             alt="image"
             className="rounded-lg w-full h-full object-cover border-2 shadow-black shadow-[4px_4px] relative z-20 bg-background"
           />
         </div>
 
         <div>
-          <Text className="text-xl font-bold">{firstTvShow.show?.title}</Text>
+          <Text className="text-xl font-bold">{firstTvShow?.show?.title}</Text>
           <Text className="text-base my-3 font-medium">
-            {getDate(firstTvShow.show?.dateFirstPlayed || "").format(
+            {getDate(firstTvShow?.show?.dateFirstPlayed || "").format(
               "MMMM DD, YYYY",
             )}
           </Text>
           <Text className="text-base" font="caption">
-            {firstTvShow.quip}
+            {firstTvShow?.quip}
           </Text>
         </div>
       </div>
@@ -77,7 +77,7 @@ export const FirstTVShowDownloadStory = ({
 }: StoryDownloadContentProps) => {
   const { stats } = useUserData();
 
-  const firstTvShow = stats?.firstTvShow;
+  const firstTvShow = stats?.firstTvShow || {};
 
   return (
     <StoryDownloadContainer
@@ -91,7 +91,7 @@ export const FirstTVShowDownloadStory = ({
           <QuadrilateralStar className="absolute w-10 -top-5 -left-5" />
           <DodecagramStar className="absolute w-24 -bottom-10 -right-12 z-10" />
           <img
-            src={firstTvShow.show?.imageURL}
+            src={firstTvShow?.show?.imageURL}
             alt="image"
             className="rounded-lg w-full h-full object-cover border-2 shadow-black shadow-[4px_4px] relative z-20"
           />
@@ -99,11 +99,11 @@ export const FirstTVShowDownloadStory = ({
 
         <div>
           <Text className="text-2xl font-bold mt-2 mb-4">
-            {firstTvShow.show?.title}
+            {firstTvShow?.show?.title}
           </Text>
           <Text className="text-muted text-base">Date watched</Text>
           <Text className="text-xl font-semibold">
-            {getDate(firstTvShow.show?.dateFirstPlayed || "").format(
+            {getDate(firstTvShow?.show?.dateFirstPlayed || "").format(
               "MMMM DD, YYYY",
             )}
           </Text>

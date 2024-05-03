@@ -3,7 +3,6 @@ import { eventNames } from "@/actions/lib/queue/event";
 import { ShowPayload } from "@/actions/lib/queue/producers";
 import {
   QueueName,
-  incrementCompletedJobs,
   queueNames,
   updatedCompletedJobs,
 } from "@/actions/lib/queue/state";

@@ -18,7 +18,7 @@ export const StarSignStory = ({
 }: StoryContentProps) => {
   const { reportCard } = useUserData();
 
-  const starSign = reportCard?.starSign;
+  const starSign = reportCard?.starSign || {};
 
   return (
     <div
@@ -69,7 +69,7 @@ export const StarSignDownloadStory = ({
 }: StoryDownloadContentProps) => {
   const { reportCard } = useUserData();
 
-  const starSign = reportCard?.starSign;
+  const starSign = reportCard?.starSign || {};
 
   return (
     <StoryDownloadContainer

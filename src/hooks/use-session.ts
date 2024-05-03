@@ -28,17 +28,10 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
   // user report card data
   const [reportCard, setReportCard] = useState<UserReportCardType | null>(null);
 
-  // get session id
-  const getSessionId = () => {
-    return sessionId;
-  };
-
   // get user data
   const getUser = async () => {
     try {
       setLoading(true);
-      // get session id
-      const sessionId = getSessionId();
 
       // if no session id is found, throw an error
       if (!sessionId) {
@@ -80,9 +73,6 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
 
   // get user stats and report card data
   const getUserStatsAndReportCard = async () => {
-    // get session id
-    const sessionId = getSessionId();
-
     const fetchData = () => {
       // fetch user stats and report card data every 5 seconds
       const timer = setInterval(async () => {
@@ -108,6 +98,8 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
   };
 
   useEffect(() => {
+    console.log({ dataKey, sessionId });
+
     // load user data on mount if loadOnMount is true
     if (options?.loadOnMount) {
       refetch(options?.refetchInterval);
@@ -119,7 +111,7 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
   }, [dataKey]);
 
   return {
-    sessionId: getSessionId(),
+    sessionId,
     user,
     stats,
     reportCard,

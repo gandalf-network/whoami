@@ -9,9 +9,7 @@ import { stateThresholdCheckTask } from "@/inngest/functions/stateThresholdCheck
 import { tvBFFTask } from "@/inngest/functions/tvBFF";
 
 
-export const config = {
-  runtime: 'experimental-edge',
-}
+export const runtime = "experimental-edge"
 
 export const { GET, POST, PUT } = serve({
   client: inngest,

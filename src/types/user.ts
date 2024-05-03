@@ -11,7 +11,7 @@ export type Show = {
   genres?: string[];
   summary?: string;
   watchCount?: number;
-  numberOfEpisodes?: number;
+  numberOfEpisodes?: bigint;
   imageURL?: string;
   actors?: Actor[];
 };

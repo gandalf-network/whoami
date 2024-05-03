@@ -4,7 +4,6 @@ import { getAndUpdateTVShowQuips, updateUserStateBySession } from "@/actions";
 import { eventNames } from "@/actions/lib/queue/event";
 import {
   QueueName,
-  getQueueSessionState,
   getSessionGlobalState,
   queueNames,
   setQueueSessionState,

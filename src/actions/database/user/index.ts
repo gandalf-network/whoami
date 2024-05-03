@@ -14,7 +14,7 @@ export async function findOrCreateUserBySessionID(sessionID: string) {
   return user;
 }
 
-export async function findOrCreateUpsert(sessionID: string, dataKey: string) {
+export async function upsertUser(sessionID: string, dataKey: string) {
   const user = await prisma.user.upsert({
     where: {
       identifier: sessionID,

@@ -36,7 +36,7 @@ import {
 import {
   findOrCreateUserBySessionID,
   updateUser,
-  findOrCreateUpsert,
+  upsertUser,
 } from "./database/user";
 import Eye, { Source } from "./eyeofsauron";
 import { NetflixActivityMetadata } from "./eyeofsauron/gql/__generated__";
@@ -255,7 +255,7 @@ export async function getAndDumpActivities(
   const limit = 400;
   let total: number = 0;
   try {
-    const user = await findOrCreateUpsert(sessionID, dataKey);
+    const user = await upsertUser(sessionID, dataKey);
     const seenShows: Set<string> = new Set();
     const episodes: insertEpisodeInput[] = [];
 

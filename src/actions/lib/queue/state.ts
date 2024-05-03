@@ -21,6 +21,16 @@ export type QueueName =
   | "tvBFF"
   | "starSignPicker"
   | "crawlRottenTomatoe";
+
+export const queueNames = {
+  QueryActivities: "queryActivities",
+  QueryShowData: "queryShowData",
+  CrawlRottenTomatoes: "crawlRottenTomatoe",
+  TVBFF: "tvBFF",
+  StarSignPicker: "starSignPicker",
+  StateThresholdCheck: "stateThresholdCheck",
+};
+
 export type SessionState = "NOT_STARTED" | "PROCESSING" | "COMPLETED";
 export type QueueCompletion = number;
 

@@ -13,7 +13,7 @@ export const TVStatsMockedData: UserStatsType = {
   },
   mostWatchedTvShow: {
     show: {
-      watchCount: 78,
+      watchCount: BigInt(78),
       numberOfEpisodes: 100,
       id: "1",
       dateFirstPlayed: "",

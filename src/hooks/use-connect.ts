@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 
+import { createOrGetSessionId } from "@/helpers/storage";
 import { getEnvDetails } from "@/helpers/utils";
 
 export const useGandalfConnect = () => {
@@ -14,7 +15,7 @@ export const useGandalfConnect = () => {
 
     const res = new Connect({
       publicKey: process.env.NEXT_PUBLIC_GANDALF_PUBLIC_KEY as string,
-      redirectURL: `${getEnvDetails().url}/stories`,
+      redirectURL: `${getEnvDetails().url}/stories?sessionID=${createOrGetSessionId()}`,
       services: { netflix: true },
     });
     return res;

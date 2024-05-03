@@ -15,6 +15,8 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
   // get data key
   const dataKey = searchParams.get("dataKey");
 
+  const sessionId = searchParams.get("sessionID") || createOrGetSessionId();
+
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState<Awaited<
     ReturnType<typeof findOrCreateUser>
@@ -28,7 +30,7 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
 
   // get session id
   const getSessionId = () => {
-    return createOrGetSessionId();
+    return sessionId;
   };
 
   // get user data

@@ -51,7 +51,6 @@ export async function generateMetadata(
       //   genreDistribution,
       //   yourCrossoverStar,
       // } = TVStatsMockedData;
-      console.log("hi");
 
       const {
         firstTvShow,

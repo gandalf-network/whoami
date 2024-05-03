@@ -178,7 +178,7 @@ export const OGContainer = ({
         ...ogStyles.flexCenter,
         backgroundColor: ogImageStlyingColors.white,
         width: "1200px",
-        height: "675px",
+        height: "630px",
         ...(style || {}),
       }}
       {...props}

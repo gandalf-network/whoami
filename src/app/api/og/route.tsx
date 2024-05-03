@@ -32,7 +32,7 @@ export async function GET(request: Request) {
 
     return new ImageResponse(<OGImage id={id} data={data} />, {
       width: 1200,
-      height: 675,
+      height: 630,
       fonts: [
         {
           name: "opensans",

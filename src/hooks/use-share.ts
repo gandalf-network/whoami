@@ -1,6 +1,5 @@
 import { useState } from "react";
 
-import { baseMetadataInfo } from "@/helpers/metadata";
 import { getStoryDownloadSelector, getStoryLink } from "@/helpers/story";
 import {
   dataURLtoFile,
@@ -56,7 +55,10 @@ export const useShare = ({ storyId }: { storyId: AllStoryIds }) => {
           selector: getStoryDownloadSelector(storyId).selector,
         });
 
-        const imageFile = dataURLtoFile(image, `${storyId.toLowerCase()}.png`);
+        const imageFile = await dataURLtoFile(
+          image,
+          `${storyId.toLowerCase()}.png`,
+        );
 
         const shareData =
           type === "instagram"
@@ -64,8 +66,6 @@ export const useShare = ({ storyId }: { storyId: AllStoryIds }) => {
             : {
                 files: [imageFile],
                 url: storyLink,
-                title: baseMetadataInfo.title,
-                text: baseMetadataInfo.title,
               };
 
         if (navigator?.canShare?.(shareData)) {

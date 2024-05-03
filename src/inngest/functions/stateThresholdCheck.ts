@@ -32,7 +32,7 @@ async function stateThresholdCheck() {
         if (
           await checkQueueThresold(
             sessionID,
-            queueNames.QueryShowData as QueueName,
+            queueNames.TVShowQuips as QueueName,
           )
         ) {
           await updateUserStateBySession(sessionID, UserState.STATS_DATA_READY);

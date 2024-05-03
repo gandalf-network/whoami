@@ -27,6 +27,7 @@ export const queueNames = {
   QueryShowData: "queryShowData",
   CrawlRottenTomatoes: "crawlRottenTomatoe",
   TVBFF: "tvBFF",
+  TVShowQuips: "tvShowQuips",
   StarSignPicker: "starSignPicker",
   StateThresholdCheck: "stateThresholdCheck",
 };

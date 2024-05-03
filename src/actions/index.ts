@@ -132,6 +132,26 @@ export async function getAndUpdateStarSignPicker(
   return await getTotalNumberOfShowsWatchedByUser(user.id);
 }
 
+export async function getAndUpdateTVShowQuips(
+  sessionID: string,
+): Promise<number> {
+  const user = await findOrCreateUserBySessionID(sessionID);
+  const topShow = await getTop5ShowsByUser(user.id);
+  const firstShow = await getUsersFirstShow(user.id);
+
+  const mostRewatchedShowQuips = await getFirstAndMostRewatchedShowQuips(
+    firstShow,
+    topShow,
+  );
+
+  await createOrUpdateUsersAIResponse({
+    ...mostRewatchedShowQuips,
+    userID: user.id,
+  });
+
+  return await getTotalNumberOfShowsWatchedByUser(user.id);
+}
+
 export async function getAndUpdateTVBFF(sessionID: string): Promise<number> {
   const user = await findOrCreateUserBySessionID(sessionID);
   const topGenres = await getUsersTopGenres(user.id);
@@ -144,11 +164,6 @@ export async function getAndUpdateTVBFF(sessionID: string): Promise<number> {
     topShow[0].title,
   );
   const tvBFF = await getTVBFF(topGenres, characterPersonalities);
-  const firstShow = await getUsersFirstShow(user.id);
-  const mostRewatchedShowQuips = await getFirstAndMostRewatchedShowQuips(
-    firstShow,
-    topShow,
-  );
 
   const actorImageURL = await getActorsImageByCharacterNameAndShow(
     tvBFF.BFF as string,
@@ -157,7 +172,6 @@ export async function getAndUpdateTVBFF(sessionID: string): Promise<number> {
 
   await createOrUpdateUsersAIResponse({
     ...tvBFF,
-    ...mostRewatchedShowQuips,
     bffImageURL: actorImageURL,
     userID: user.id,
   });

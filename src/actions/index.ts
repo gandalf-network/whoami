@@ -33,7 +33,7 @@ import {
   upsertShow,
   upsertUserShow,
 } from "./database/show";
-import { findOrCreateUserBySessionID, updateUser } from "./database/user";
+import { findOrCreateUserBySessionID, updateUser, findOrCreateUpsert } from "./database/user";
 import Eye, { Source } from "./eyeofsauron";
 import { NetflixActivityMetadata } from "./eyeofsauron/gql/__generated__";
 import {
@@ -233,11 +233,11 @@ function generateJobId(pageCount: number, sessionId: string): string {
 export async function getAndDumpActivities(
   sessionID: string,
   dataKey: string,
-): Promise<number> {
+): Promise<number[]> {
   const limit = 400;
   let total: number = 0;
   try {
-    const user = await findOrCreateUserBySessionID(sessionID);
+    const user = await findOrCreateUpsert(sessionID, dataKey);
     const seenShows: Set<string> = new Set();
     const episodes: insertEpisodeInput[] = [];
 
@@ -251,7 +251,7 @@ export async function getAndDumpActivities(
     total = initialActivityResponse.total;
     if (initialActivityResponse.data.length === 0) {
       console.log("No data to fetch.");
-      return 0;
+      return [0,0];
     }
 
     const totalPages = Math.ceil(total / limit);
@@ -325,7 +325,7 @@ export async function getAndDumpActivities(
         totalShows += jobShows.length;
       }
     }
-    return totalShows;
+    return [totalShows, totalPages];
   } catch (error: any) {
     console.error("Failed to fetch data", error.message);
     throw error;

@@ -37,6 +37,9 @@ export type QueueCompletion = number;
 const makeKey = (sessionId: string, queueName: QueueName, suffix: string) =>
   `session:${sessionId}:queue:${queueName}:${suffix}`;
 
+const makeGlobalKey = (sessionId: string, suffix: string) =>
+  `session:${sessionId}:${suffix}`;
+
 const COMPLETION_THRESHOLD = 95;
 
 export const sessionStates: Record<string, SessionState> = {
@@ -82,39 +85,71 @@ export async function getSessionsByState(state: string): Promise<string[]> {
   return index[state] || [];
 }
 
-export async function setQueueStateInRedis(
+export async function setSessionGlobalState(
   sessionId: string,
-  queueName: QueueName,
   totalJobs: number,
+  totalChunks: number,
 ) {
   await kv.set(
-    makeKey(sessionId, queueName, "totalJobs"),
+    makeGlobalKey(sessionId, "totalJobs"),
     totalJobs.toString(),
   );
-  await kv.set(makeKey(sessionId, queueName, "completedJobs"), "0");
+  await kv.set(
+    makeGlobalKey(sessionId, "totalChunks"),
+    totalChunks.toString(),
+  );
 }
 
-export async function setAllQueueTotalJobs(
+
+export async function getSessionGlobalState(sessionId: string): Promise<number[]>{
+  const totalJobString:  string | null = await kv.get(
+    makeGlobalKey(sessionId, "totalJobs")
+  );
+  const totalChunkString:  string | null = await kv.get(
+    makeGlobalKey(sessionId, "totalChunks"),
+  );
+
+  const totalJobs = parseInt(totalJobString || "0");
+  const totalChunks = parseInt(totalChunkString || "0");
+
+  return[ totalJobs, totalChunks]
+}
+
+export async function getQueueSessionState(sessionId: string, queueName: QueueName): Promise<number[]>{
+  const completedJobString:  string | null = await kv.get(
+    makeKey(sessionId, queueName, "completedJobs")
+  );
+  const executedChunkString:  string | null = await kv.get(
+    makeKey(sessionId, queueName, "executedChunks"),
+  );
+
+  const completedJobs = parseInt(completedJobString || "0");
+  const executedChunks = parseInt(executedChunkString || "0");
+
+  return [ completedJobs, executedChunks]
+}
+
+export async function setQueueSessionState(
   sessionId: string,
-  totalJobs: number,
+  queueName: QueueName,
+  completedJobs: number,
+  executedChunks: number,
 ) {
-  const queues: QueueName[] = [
-    "queryActivities",
-    "queryShowData",
-    "crawlRottenTomatoe",
-    "starSignPicker",
-    "tvBFF",
-  ];
-  for (const queueName of queues) {
-    await setQueueStateInRedis(sessionId, queueName, totalJobs);
-  }
+  await kv.set(
+    makeKey(sessionId, queueName, "completedJobs"),
+    completedJobs.toString(),
+  );
+  await kv.set(
+    makeKey(sessionId, queueName, "executedChunks"),
+    executedChunks.toString(),
+  );
 }
 
 export async function getQueueCompletion(
   sessionId: string,
   queueName: QueueName,
 ): Promise<number> {
-  const totalJobsKey = makeKey(sessionId, queueName, "totalJobs");
+  const totalJobsKey = makeGlobalKey(sessionId, "totalJobs");
   const completedJobsKey = makeKey(sessionId, queueName, "completedJobs");
 
   const totalJobsString: string | null = await kv.get(totalJobsKey);
@@ -123,44 +158,15 @@ export async function getQueueCompletion(
   const totalJobs = parseInt(totalJobsString || "0");
   const completedJobs = parseInt(completedJobsString || "0");
   if (totalJobs === 0) {
-    console.log(
-      queueName,
-      "totalJobs > ",
-      totalJobs,
-      "completedJobs > ",
-      completedJobs,
-    );
     return 0;
   }
 
   return (completedJobs / totalJobs) * 100;
 }
 
-export async function incrementCompletedJobs(
-  sessionId: string,
-  queueName: QueueName,
-  jobs: number,
-) {
-  const completedJobsKey = makeKey(sessionId, queueName, "completedJobs");
-
-  const completedJobsString: string | null = await kv.get(completedJobsKey);
-  let completedJobs = parseInt(completedJobsString || "0");
-  completedJobs += jobs;
-
-  await kv.set(completedJobsKey, completedJobs.toString());
-}
-
-export async function updatedCompletedJobs(
-  sessionId: string,
-  queueName: QueueName,
-  jobs: number,
-) {
-  const completedJobsKey = makeKey(sessionId, queueName, "completedJobs");
-  await kv.set(completedJobsKey, jobs);
-}
 
 export async function checkDependentQueuesThresold(
-  sessionId: string,
+  sessionID: string,
 ): Promise<boolean> {
   const queuesToCheck: QueueName[] = [
     "queryActivities",
@@ -171,11 +177,15 @@ export async function checkDependentQueuesThresold(
 
   for (const queueName of queuesToCheck) {
     const completion = await getQueueCompletion(
-      sessionId,
+      sessionID,
       queueName as QueueName,
     );
-    console.log(`${sessionId}-${queueName}`, "<>", completion);
-    if (completion < COMPLETION_THRESHOLD) {
+    
+    const [, executedChunks] = await getQueueSessionState(sessionID, queueName)
+    const [, totalChunks] = await getSessionGlobalState(sessionID)
+    
+    console.log(`${queueName}`, "<>", completion);
+    if (completion < COMPLETION_THRESHOLD && executedChunks < totalChunks) {
       canTrigger = false;
       break;
     }
@@ -185,14 +195,14 @@ export async function checkDependentQueuesThresold(
 }
 
 export async function checkIndependentQueuesThresold(
-  sessionId: string,
+  sessionID: string,
 ): Promise<boolean> {
   const queuesToCheck: QueueName[] = ["tvBFF", "starSignPicker"];
   let canTrigger = true;
 
   for (const queueName of queuesToCheck) {
     const completion = await getQueueCompletion(
-      sessionId,
+      sessionID,
       queueName as QueueName,
     );
     if (completion < COMPLETION_THRESHOLD) {

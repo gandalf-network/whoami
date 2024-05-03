@@ -21,7 +21,7 @@ export async function getStatsResponse(sessionID: string) {
   const usersMostWatchedTVShow = usersMostWatchedTVShows[0];
   const topShowsByActor = await getUsersTopShowsByActor(user.id);
   const watchCount = await getTotalNumberOfShowsWatchedByUser(user.id);
-  const topGenres = await getUsersTopGenres(user.id);
+  const topGenres = await getUsersTopGenres(user.id, 5);
   const aiResponses = await createOrUpdateUsersAIResponse({ userID: user.id });
 
   const mostWatchedTvShow: MostWatchedTvShowWithEpisode = {

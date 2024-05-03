@@ -51,7 +51,7 @@ import { ParsedActivity } from "../types";
 
 const eye = new Eye({
   baseURL: process.env.GANDALF_SAURON_URL as string,
-  privateKey: process.env.GANDALF_APP_PRIVATE_KEY as string,
+  privateKey: process.env.GANDALF_PRIVATE_KEY as string,
 });
 
 const tmdbClient = new TMDBClient(

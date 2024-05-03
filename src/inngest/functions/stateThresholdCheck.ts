@@ -57,21 +57,25 @@ export const stateThresholdCheckTask = inngest.createFunction(
   async ({ event }) => {
     console.log("> Initiating state threshold checks...");
     const startTime = Date.now();
-    const maxDuration = 10000;
+    const maxDuration = 60000;
     let results;
+    let interval: string | number | NodeJS.Timeout | undefined;
 
     const check = async () => {
       if (Date.now() - startTime > maxDuration) {
         console.log("Reached maximum execution time. Ending checks.");
+        clearInterval(interval);
         return;
       }
 
       results = await stateThresholdCheck();
-      setTimeout(check, 5000);
     };
-    await check();
+
+    interval = setInterval(check, 5000);
 
     await new Promise((resolve) => setTimeout(resolve, maxDuration));
+    clearInterval(interval);
+
     return { event, sessions: results };
   },
 );

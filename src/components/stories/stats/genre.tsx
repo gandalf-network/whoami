@@ -43,7 +43,7 @@ export const GenreDistributionStory = ({
             </Text>
             <div className="my-3 flex flex-col gap-y-0.5">
               {genreDistribution.genres.map((genre, index) => {
-                const label = `${genre.genre} - ${genre.percentage}%`;
+                const label = `${genre.genre} - ${genre?.percentage || 0}%`;
                 return (
                   <Progress
                     key={`${label}-${index}`}
@@ -100,7 +100,7 @@ export const GenreDistributionDownloadStory = ({
       <div className="flex-1 relative z-20 w-full pt-14">
         <div className="my-3 w-full flex flex-col gap-y-1.5">
           {genreDistribution.genres.map((genre, index) => {
-            const label = `${genre.genre} - ${genre.percentage}%`;
+            const label = `${genre.genre} - ${genre?.percentage || 0}%`;
             return (
               <ThemedProgress
                 key={`${label}-${index}`}

@@ -26,18 +26,20 @@ export const LandingScreen = () => {
         </Box>
 
         <div className="flex-1 flex-center flex-col gap-3">
-          <div className="flex-center-y gap-x-1">
-            <LogoIcon className="w-14" />
-            <LogoMarkOutlinedIcon className="w-64" />
+          <div className="flex-1 flex-center flex-col gap-3">
+            <div className="flex-center-y gap-x-1">
+              <LogoIcon className="w-14" />
+              <LogoMarkOutlinedIcon className="w-64" />
+            </div>
+            <p className="text-lg text-center max-w-72 font-medium">
+              Connect your Netflix profile and we will tell you who you are
+            </p>
+            <StartButton className="mt-8 uppercase font-semibold">
+              Start
+            </StartButton>
           </div>
-          <p className="text-lg text-center max-w-72 font-medium">
-            Connect your Netflix profile and we will tell you who you are
-          </p>
-          <StartButton className="mt-8 uppercase font-semibold">
-            Start
-          </StartButton>
 
-          <p className="text-center font-regular my-8 text-sm opacity-60">
+          <p className="text-center font-regular mb-36 text-sm opacity-60">
             Available for only iPhones & iPads <br /> Android coming soon
           </p>
         </div>

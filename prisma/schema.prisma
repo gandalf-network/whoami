@@ -33,6 +33,7 @@ model user {
   state      UserState  @default(AWAITING_CONNECTION)
   shows      userShow[]
   createdAt  DateTime   @default(now())
+  dataKey    String     @default("")
   updatedAt  DateTime   @updatedAt
   aiResponse aiResponse?
 }

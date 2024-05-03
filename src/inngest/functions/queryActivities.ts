@@ -6,11 +6,11 @@ import { eventNames } from "@/actions/lib/queue/event";
 import { ActivityDataPayload } from "@/actions/lib/queue/producers";
 import {
   setSessionIndex,
-  setAllQueueTotalJobs,
-  incrementCompletedJobs,
   sessionStates,
   QueueName,
   queueNames,
+  setQueueSessionState,
+  setSessionGlobalState,
 } from "@/actions/lib/queue/state";
 
 import { inngest } from "../client";
@@ -18,13 +18,23 @@ import { inngest } from "../client";
 async function queryActivities(event: { data: ActivityDataPayload }) {
   const { sessionID, dataKey } = event.data;
   try {
-    const totalData = await getAndDumpActivities(sessionID, dataKey);
+    const [totalData, totalChunks] = await getAndDumpActivities(
+      sessionID,
+      dataKey,
+    );
     await setSessionIndex(sessionID, sessionStates.PROCESSING);
     await updateUserStateBySession(sessionID, UserState.CRUNCHING_DATA);
-    await setAllQueueTotalJobs(sessionID, totalData);
+    await setSessionGlobalState(sessionID, totalData, totalChunks);
+
     const queueName = queueNames.QueryActivities as QueueName;
-    await incrementCompletedJobs(sessionID, queueName, totalData);
-    console.log("totalData:", totalData);
+    await setQueueSessionState(sessionID, queueName, totalData, totalChunks);
+
+    console.log(
+      `${sessionID}> [totalData]:`,
+      totalData,
+      "[totalChunks]:",
+      totalChunks,
+    );
     return totalData;
   } catch (error) {
     console.error("Error processing job:", error);

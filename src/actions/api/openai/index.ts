@@ -38,8 +38,13 @@ export async function getStarSign(
   topGenres: TopGenres,
   avgRottenTomatoScore: number,
 ): Promise<TopGenresPersonalityAndStarSignAIResults> {
+  const openAITopGenresInput = topGenres.map((genre) => {
+    return {
+      [genre.genre]: genre.percentage,
+    };
+  });
   const input = {
-    topGenres,
+    openAITopGenresInput,
     RTScore: avgRottenTomatoScore,
   };
   return callOpenAI(input, StarSignAssistant, "TOP_GENRES_STAR_SIGN");

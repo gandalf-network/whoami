@@ -274,7 +274,8 @@ export async function getUsersTopGenres(userID: string, count = 2) {
     `;
   const topGenres: TopGenres = topGenresRes.map((genre: any) => {
     return {
-      [genre.genre]: genre.percentage,
+      genre: genre.genre,
+      prcentage: genre.percentage,
     };
   });
   return topGenres;

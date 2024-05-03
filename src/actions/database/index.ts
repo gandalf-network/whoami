@@ -17,7 +17,7 @@ export async function getStatsResponse(sessionID: string) {
   }
 
   const usersFirstShow = await getUsersFirstShow(user.id);
-  const usersMostWatchedTVShows = await getTop5ShowsByUser(user.id);
+  const usersMostWatchedTVShows = await getTop5ShowsByUser(user.id, false);
   const usersMostWatchedTVShow = usersMostWatchedTVShows[0];
   const topShowsByActor = await getUsersTopShowsByActor(user.id);
   const watchCount = await getTotalNumberOfShowsWatchedByUser(user.id);

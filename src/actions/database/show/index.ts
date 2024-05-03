@@ -134,7 +134,6 @@ export async function getUsersFirstShow(userID: string): Promise<Show> {
   });
 
   if (!usersFirstShowRes) throw new Error("show not found`");
-
   const usersFirstShow: Show = {
     id: usersFirstShowRes.userShow?.show.id as string,
     dateFirstPlayed: usersFirstShowRes.datePlayed.toString(),
@@ -149,7 +148,7 @@ export async function getUsersFirstShow(userID: string): Promise<Show> {
 
 export async function getTop5ShowsByUser(
   userID: string,
-  lastOneYear: boolean = false,
+  lastOneYear: boolean = true,
 ) {
   const topShows: Show[] = await prisma.$queryRaw`
       SELECT 
@@ -169,9 +168,10 @@ export async function getTop5ShowsByUser(
         "show" s ON us."showID" = s.id
       WHERE 
         us."userID" = ${userID}
-        AND
+        AND (
           ${lastOneYear} = false
           OR ue."datePlayed" > CURRENT_DATE - INTERVAL '1 year'
+        )
       GROUP BY 
         s.id
       ORDER BY 
@@ -275,7 +275,7 @@ export async function getUsersTopGenres(userID: string, count = 2) {
   const topGenres: TopGenres = topGenresRes.map((genre: any) => {
     return {
       genre: genre.genre,
-      prcentage: genre.percentage,
+      percentage: genre.percentage,
     };
   });
   return topGenres;

@@ -26,8 +26,13 @@ export async function getTVBFF(
   topGenres: TopGenres,
   characterPersonalities: string,
 ): Promise<BFF> {
+  const openAITopGenresInput = topGenres.map((genre) => {
+    return {
+      [genre.genre]: genre.percentage,
+    };
+  });
   const input = {
-    topGenres,
+    topGenres: openAITopGenresInput,
     characterPersonalities,
   };
 
@@ -44,7 +49,7 @@ export async function getStarSign(
     };
   });
   const input = {
-    openAITopGenresInput,
+    topGenres: openAITopGenresInput,
     RTScore: avgRottenTomatoScore,
   };
   return callOpenAI(input, StarSignAssistant, "TOP_GENRES_STAR_SIGN");

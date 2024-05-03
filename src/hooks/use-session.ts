@@ -62,8 +62,12 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
       const timer = setInterval(async () => {
         const data = await getUser();
 
+        console.log({ state: data?.state });
+
         if (data.state === "STATS_DATA_READY") {
           const stats = await getStats(sessionId);
+
+          console.log({ stats });
 
           if (stats) {
             setStats(stats);
@@ -72,6 +76,8 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
 
         if (data.state === "COMPLETED") {
           const reportCard = await getReportCard(sessionId);
+
+          console.log({ reportCard });
 
           if (reportCard) {
             setReportCard(reportCard);

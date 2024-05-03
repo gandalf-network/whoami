@@ -93,7 +93,6 @@ async function callOpenAI(
   assistantName: AssistantName,
 ) {
   const inputJSON = JSON.stringify(input);
-
   let assistantID: string;
 
   try {

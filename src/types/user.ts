@@ -10,8 +10,8 @@ export type Show = {
   dateFirstPlayed?: string;
   genres?: string[];
   summary?: string;
-  watchCount?: number;
-  numberOfEpisodes?: bigint;
+  watchCount?: bigint;
+  numberOfEpisodes?: number;
   imageURL?: string;
   actors?: Actor[];
 };

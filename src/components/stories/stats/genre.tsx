@@ -41,9 +41,9 @@ export const GenreDistributionStory = ({
             <Text className="text-lg mb-2.5 font-medium">
               Your top {genreDistribution.genres.length} TV genres include:
             </Text>
-            <div className="my-3 flex flex-col gap-y-0.5">
+            <div className="my-3 flex flex-col gap-y-0.5 w-full">
               {genreDistribution.genres.map((genre, index) => {
-                const label = `${genre.genre} - ${genre?.percentage || 0}%`;
+                const label = `${genre.genre} - ${parseInt((genre?.percentage || 0).toString(), 10)}%`;
                 return (
                   <Progress
                     key={`${label}-${index}`}
@@ -51,7 +51,7 @@ export const GenreDistributionStory = ({
                     value={genre.percentage}
                     label={label}
                     className="w-full"
-                    containerClassName="px-4"
+                    containerClassName=""
                   />
                 );
               })}
@@ -100,7 +100,7 @@ export const GenreDistributionDownloadStory = ({
       <div className="flex-1 relative z-20 w-full pt-14">
         <div className="my-3 w-full flex flex-col gap-y-1.5">
           {genreDistribution.genres.map((genre, index) => {
-            const label = `${genre.genre} - ${genre?.percentage || 0}%`;
+            const label = `${genre.genre} - ${parseInt((genre?.percentage || 0).toString(), 10)}%`;
             return (
               <ThemedProgress
                 key={`${label}-${index}`}

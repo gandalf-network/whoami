@@ -19,6 +19,9 @@ export const TotalTVShowStory = ({
   const { stats } = useUserData();
 
   const watchHistory = stats?.watchHistory;
+  const firstShowImage = watchHistory?.topShows?.[0]?.imageURL;
+  const secondShowImage = watchHistory?.topShows?.[1]?.imageURL;
+  const thirdShowImage = watchHistory?.topShows?.[2]?.imageURL;
 
   return (
     <div
@@ -38,24 +41,26 @@ export const TotalTVShowStory = ({
 
         <div className="relative flex items-center gap-x-8 p-0 w-[90%] h-72">
           <img
-            src={watchHistory?.topShows[0]?.imageURL}
+            src={firstShowImage}
             alt="image"
             className="w-full h-64 rounded-lg object-cover border-2 shadow-black shadow-[4px_4px] bg-background"
           />
 
-          <div className="flex flex-col gap-y-4 w-32 h-72 flex-shrink-0 relative z-10">
-            <img
-              src={watchHistory?.topShows[1]?.imageURL}
-              alt="image"
-              className="w-full h-[48%] rounded-lg object-cover border-2 shadow-black shadow-[4px_4px] bg-background"
-            />
+          {secondShowImage || thirdShowImage ? (
+            <div className="flex flex-col gap-y-4 w-32 h-72 flex-shrink-0 relative z-10">
+              <img
+                src={secondShowImage}
+                alt="image"
+                className="w-full h-[48%] rounded-lg object-cover border-2 shadow-black shadow-[4px_4px] bg-background"
+              />
 
-            <img
-              src={watchHistory?.topShows[2]?.imageURL}
-              alt="image"
-              className="w-full h-[48%] rounded-lg object-cover border-2 shadow-black shadow-[4px_4px] bg-background"
-            />
-          </div>
+              <img
+                src={thirdShowImage}
+                alt="image"
+                className="w-full h-[48%] rounded-lg object-cover border-2 shadow-black shadow-[4px_4px] bg-background"
+              />
+            </div>
+          ) : null}
 
           <Quadrilateral1Star className="absolute w-28 -bottom-10 -left-12 z-10" />
 
@@ -100,6 +105,9 @@ export const TotalTVShowDownloadStory = ({
   const { stats } = useUserData();
 
   const watchHistory = stats?.watchHistory;
+  const firstShowImage = watchHistory?.topShows?.[0]?.imageURL;
+  const secondShowImage = watchHistory?.topShows?.[1]?.imageURL;
+  const thirdShowImage = watchHistory?.topShows?.[2]?.imageURL;
 
   return (
     <StoryDownloadContainer
@@ -111,24 +119,26 @@ export const TotalTVShowDownloadStory = ({
       <div className="gap-y-10 flex-1 flex-col flex-center text-center">
         <div className="relative flex items-center gap-x-6 p-0 w-[90%] h-72">
           <img
-            src={watchHistory?.topShows?.[0]?.imageURL}
+            src={firstShowImage}
             alt="image"
             className="w-full h-64 rounded-lg object-cover border-2 shadow-black shadow-[4px_4px]"
           />
 
-          <div className="flex flex-col gap-y-4 w-24 h-72 flex-shrink-0 relative z-10">
-            <img
-              src={watchHistory?.topShows?.[1]?.imageURL}
-              alt="image"
-              className="w-full h-[48%] rounded-lg object-cover border-2 shadow-black shadow-[4px_4px]"
-            />
+          {secondShowImage || thirdShowImage ? (
+            <div className="flex flex-col gap-y-4 w-24 h-72 flex-shrink-0 relative z-10">
+              <img
+                src={secondShowImage}
+                alt="image"
+                className="w-full h-[48%] rounded-lg object-cover border-2 shadow-black shadow-[4px_4px]"
+              />
 
-            <img
-              src={watchHistory?.topShows?.[2]?.imageURL}
-              alt="image"
-              className="w-full h-[48%] rounded-lg object-cover border-2 shadow-black shadow-[4px_4px]"
-            />
-          </div>
+              <img
+                src={thirdShowImage}
+                alt="image"
+                className="w-full h-[48%] rounded-lg object-cover border-2 shadow-black shadow-[4px_4px]"
+              />
+            </div>
+          ) : null}
 
           <Quadrilateral1Star className="absolute w-28 -bottom-10 -left-12 z-10" />
 

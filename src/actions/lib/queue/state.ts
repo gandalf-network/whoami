@@ -174,7 +174,7 @@ export async function checkDependentQueuesThresold(
       sessionId,
       queueName as QueueName,
     );
-    console.log(queueName, "<>", completion);
+    console.log(`${sessionId}-${queueName}`, "<>", completion);
     if (completion < COMPLETION_THRESHOLD) {
       canTrigger = false;
       break;

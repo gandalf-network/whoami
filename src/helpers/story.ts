@@ -39,8 +39,8 @@ export const getRottenTomatoeScoreText = (score: number) => {
       }
     }
   }
-  // If score is not within any range, return undefined or an appropriate value
-  return "Score not available";
+  // If score is not within any range, return first range text
+  return rottenTomatoeScoreBar["0-40"];
 };
 
 // get the story link

@@ -33,6 +33,10 @@ export const ReportstDetails = ({
         className,
       )}
     >
+      {/* --- when page is loading, make sure it's not clickable --- */}
+      {isLoading && (
+        <div className="z-[99999] fixed top-0 left-0 w-full h-screen" />
+      )}
       <div className="offset-content flex-1 flex flex-col">
         <PageHeader storyProps={storyProps} />
 

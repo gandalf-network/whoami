@@ -41,20 +41,23 @@ export const GenreDistributionStory = ({
             <Text className="text-lg mb-2.5 font-medium">
               Your top {genreDistribution?.genres?.length} TV genres include:
             </Text>
-            <div className="my-3 flex flex-col gap-y-0.5 w-full">
-              {genreDistribution?.genres?.map?.((genre, index) => {
-                const label = `${genre.genre} - ${parseInt((genre?.percentage || 0).toString(), 10)}%`;
-                return (
-                  <Progress
-                    key={`${label}-${index}`}
-                    max={100}
-                    value={genre.percentage}
-                    label={label}
-                    className="w-full"
-                    containerClassName=""
-                  />
-                );
-              })}
+            <div className="relative">
+              <div className="my-3 flex flex-col gap-y-0.5 w-full z-10 relative">
+                {genreDistribution?.genres?.map?.((genre, index) => {
+                  const label = `${genre.genre} - ${parseInt((genre?.percentage || 0).toString(), 10)}%`;
+                  return (
+                    <Progress
+                      key={`${label}-${index}`}
+                      max={100}
+                      value={genre.percentage}
+                      label={label}
+                      className="w-full"
+                      containerClassName=""
+                    />
+                  );
+                })}
+              </div>
+              <PentagramStar className="absolute w-24 -right-14 -top-6" />
             </div>
             <Text className="text-base" font="caption">
               {genreDistribution?.quip}
@@ -62,8 +65,6 @@ export const GenreDistributionStory = ({
           </div>
         </div>
       </div>
-
-      <PentagramStar className="absolute w-24 right-4 top-[23%]" />
 
       <HalfEclipse className="absolute w-16 rotate-[-40deg] -left-2 -bottom-6" />
 

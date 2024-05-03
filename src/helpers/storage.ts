@@ -6,6 +6,10 @@ export const cookiesKey = {
   sessionId: "whoami:sessionId",
 };
 
+export const storeSessionId = (sessionId: string) => {
+  setCookie(cookiesKey.sessionId, sessionId);
+};
+
 export const createOrGetSessionId = () => {
   // get the session id from the local storage
   let sessionId = getCookie(cookiesKey.sessionId);
@@ -14,7 +18,7 @@ export const createOrGetSessionId = () => {
   // create a new session id and store it in the local storage
   if (!sessionId) {
     sessionId = generateUUID();
-    setCookie(cookiesKey.sessionId, sessionId);
+    storeSessionId(sessionId);
   }
 
   // return the session id

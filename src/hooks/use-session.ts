@@ -2,7 +2,7 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { findOrCreateUser, getReportCard, getStats } from "@/actions";
-import { createOrGetSessionId } from "@/helpers/storage";
+import { createOrGetSessionId, storeSessionId } from "@/helpers/storage";
 import {
   UseSessionOptionsType,
   UserReportCardType,
@@ -15,7 +15,9 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
   // get data key
   const dataKey = searchParams.get("dataKey");
 
-  const sessionId = searchParams.get("sessionID") || createOrGetSessionId();
+  const querySessionId = searchParams.get("sessionID");
+
+  const sessionId = querySessionId || createOrGetSessionId();
 
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState<Awaited<
@@ -122,6 +124,10 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
     // load user data on mount if loadOnMount is true
     if (options?.loadOnMount) {
       refetch(options?.refetchInterval);
+    }
+
+    if (querySessionId) {
+      storeSessionId(querySessionId);
     }
   }, []);
 

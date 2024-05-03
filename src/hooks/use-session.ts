@@ -121,7 +121,7 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
 
   useEffect(() => {
     if (dataKey) {
-      refetch(options?.refetchInterval);
+      refetch(5000);
     }
   }, [dataKey]);
 

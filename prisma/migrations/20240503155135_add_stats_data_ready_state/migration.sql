@@ -1,0 +1,5 @@
+-- AlterEnum
+ALTER TYPE "UserState" ADD VALUE 'STATS_DATA_READY';
+
+-- AlterTable
+ALTER TABLE "actor" ALTER COLUMN "name" SET DATA TYPE TEXT;

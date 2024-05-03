@@ -1,3 +1,5 @@
+import { UserState } from "@prisma/client";
+
 import { createOrUpdateUsersAIResponse } from "./aiResponses";
 import {
   getUsersFirstShow,
@@ -12,7 +14,10 @@ import { MostWatchedTvShowWithEpisode, UserStats } from "../../types";
 
 export async function getStatsResponse(sessionID: string) {
   const user = await findOrCreateUserBySessionID(sessionID);
-  if (user.state !== "COMPLETED") {
+  if (
+    user.state !== UserState.COMPLETED &&
+    user.state !== UserState.STATS_DATA_READY
+  ) {
     throw new Error("users data has not been fetched yet");
   }
 

@@ -2,7 +2,7 @@ import { getAndUpdateTVBFF } from "@/actions";
 import { eventNames } from "@/actions/lib/queue/event";
 import {
   QueueName,
-  getQueueSessionState,
+  getSessionGlobalState,
   queueNames,
   setQueueSessionState,
 } from "@/actions/lib/queue/state";
@@ -15,12 +15,12 @@ async function tvBFF(event: { data: any }) {
   try {
     const processedData = await getAndUpdateTVBFF(sessionID);
     const queueName = queueNames.TVBFF as QueueName;
-    const [, executedChunks] = await getQueueSessionState(sessionID, queueName);
+    const [, totalChunks] = await getSessionGlobalState(sessionID);
     await setQueueSessionState(
       sessionID,
       queueName,
       processedData,
-      executedChunks + 1,
+      totalChunks,
     );
   } catch (error) {
     console.error("Error processing job:", error);

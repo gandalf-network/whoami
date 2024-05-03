@@ -29,12 +29,7 @@ async function queryActivities(event: { data: ActivityDataPayload }) {
     const queueName = queueNames.QueryActivities as QueueName;
     await setQueueSessionState(sessionID, queueName, totalData, totalChunks);
 
-    console.log(
-      `${sessionID}> [totalData]:`,
-      totalData,
-      "[totalChunks]:",
-      totalChunks,
-    );
+    console.log(`[totalData]:`, totalData, "[totalChunks]:", totalChunks);
     return totalData;
   } catch (error) {
     console.error("Error processing job:", error);

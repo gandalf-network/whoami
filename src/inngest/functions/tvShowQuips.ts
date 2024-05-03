@@ -1,4 +1,6 @@
-import { getAndUpdateStarSignPicker } from "@/actions";
+import { UserState } from "@prisma/client";
+
+import { getAndUpdateTVShowQuips, updateUserStateBySession } from "@/actions";
 import { eventNames } from "@/actions/lib/queue/event";
 import {
   QueueName,
@@ -9,12 +11,12 @@ import {
 
 import { inngest } from "../client";
 
-async function starSignPicker(event: { data: any }) {
+async function tvShowQuips(event: { data: any }) {
   const { sessionID } = event.data;
 
   try {
-    const processedData = await getAndUpdateStarSignPicker(sessionID);
-    const queueName = queueNames.StarSignPicker as QueueName;
+    const processedData = await getAndUpdateTVShowQuips(sessionID);
+    const queueName = queueNames.TVShowQuips as QueueName;
     const [, totalChunks] = await getSessionGlobalState(sessionID);
     await setQueueSessionState(
       sessionID,
@@ -22,19 +24,20 @@ async function starSignPicker(event: { data: any }) {
       processedData,
       totalChunks,
     );
+    await updateUserStateBySession(sessionID, UserState.STATS_DATA_READY);
   } catch (error) {
     console.error("Error processing job:", error);
   }
 }
 
-export const starSignPickerTask = inngest.createFunction(
+export const tvShowQuipsTask = inngest.createFunction(
   {
-    id: "star-sign-picker",
+    id: "tv-show-quips",
   },
-  { event: eventNames.StarSignPicker },
+  { event: eventNames.TVShowQuips },
   async ({ event }) => {
-    console.log("Recv starSignPicker request...");
-    const result = await starSignPicker({ data: event.data });
+    console.log("Recv tvShowQups request...");
+    const result = await tvShowQuips({ data: event.data });
     return { event, processed: result };
   },
 );

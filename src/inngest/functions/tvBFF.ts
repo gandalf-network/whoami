@@ -27,6 +27,7 @@ export const tvBFFTask = inngest.createFunction(
   },
   { event: eventNames.TVBFF },
   async ({ event }) => {
+    console.log("Recv tvBFF request...");
     const result = await tvBFF({ data: event.data });
     return { event, processed: result };
   },

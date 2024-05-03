@@ -27,6 +27,7 @@ export const starSignPickerTask = inngest.createFunction(
   },
   { event: eventNames.StarSignPicker },
   async ({ event }) => {
+    console.log("Recv starSignPicker request...");
     const result = await starSignPicker({ data: event.data });
     return { event, processed: result };
   },

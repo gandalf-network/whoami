@@ -83,17 +83,11 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
     // get session id
     const sessionId = getSessionId();
 
-    if (dataKey && sessionId) {
-      console.log({ dataKey, sessionId });
-      // this will make a request to the server
-      await fetch(`/api/callback?sessionID=${sessionId}&dataKey=${dataKey}`);
-
+    const fetchData = () => {
       // fetch user stats and report card data every 5 seconds
       const timer = setInterval(async () => {
         const stats = await getStats(sessionId);
         const reportCard = await getReportCard(sessionId);
-
-        console.log({ stats, reportCard });
 
         if (stats && reportCard) {
           setStats(stats);
@@ -101,6 +95,15 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
           clearInterval(timer);
         }
       }, 5000);
+    };
+
+    if (dataKey && sessionId) {
+      // this will make a request to the server
+      await fetch(`/api/callback?sessionID=${sessionId}&dataKey=${dataKey}`);
+
+      fetchData();
+    } else if (sessionId) {
+      fetchData();
     }
   };
 
@@ -122,5 +125,6 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
     reportCard,
     loading,
     refetch,
+    getUserStatsAndReportCard,
   };
 };

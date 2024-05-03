@@ -1,6 +1,8 @@
 "use client";
 
 import { Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 import { GandalfIcon, LogoIcon, NetflixIcon } from "@/components/icon";
 import {
@@ -9,9 +11,24 @@ import {
   QRCode,
 } from "@/components/themed";
 import { useGandalfConnect } from "@/hooks/use-connect";
+import { useSession } from "@/hooks/use-session";
 
 export default function Page() {
   const { url: connectUrl, loading } = useGandalfConnect();
+
+  const { stats, reportCard, getUserStatsAndReportCard } = useSession();
+
+  const router = useRouter();
+
+  useEffect(() => {
+    getUserStatsAndReportCard();
+  }, []);
+
+  useEffect(() => {
+    if (stats && reportCard) {
+      router.push("/stories");
+    }
+  }, [stats, reportCard]);
 
   return (
     <Container className="relative bg-primary-pink-shade">

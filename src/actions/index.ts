@@ -232,32 +232,38 @@ export async function getAndDumpActivities(
   sessionID: string,
   dataKey: string,
 ): Promise<number> {
-  let page = 1;
   const limit = 400;
   let total: number = 0;
   try {
     const user = await findOrCreateUserBySessionID(sessionID);
-    const seenShows: Record<string, boolean> = {};
-    let jobShows: JobShow[] = [];
-    let totalShows: number = 0;
+    const seenShows: Set<string> = new Set();
     const episodes: insertEpisodeInput[] = [];
-    while (true) {
-      const activityResponse = await eye.getActivity({
-        dataKey,
-        source: Source.Netflix,
-        limit,
-        page,
-      });
 
-      total = total !== 0 ? total : activityResponse.total;
-      if (activityResponse.data.length === 0) {
-        console.log("No more data to fetch.");
-        break;
-      }
+    const initialActivityResponse = await eye.getActivity({
+      dataKey,
+      source: Source.Netflix,
+      limit,
+      page: 1,
+    });
 
-      console.log(
-        `Fetched page ${page} with ${activityResponse.data.length} activities.`,
-      );
+    total = initialActivityResponse.total;
+    if (initialActivityResponse.data.length === 0) {
+      console.log("No data to fetch.");
+      return 0;
+    }
+
+    const totalPages = Math.ceil(total / limit);
+    const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
+
+    // Parallel fetch of all pages
+    const fetchPromises = pageNumbers.map((page) =>
+      eye.getActivity({ dataKey, source: Source.Netflix, limit, page }),
+    );
+    const pageResults = await Promise.all(fetchPromises);
+
+    let totalShows = 0;
+    for (const activityResponse of pageResults) {
+      const jobShows: JobShow[] = [];
       for (const activity of activityResponse.data) {
         const metadata = activity?.metadata as NetflixActivityMetadata;
         const originalTitle = metadata.title;
@@ -282,6 +288,7 @@ export async function getAndDumpActivities(
 
           const show = await upsertShow(title);
           const userShow = await upsertUserShow(user.id, show.id);
+
           const episode = {
             title: updatedEpisodeTitle || "",
             datePlayed: parseDate(metadata.date),
@@ -291,8 +298,8 @@ export async function getAndDumpActivities(
           };
           episodes.push(episode);
 
-          if (!seenShows[title]) {
-            seenShows[title] = true;
+          if (!seenShows.has(title)) {
+            seenShows.add(title);
             jobShows.push({
               id: show.id,
               title: show.title,
@@ -302,21 +309,20 @@ export async function getAndDumpActivities(
         }
       }
 
-      await batchInsertEpisodes(episodes);
-      const jobId = generateJobId(page, sessionID);
+      if (jobShows.length > 0) {
+        await batchInsertEpisodes(episodes);
+        episodes.length = 0;
 
-      const showPayload: ShowPayload = {
-        SessionID: sessionID,
-        Shows: jobShows,
-        JobID: jobId,
-      };
-
-      await enqueueShowData(showPayload);
-      totalShows += jobShows.length;
-      jobShows = [];
-      page++;
+        const jobId = generateJobId(activityResponse.page, sessionID);
+        const showPayload: ShowPayload = {
+          SessionID: sessionID,
+          Shows: jobShows,
+          JobID: jobId,
+        };
+        await enqueueShowData(showPayload);
+        totalShows += jobShows.length;
+      }
     }
-
     return totalShows;
   } catch (error: any) {
     console.error("Failed to fetch data", error.message);

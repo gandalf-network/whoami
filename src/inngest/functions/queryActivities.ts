@@ -1,4 +1,5 @@
 import { UserState } from "@prisma/client";
+import { performance } from "perf_hooks";
 
 import { getAndDumpActivities, updateUserStateBySession } from "@/actions";
 import { eventNames } from "@/actions/lib/queue/event";
@@ -38,7 +39,12 @@ export const queryActivitiesTask = inngest.createFunction(
   },
   { event: eventNames.QueryActivities },
   async ({ event }) => {
+    const startTime = performance.now();
     const result = await queryActivities({ data: event.data });
+    const endTime = performance.now();
+
+    console.log(`queryActivities took ${endTime - startTime} milliseconds.`);
+
     return { event, processed: result };
   },
 );

@@ -95,7 +95,7 @@ export const isMobileOrTablet = () => {
 export const openLinkInNewTab = (url: string) => {
   // note: i'm using the timeout to fix window not opening on SAFARI browsers
   setTimeout(() => {
-    window.open(url, "_blank");
+    window.open(url, "_blank", "noopener,noreferrer");
   }, 100);
 };
 

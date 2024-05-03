@@ -30,162 +30,172 @@ export async function generateMetadata(
 
   let title = sharedMetadata.openGraph?.title;
 
-  // fetch data based on story kinds
-  if (
-    (
-      [
-        "firstTvShow",
-        "mostWatchedTvShow",
-        "totalShows",
-        "crossoverStar",
-        "tvGenre",
-      ] as AllStoryIds[]
-    ).includes(story)
-  ) {
-    // @note: this is the mocked data and should be replaced with the actual data
-    // const {
-    //   firstTvShow,
-    //   mostWatchedTvShow,
-    //   watchHistory,
-    //   genreDistribution,
-    //   yourCrossoverStar,
-    // } = TVStatsMockedData;
+  try {
+    // fetch data based on story kinds
+    if (
+      (
+        [
+          "firstTvShow",
+          "mostWatchedTvShow",
+          "totalShows",
+          "crossoverStar",
+          "tvGenre",
+        ] as AllStoryIds[]
+      ).includes(story)
+    ) {
+      // @note: this is the mocked data and should be replaced with the actual data
+      // const {
+      //   firstTvShow,
+      //   mostWatchedTvShow,
+      //   watchHistory,
+      //   genreDistribution,
+      //   yourCrossoverStar,
+      // } = TVStatsMockedData;
+      console.log("hi");
 
-    const {
-      firstTvShow,
-      mostWatchedTvShow,
-      watchHistory,
-      genreDistribution,
-      yourCrossoverStar,
-    } = await getStats(id);
+      const {
+        firstTvShow,
+        mostWatchedTvShow,
+        watchHistory,
+        genreDistribution,
+        yourCrossoverStar,
+      } = await getStats(id);
 
-    switch (story) {
-      case "firstTvShow":
-        title = `My first TV show is ${firstTvShow.show.title}`;
-        images = buildOgImageUrl({
-          story,
-          data: {
-            name: firstTvShow.show.title,
-            imageUrl: firstTvShow.show.imageURL,
-          },
-        });
-        break;
-      case "mostWatchedTvShow":
-        title = `My most watched TV show is ${mostWatchedTvShow.show.title}`;
-        images = buildOgImageUrl({
-          story,
-          data: {
-            name: mostWatchedTvShow.show.title,
-            imageUrl: mostWatchedTvShow.show.imageURL,
-          },
-        });
-        break;
-      case "totalShows":
-        title = `I have watched ${watchHistory.totalShowsWatched} Netflix shows`;
-        images = buildOgImageUrl({
-          story,
-          data: {
-            count: watchHistory.topShows.length,
-            images: watchHistory.topShows.map((show) => show.imageURL),
-          },
-        });
-        break;
-      case "crossoverStar":
-        title = `My crossover star is ${yourCrossoverStar.name}`;
-        images = buildOgImageUrl({
-          story,
-          data: {
-            name: yourCrossoverStar.name,
-            imageUrl: yourCrossoverStar.imageURL,
-          },
-        });
-        break;
-      case "tvGenre":
-        title = `My favorite TV genres are ${genreDistribution.genres
-          .map((genre) => genre.genre)
-          .join(", ")}`;
-        images = buildOgImageUrl({
-          story,
-          data: {
-            genres: genreDistribution.genres,
-          },
-        });
-        break;
+      switch (story) {
+        case "firstTvShow":
+          title = `My first TV show is ${firstTvShow.show.title}`;
+          images = buildOgImageUrl({
+            story,
+            data: {
+              name: firstTvShow.show.title,
+              imageUrl: firstTvShow.show.imageURL,
+            },
+          });
+          break;
+        case "mostWatchedTvShow":
+          title = `My most watched TV show is ${mostWatchedTvShow.show.title}`;
+          images = buildOgImageUrl({
+            story,
+            data: {
+              name: mostWatchedTvShow.show.title,
+              imageUrl: mostWatchedTvShow.show.imageURL,
+            },
+          });
+          break;
+        case "totalShows":
+          title = `I have watched ${watchHistory.totalShowsWatched} Netflix shows`;
+          images = buildOgImageUrl({
+            story,
+            data: {
+              count: watchHistory.topShows.length,
+              images: watchHistory.topShows.map((show) => show.imageURL),
+            },
+          });
+          break;
+        case "crossoverStar":
+          title = `My crossover star is ${yourCrossoverStar.name}`;
+          images = buildOgImageUrl({
+            story,
+            data: {
+              name: yourCrossoverStar.name,
+              imageUrl: yourCrossoverStar.imageURL,
+            },
+          });
+          break;
+        case "tvGenre":
+          title = `My favorite TV genres are ${genreDistribution.genres
+            .map((genre) => genre.genre)
+            .join(", ")}`;
+          images = buildOgImageUrl({
+            story,
+            data: {
+              genres: genreDistribution.genres,
+            },
+          });
+          break;
+      }
     }
-  }
 
-  if (
-    (
-      ["rottenTomatoesScore", "tvBff", "starSign", "overview"] as AllStoryIds[]
-    ).includes(story)
-  ) {
-    // @note: this is the mocked data and should be replaced with the actual data
-    // const { personality, tvBFF, starSign } = ReportsCardMockedData;
+    if (
+      (
+        [
+          "rottenTomatoesScore",
+          "tvBff",
+          "starSign",
+          "overview",
+        ] as AllStoryIds[]
+      ).includes(story)
+    ) {
+      // @note: this is the mocked data and should be replaced with the actual data
+      // const { personality, tvBFF, starSign } = ReportsCardMockedData;
 
-    const { personality, tvBFF, starSign } = await getReportCard(id);
+      const { personality, tvBFF, starSign } = await getReportCard(id);
 
-    switch (story) {
-      case "rottenTomatoesScore":
-        title = `My Rotten Tomatoes score is ${personality.rtScore}%`;
-        images = buildOgImageUrl({
-          story,
-          data: {
-            score: personality.rtScore,
-          },
-        });
-        break;
-      case "tvBff":
-        title = `My TV BFF is ${tvBFF.name}`;
-        images = buildOgImageUrl({
-          story,
-          data: {
-            name: tvBFF.name,
-            show: tvBFF.show,
-            imageUrl: tvBFF.imageURL,
-          },
-        });
-        break;
-      case "starSign":
-        title = `My star sign is ${starSign.name}`;
-        images = buildOgImageUrl({
-          story,
-          data: {
-            name: starSign.name,
-          },
-        });
-        break;
-      case "overview":
-        title = `My personality is ${personality.personality}`;
-        images = buildOgImageUrl({
-          story,
-          data: {
-            score: personality.rtScore,
-            tvBff: tvBFF.name,
-            star: starSign.name,
-            title: personality.personality,
-          },
-        });
-        break;
+      switch (story) {
+        case "rottenTomatoesScore":
+          title = `My Rotten Tomatoes score is ${personality.rtScore}%`;
+          images = buildOgImageUrl({
+            story,
+            data: {
+              score: personality.rtScore,
+            },
+          });
+          break;
+        case "tvBff":
+          title = `My TV BFF is ${tvBFF.name}`;
+          images = buildOgImageUrl({
+            story,
+            data: {
+              name: tvBFF.name,
+              show: tvBFF.show,
+              imageUrl: tvBFF.imageURL,
+            },
+          });
+          break;
+        case "starSign":
+          title = `My star sign is ${starSign.name}`;
+          images = buildOgImageUrl({
+            story,
+            data: {
+              name: starSign.name,
+            },
+          });
+          break;
+        case "overview":
+          title = `My personality is ${personality.personality}`;
+          images = buildOgImageUrl({
+            story,
+            data: {
+              score: personality.rtScore,
+              tvBff: tvBFF.name,
+              star: starSign.name,
+              title: personality.personality,
+            },
+          });
+          break;
+      }
     }
+
+    const res: Metadata = {
+      ...sharedMetadata,
+      title,
+      description,
+      openGraph: {
+        description,
+        title,
+        images,
+      },
+      twitter: {
+        description,
+        title,
+        images,
+      },
+    };
+
+    return res;
+  } catch {
+    return sharedMetadata;
   }
-
-  const res: Metadata = {
-    ...sharedMetadata,
-    title,
-    description,
-    openGraph: {
-      description,
-      title,
-      images,
-    },
-    twitter: {
-      description,
-      title,
-      images,
-    },
-  };
-
-  return res;
 }
 
 export default async function Page({ searchParams }: { searchParams: any }) {

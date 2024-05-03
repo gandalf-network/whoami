@@ -20,7 +20,7 @@ export const MostRewatchTVShowStory = ({
 
   const mostWatchedTvShow = stats?.mostWatchedTvShow;
 
-  const watchCount = mostWatchedTvShow.show?.watchCount;
+  const watchCount = Number(mostWatchedTvShow.show?.watchCount);
   const numberOfEpisodes = mostWatchedTvShow.show?.numberOfEpisodes;
 
   const hasCompletedShow =
@@ -96,7 +96,7 @@ export const MostRewatchTVShowDownloadStory = ({
 
   const mostWatchedTvShow = stats?.mostWatchedTvShow;
 
-  const watchCount = mostWatchedTvShow.show?.watchCount;
+  const watchCount = Number(mostWatchedTvShow.show?.watchCount);
   const numberOfEpisodes = mostWatchedTvShow.show?.numberOfEpisodes;
 
   const hasCompletedShow =

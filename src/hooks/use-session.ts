@@ -81,6 +81,7 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
           if (stats) {
             setStats(stats);
 
+            console.log({ stats: parseStatsBigIntValueAsJSONReady(stats) });
             storeDataInSession({
               stats: parseStatsBigIntValueAsJSONReady(stats),
             });
@@ -98,6 +99,8 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
           if (_stats) {
             setStats(_stats);
           }
+
+          console.log({ stats: parseStatsBigIntValueAsJSONReady(_stats) });
 
           storeDataInSession({
             ...(reportCard ? { reportCard } : {}),

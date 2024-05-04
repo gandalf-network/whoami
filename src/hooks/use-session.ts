@@ -79,7 +79,7 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
           const stats = await getStats(sessionId);
 
           if (stats) {
-            setStats(() => stats);
+            setStats(stats);
 
             storeDataInSession({
               stats: parseStatsBigIntValueAsJSONReady(stats),
@@ -91,14 +91,6 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
           const _reportCard = await getReportCard(sessionId);
           const _stats = stats ? stats : await getStats(sessionId);
 
-          if (_reportCard) {
-            setReportCard(() => _reportCard);
-          }
-
-          if (_stats) {
-            setStats(() => _stats);
-          }
-
           storeDataInSession({
             ...(_reportCard ? { reportCard: _reportCard } : {}),
             ...(_stats
@@ -106,17 +98,23 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
               : {}),
           });
 
-          setTimeout(() => {
-            console.log({
-              store: true,
-              _reportCard,
-              _stats,
-              reportCard,
-              stats,
-            });
+          if (_reportCard) {
+            setReportCard(_reportCard);
+          }
 
-            clearInterval(timer);
-          }, 100);
+          if (_stats) {
+            setStats(_stats);
+          }
+
+          console.log({
+            store: true,
+            _reportCard,
+            _stats,
+            reportCard,
+            stats,
+          });
+
+          clearInterval(timer);
         }
       }, interval);
     } else {

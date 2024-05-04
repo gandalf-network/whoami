@@ -4,6 +4,7 @@ import { generateUUID, isWindowDefined } from "./utils";
 
 export const cookiesKey = {
   sessionId: "whoami:sessionId",
+  sessionData: "whoami:sessionData",
 };
 
 export const storeSessionId = (sessionId: string) => {
@@ -31,13 +32,16 @@ export const storeDataInSession = (value: any) => {
   }
 
   if (isWindowDefined()) {
-    window.sessionStorage.setItem(cookiesKey.sessionId, JSON.stringify(value));
+    window.sessionStorage.setItem(
+      cookiesKey.sessionData,
+      JSON.stringify(value),
+    );
   }
 };
 
 export const getDataFromSession = () => {
   if (isWindowDefined()) {
-    const data = window.sessionStorage.getItem(cookiesKey.sessionId);
+    const data = window.sessionStorage.getItem(cookiesKey.sessionData);
     return data ? JSON.parse(data) : null;
   }
 };

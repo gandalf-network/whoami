@@ -61,7 +61,6 @@ export async function getRottenTomatoScore(
     }
 
     const castIsSimilar = compareCastArrays(hit.castCrew.cast, cast);
-    console.log(hit.castCrew.cast, cast, castIsSimilar);
     if (!castIsSimilar) {
       continue;
     }

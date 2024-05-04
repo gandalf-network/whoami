@@ -82,7 +82,9 @@ export async function setSessionIndex(sessionId: string, state: SessionState) {
 export async function getSessionsByState(state: string): Promise<string[]> {
   const indexKey = "sessions:index";
   const sessionsIndex: Record<string, string[]> | null = await kv.get(indexKey);
-  console.log(sessionsIndex);
+  if (sessionsIndex) {
+    console.log("> sessions: ", sessionsIndex);
+  }
   const index = sessionsIndex ? JSON.parse(JSON.stringify(sessionsIndex)) : {};
   return index[state] || [];
 }

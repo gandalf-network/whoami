@@ -24,9 +24,16 @@ async function stateThresholdCheck() {
     const sessionIDs = await getSessionsByState(sessionStates.PROCESSING);
     for (const sessionID of sessionIDs) {
       if (await checkIndependentQueuesThresold(sessionID)) {
-        await setSessionIndex(sessionID, sessionStates.COMPLETED);
         await updateUserStateBySession(sessionID, UserState.COMPLETED);
+        await setSessionIndex(sessionID, sessionStates.COMPLETED);
         continue;
+      }
+
+      if ( await checkQueueThresold(
+        sessionID,
+        queueNames.TVShowQuips as QueueName,
+      )) {
+        await updateUserStateBySession(sessionID, UserState.STATS_DATA_READY);
       }
 
       if (

@@ -24,7 +24,6 @@ async function tvShowQuips(event: { data: any }) {
       processedData,
       totalChunks,
     );
-    await updateUserStateBySession(sessionID, UserState.STATS_DATA_READY);
   } catch (error) {
     console.error("Error processing job:", error);
   }

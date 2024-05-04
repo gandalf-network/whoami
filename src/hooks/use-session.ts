@@ -108,8 +108,10 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
 
           console.log({
             store: true,
-            reportCard: _reportCard,
-            stats: _stats,
+            _reportCard,
+            _stats,
+            reportCard,
+            stats,
           });
 
           clearInterval(timer);

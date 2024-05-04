@@ -20,14 +20,11 @@ export const ReportstDetails = ({
     if (reportCard) {
       // play animation
       storyProps?.action?.("play");
-    } else {
-      // pause animation
-      storyProps?.action?.("pause");
     }
   }, [reportCard]);
 
   useEffect(() => {
-    console.log({ isLoading, reportCard });
+    console.log({ isLoading, reportCard, storyProps });
     // paused by default until data is loaded
     storyProps?.action?.("pause");
   }, []);

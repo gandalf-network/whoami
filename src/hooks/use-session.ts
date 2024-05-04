@@ -106,15 +106,17 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
               : {}),
           });
 
-          console.log({
-            store: true,
-            _reportCard,
-            _stats,
-            reportCard,
-            stats,
-          });
+          setTimeout(() => {
+            console.log({
+              store: true,
+              _reportCard,
+              _stats,
+              reportCard,
+              stats,
+            });
 
-          clearInterval(timer);
+            clearInterval(timer);
+          }, 100);
         }
       }, interval);
     } else {

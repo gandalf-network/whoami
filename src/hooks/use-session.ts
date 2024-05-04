@@ -89,6 +89,15 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
           if (reportCard) {
             setReportCard(reportCard);
           }
+
+          if (!stats) {
+            const stats = await getStats(sessionId);
+
+            if (stats) {
+              setStats(stats);
+            }
+          }
+
           clearInterval(timer);
         }
       }, interval);

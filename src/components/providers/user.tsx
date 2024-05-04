@@ -22,8 +22,6 @@ export const UserDataProvider = (props: UserDataProviderProps) => {
 
   const { stats, reportCard } = useSession({ loadOnMount: true });
 
-  console.log({ provider: true, reportCard });
-
   const loading = !stats && !reportCard;
 
   return (

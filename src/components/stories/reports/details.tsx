@@ -18,7 +18,6 @@ export const ReportstDetails = ({
 
   useEffect(() => {
     // play the story when data is loaded
-    console.log({ isLoading, reportCard });
     const timer = setTimeout(() => {
       storyProps?.action?.(isLoading ? "pause" : "play");
     }, 100);

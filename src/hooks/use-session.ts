@@ -8,6 +8,7 @@ import {
   storeDataInSession,
   storeSessionId,
 } from "@/helpers/storage";
+import { parseStatsBigIntValueAsJSONReady } from "@/helpers/story";
 import {
   UseSessionOptionsType,
   UserReportCardType,
@@ -80,7 +81,9 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
           if (stats) {
             setStats(stats);
 
-            storeDataInSession({ stats });
+            storeDataInSession({
+              stats: parseStatsBigIntValueAsJSONReady(stats),
+            });
           }
         }
 
@@ -98,7 +101,9 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
 
           storeDataInSession({
             ...(reportCard ? { reportCard } : {}),
-            ...(_stats ? { stats: _stats } : {}),
+            ...(_stats
+              ? { stats: parseStatsBigIntValueAsJSONReady(_stats) }
+              : {}),
           });
 
           clearInterval(timer);

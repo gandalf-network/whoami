@@ -1,4 +1,4 @@
-import { AllStoryIds, TopGenres } from "@/types";
+import { AllStoryIds, TopGenres, UserStats } from "@/types";
 
 import { createOrGetSessionId } from "./storage";
 import { getEnvDetails } from "./utils";
@@ -106,4 +106,19 @@ export const getHighestPercentageGenre = (genres: TopGenres) => {
 
   // Return the genre with the highest percentage
   return highestGenre;
+};
+
+export const parseStatsBigIntValueAsJSONReady = (
+  stats: UserStats,
+): UserStats => {
+  return {
+    ...stats,
+    mostWatchedTvShow: {
+      ...stats.mostWatchedTvShow,
+      show: {
+        ...stats.mostWatchedTvShow.show,
+        watchCount: Number(stats.mostWatchedTvShow.show.watchCount) as any,
+      },
+    },
+  };
 };

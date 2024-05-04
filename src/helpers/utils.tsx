@@ -31,7 +31,7 @@ export const formatStringArrayToJSX = ({
   className?: string;
 }) => {
   // Check if the array is empty
-  if (strings.length === 0) {
+  if (!strings || strings.length === 0) {
     return null;
   } else if (strings.length === 1) {
     return <span className={className}>{strings[0]}</span>;

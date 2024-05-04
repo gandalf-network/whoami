@@ -88,6 +88,7 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
 
         if (data.state === "COMPLETED") {
           const reportCard = await getReportCard(sessionId);
+          const _stats = stats ? await getStats(sessionId) : stats;
 
           console.log({ reportCard });
 
@@ -95,15 +96,11 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
             setReportCard(reportCard);
           }
 
-          if (!stats) {
-            const stats = await getStats(sessionId);
-
-            if (stats) {
-              setStats(stats);
-            }
+          if (_stats) {
+            setStats(_stats);
           }
 
-          storeDataInSession({ stats, reportCard });
+          storeDataInSession({ stats: _stats, reportCard });
 
           clearInterval(timer);
         }

@@ -17,6 +17,7 @@ export const ReportstDetails = ({
   const isLoading = !reportCard;
 
   useEffect(() => {
+    console.log({ reportCard });
     if (reportCard) {
       // play animation
       storyProps?.action?.("play");

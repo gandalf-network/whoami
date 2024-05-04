@@ -111,13 +111,15 @@ export const getHighestPercentageGenre = (genres: TopGenres) => {
 export const parseStatsBigIntValueAsJSONReady = (
   stats: UserStats,
 ): UserStats => {
+  const watchCount = stats?.mostWatchedTvShow?.show?.watchCount;
+
   return {
     ...stats,
     mostWatchedTvShow: {
       ...stats.mostWatchedTvShow,
       show: {
         ...stats.mostWatchedTvShow.show,
-        watchCount: Number(stats.mostWatchedTvShow.show.watchCount) as any,
+        watchCount: (watchCount ? Number(watchCount) : 0).toString() as any,
       },
     },
   };

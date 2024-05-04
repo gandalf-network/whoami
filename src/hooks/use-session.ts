@@ -36,6 +36,22 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
   // user report card data
   const [reportCard, setReportCard] = useState<UserReportCardType | null>(null);
 
+  // update data
+  const updateData = (data: {
+    stats?: UserStatsType;
+    reportCard?: UserReportCardType;
+  }) => {
+    if (data?.stats) {
+      setStats(data.stats);
+    }
+
+    if (data?.reportCard) {
+      setReportCard(data.reportCard);
+    }
+
+    console.log({ data });
+  };
+
   // get user data
   const getUser = async () => {
     try {
@@ -98,21 +114,7 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
               : {}),
           });
 
-          if (_reportCard) {
-            setReportCard(_reportCard);
-          }
-
-          if (_stats) {
-            setStats(_stats);
-          }
-
-          console.log({
-            store: true,
-            _reportCard,
-            _stats,
-            reportCard,
-            stats,
-          });
+          updateData({ stats: _stats, reportCard: _reportCard });
 
           clearInterval(timer);
         }

@@ -27,6 +27,7 @@ export const ReportstDetails = ({
   }, [reportCard]);
 
   useEffect(() => {
+    console.log({ isLoading, reportCard });
     // paused by default until data is loaded
     storyProps?.action?.("pause");
   }, []);

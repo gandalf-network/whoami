@@ -58,7 +58,12 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
   };
 
   // refetch user data
-  const refetch = (interval?: number) => {
+  const refetch = async (interval?: number) => {
+    if (dataKey && sessionId) {
+      // this will make a request to the server
+      await fetch(`/api/callback?sessionID=${sessionId}&dataKey=${dataKey}`);
+    }
+
     // if interval is provided, fetch user data every interval
     if (interval) {
       const timer = setInterval(async () => {

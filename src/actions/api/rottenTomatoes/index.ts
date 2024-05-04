@@ -1,5 +1,4 @@
 import axios from "axios";
-import levenshtein from "js-levenshtein";
 
 import {
   ROTTEN_TOMATOES_ALGOLIA_API_KEY,
@@ -51,40 +50,27 @@ export async function getRottenTomatoScore(
 
   let tomatoScore = 0;
   const hits = response.data.results[0].hits;
-
   for (let i = 0; i < hits.length; i++) {
     const hit = hits[i];
     if (hit.type !== "tv") {
       continue;
     }
 
-    const normalizedTitle = hit.title
-      .normalize("NFKD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .toLowerCase();
-
     if (!hit.castCrew?.cast) {
       continue;
     }
 
     const castIsSimilar = compareCastArrays(hit.castCrew.cast, cast);
-    const levenshteinDistance = levenshtein(
-      normalizedTitle,
-      title.toLowerCase(),
-    );
-
-    const threshold = 0.25 * Math.max(normalizedTitle.length, title.length);
-    if (levenshteinDistance > threshold) {
-      continue;
-    }
+    console.log(hit.castCrew.cast, cast, castIsSimilar);
     if (!castIsSimilar) {
       continue;
     }
 
-    tomatoScore =
-      !hit.rottenTomatoes || !hit.rottenTomatoes.criticsScore
-        ? 0
-        : hit.rottenTomatoes.criticsScore;
+    tomatoScore = hit.rottenTomatoes?.criticsScore
+      ? hit.rottenTomatoes?.criticsScore
+      : hit.rottenTomatoes?.audienceScore
+        ? hit.rottenTomatoes?.audienceScore
+        : 0;
     break;
   }
 

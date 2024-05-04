@@ -88,11 +88,11 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
         }
 
         if (data.state === "COMPLETED") {
-          const reportCard = await getReportCard(sessionId);
+          const _reportCard = await getReportCard(sessionId);
           const _stats = stats ? stats : await getStats(sessionId);
 
-          if (reportCard) {
-            setReportCard({ ...reportCard });
+          if (_reportCard) {
+            setReportCard(_reportCard);
           }
 
           if (_stats) {
@@ -100,10 +100,16 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
           }
 
           storeDataInSession({
-            ...(reportCard ? { reportCard } : {}),
+            ...(_reportCard ? { reportCard: _reportCard } : {}),
             ...(_stats
               ? { stats: parseStatsBigIntValueAsJSONReady(_stats) }
               : {}),
+          });
+
+          console.log({
+            store: true,
+            reportCard: _reportCard,
+            stats: _stats,
           });
 
           clearInterval(timer);

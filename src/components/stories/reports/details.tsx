@@ -17,19 +17,24 @@ export const ReportstDetails = ({
   const isLoading = !reportCard;
 
   useEffect(() => {
-    if (reportCard) {
+    // play the story when data is loaded
+    const timer = setTimeout(() => {
+      if (!reportCard) return;
       storyProps?.action?.("play");
-      console.log("play");
-    }
+    }, 50);
+
+    // clear timeout
+    return () => {
+      clearTimeout(timer);
+    };
   }, [reportCard]);
 
   useEffect(() => {
-    console.log({ isLoading, reportCard, storyProps });
     // paused by default until data is loaded
     const timer = setTimeout(() => {
+      if (isLoading) return;
       storyProps?.action?.("pause");
-      console.log("paused");
-    }, 100);
+    }, 50);
 
     // clear timeout
     return () => {

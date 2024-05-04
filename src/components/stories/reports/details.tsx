@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { Flash } from "@/components/icon";
 import { useUserData } from "@/components/providers/user";
 import { PageHeader, PinkWaveBackground, Text } from "@/components/themed";
-import { cn } from "@/helpers/utils";
+import { cn, isWindowDefined } from "@/helpers/utils";
 import { StoryContentProps } from "@/types";
 
 export const ReportstDetails = ({
@@ -17,17 +17,18 @@ export const ReportstDetails = ({
   const isLoading = !reportCard;
 
   useEffect(() => {
-    console.log({ reportCard });
-    if (reportCard) {
-      // play animation
-      storyProps?.action?.("play");
+    console.log({ reportCard, isLoading });
+    if (isWindowDefined()) {
+      storyProps?.action?.(isLoading ? "pause" : "play");
     }
-  }, [reportCard]);
+  }, [isLoading]);
 
   useEffect(() => {
     console.log({ isLoading, reportCard, storyProps });
     // paused by default until data is loaded
-    storyProps?.action?.("pause");
+    if (isWindowDefined()) {
+      storyProps?.action?.("pause");
+    }
   }, []);
 
   return (

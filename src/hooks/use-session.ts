@@ -79,7 +79,7 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
           const stats = await getStats(sessionId);
 
           if (stats) {
-            setStats(stats);
+            setStats(() => stats);
 
             storeDataInSession({
               stats: parseStatsBigIntValueAsJSONReady(stats),
@@ -92,11 +92,11 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
           const _stats = stats ? stats : await getStats(sessionId);
 
           if (_reportCard) {
-            setReportCard(_reportCard);
+            setReportCard(() => _reportCard);
           }
 
           if (_stats) {
-            setStats(_stats);
+            setStats(() => _stats);
           }
 
           storeDataInSession({

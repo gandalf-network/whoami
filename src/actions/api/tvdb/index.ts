@@ -1,8 +1,8 @@
 import axios from "axios";
-// import RateLimiter from "bottleneck";
 
+// import RateLimiter from "bottleneck";
 import { TVDB_BASE_URL } from "@/actions/helpers/constants";
-import { Actor, TVDBSearchReturn } from "@/types";
+import { ActorInput, TVDBSearchReturn } from "@/types";
 
 export default class TVDBClient {
   private token: string = "";
@@ -33,24 +33,25 @@ export default class TVDBClient {
     }
   }
 
-  async getSeasonExtended(imdbID: string): Promise<TVDBSearchReturn> {
+  async getTVShowDetails(imdbID: string): Promise<TVDBSearchReturn> {
     const { data } = await this.doRequest(
       `${TVDB_BASE_URL}/series/${imdbID}/extended?meta=episodes`,
     );
     const episodeCount = data.episodes.length as number;
     const genres = data.genres.map((genre: any) => genre.name);
 
-    let actors: Actor[] = [];
+    let actors: ActorInput[] = [];
+    let actorNames: string[] = [];
     for (let i = 0; i < data.characters.length; i++) {
       const character = data.characters[i];
-      if (character.sort > 10) continue;
+      actorNames = [...actorNames, character.personName as string];
       actors = [
         ...actors,
         {
           name: character.personName as string,
           characterName: character.name as string,
           imageURL: character.image as string,
-          id: "",
+          popularity: character.sort,
         },
       ];
     }
@@ -61,9 +62,22 @@ export default class TVDBClient {
       summary: data.overview,
       episodeCount,
       actors,
+      actorNames,
     };
 
     return returnObject;
+  }
+
+  async searchTVShows(title: string) {
+    try {
+      const { data } = await this.doRequest(
+        `${TVDB_BASE_URL}/search?query=${title}&type=series`,
+      );
+      return data;
+    } catch (error) {
+      console.error("Error searching TV shows:", error);
+      throw error;
+    }
   }
 
   private async doRequest(url: string) {

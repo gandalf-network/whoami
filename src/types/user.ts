@@ -4,6 +4,13 @@ export type UserStatsType = Awaited<ReturnType<typeof getStats>>;
 
 export type UserReportCardType = Awaited<ReturnType<typeof getReportCard>>;
 
+export type ActorInput = {
+  name: string;
+  imageURL?: string;
+  characterName: string;
+  popularity: number;
+};
+
 export type Show = {
   id: string;
   title: string;
@@ -49,7 +56,8 @@ export type TVDBSearchReturn = {
   imageURL: string;
   summary: string;
   genres: string[];
-  actors: Actor[];
+  actors: ActorInput[];
+  actorNames: string[];
 };
 
 type Genre = {

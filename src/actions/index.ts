@@ -10,9 +10,9 @@ import {
 import { getPersonalities } from "./api/perplexity";
 import { getRottenTomatoScore } from "./api/rottenTomatoes";
 import TMDBClient from "./api/tmdb";
+import TVDBClient from "./api/tvdb";
 import { getReportCardResponse, getStatsResponse } from "./database";
 import {
-  ActorInput,
   createActorsAndConnectToShow,
   getActorsByShow,
   getActorsImageByCharacterNameAndShow,
@@ -51,7 +51,7 @@ import {
   enqueueRottenTomatoes,
   enqueueShowData,
 } from "./lib/queue/producers";
-import { ParsedActivity } from "../types";
+import { ActorInput, ParsedActivity } from "../types";
 
 const eye = new Eye({
   baseURL: process.env.GANDALF_SAURON_URL as string,
@@ -62,6 +62,8 @@ const tmdbClient = new TMDBClient(
   process.env.TMDB_BASE_URL as string,
   process.env.TMDB_API_KEY as string,
 );
+
+const tvdbClient = new TVDBClient();
 
 export async function findOrCreateUser(sessionID: string) {
   return findOrCreateUserBySessionID(sessionID);
@@ -177,6 +179,56 @@ export async function getAndUpdateTVBFF(sessionID: string): Promise<number> {
   });
 
   return await getTotalNumberOfShowsWatchedByUser(user.id);
+}
+
+export async function getShowDataWithTVDB(
+  payload: ShowPayload,
+): Promise<number> {
+  const jobShows: JobShow[] = [];
+  let processed: number = 0;
+  console.log("> Number of shows:", payload?.Shows?.length);
+
+  for (const show of payload.Shows) {
+    try {
+      const showResponse = await tvdbClient.searchTVShows(show.title);
+      const showDetails = await tvdbClient.getTVShowDetails(
+        showResponse[0].tvdb_id,
+      );
+      const genres: string[] = [];
+
+      for (const genre of showDetails.genres) {
+        genres.push(genre);
+      }
+
+      await createActorsAndConnectToShow(showDetails.actors, show.id);
+
+      const updatedShow: UpdateShowInput = {
+        id: show.id,
+        genres,
+        numberOfEpisodes: showDetails.episodeCount,
+        summary: showDetails.summary,
+        imageURL: showDetails.imageURL,
+      };
+
+      await updateShow(updatedShow);
+
+      jobShows.push({
+        id: show.id,
+        title: show.title,
+        actors: showDetails.actorNames,
+      });
+      processed += 1;
+    } catch (error: any) {
+      console.log(
+        `getShowDataWithTVDB: show  title ${show.title} failed with error: `,
+        error,
+      );
+    }
+  }
+
+  payload.Shows = jobShows;
+  await enqueueRottenTomatoes(payload);
+  return processed;
 }
 
 export async function getShowData(payload: ShowPayload): Promise<number> {

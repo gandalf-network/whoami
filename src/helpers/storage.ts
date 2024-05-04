@@ -1,6 +1,6 @@
 import { setCookie, getCookie } from "cookies-next";
 
-import { generateUUID } from "./utils";
+import { generateUUID, isWindowDefined } from "./utils";
 
 export const cookiesKey = {
   sessionId: "whoami:sessionId",
@@ -23,6 +23,23 @@ export const createOrGetSessionId = () => {
 
   // return the session id
   return sessionId;
+};
+
+export const storeDataInSession = (value: any) => {
+  if (!value) {
+    return;
+  }
+
+  if (isWindowDefined()) {
+    window.sessionStorage.setItem(cookiesKey.sessionId, JSON.stringify(value));
+  }
+};
+
+export const getDataFromSession = () => {
+  if (isWindowDefined()) {
+    const data = window.sessionStorage.getItem(cookiesKey.sessionId);
+    return data ? JSON.parse(data) : null;
+  }
 };
 
 export { getCookie, setCookie };

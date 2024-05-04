@@ -2,7 +2,12 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { findOrCreateUser, getReportCard, getStats } from "@/actions";
-import { createOrGetSessionId, storeSessionId } from "@/helpers/storage";
+import {
+  createOrGetSessionId,
+  getDataFromSession,
+  storeDataInSession,
+  storeSessionId,
+} from "@/helpers/storage";
 import {
   UseSessionOptionsType,
   UserReportCardType,
@@ -98,6 +103,8 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
             }
           }
 
+          storeDataInSession({ stats, reportCard });
+
           clearInterval(timer);
         }
       }, interval);
@@ -134,6 +141,28 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
 
   useEffect(() => {
     console.log({ dataKey, sessionId });
+
+    /**
+     * Get user data from the session storage
+     * and set the stats and report card data
+     * if it exists
+     * This is useful when the user refreshes the page
+     * and the data is still available in the session storage
+     * so we can set the data from the session storage
+     * and make a request to the server to get the latest data
+     * if the data is not available in the session storage
+     */
+    if (getDataFromSession()) {
+      const data = getDataFromSession();
+
+      if (data.stats) {
+        setStats(data.stats);
+      }
+
+      if (data.reportCard) {
+        setReportCard(data.reportCard);
+      }
+    }
 
     // load user data on mount if loadOnMount is true
     if (options?.loadOnMount) {

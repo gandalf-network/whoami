@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { Flash } from "@/components/icon";
 import { useUserData } from "@/components/providers/user";
 import { PageHeader, PinkWaveBackground, Text } from "@/components/themed";
-import { cn, isWindowDefined } from "@/helpers/utils";
+import { cn } from "@/helpers/utils";
 import { StoryContentProps } from "@/types";
 
 export const ReportstDetails = ({
@@ -17,18 +17,24 @@ export const ReportstDetails = ({
   const isLoading = !reportCard;
 
   useEffect(() => {
-    console.log({ reportCard, isLoading });
-    if (isWindowDefined()) {
-      storyProps?.action?.(isLoading ? "pause" : "play");
+    if (reportCard) {
+      storyProps?.action?.("play");
+      console.log("play");
     }
-  }, [isLoading]);
+  }, [reportCard]);
 
   useEffect(() => {
     console.log({ isLoading, reportCard, storyProps });
     // paused by default until data is loaded
-    if (isWindowDefined()) {
+    const timer = setTimeout(() => {
       storyProps?.action?.("pause");
-    }
+      console.log("paused");
+    }, 100);
+
+    // clear timeout
+    return () => {
+      clearTimeout(timer);
+    };
   }, []);
 
   return (

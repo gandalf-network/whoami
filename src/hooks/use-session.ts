@@ -49,7 +49,7 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
       setReportCard(data.reportCard);
     }
 
-    console.log({ data });
+    console.log({ data, stats, reportCard });
   };
 
   // get user data
@@ -95,7 +95,7 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
           const stats = await getStats(sessionId);
 
           if (stats) {
-            setStats(stats);
+            updateData({ stats });
 
             storeDataInSession({
               stats: parseStatsBigIntValueAsJSONReady(stats),
@@ -133,8 +133,7 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
         const reportCard = await getReportCard(sessionId);
 
         if (stats && reportCard) {
-          setStats(stats);
-          setReportCard(reportCard);
+          updateData({ stats, reportCard });
           clearInterval(timer);
         }
       }, 5000);
@@ -164,13 +163,7 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
     if (getDataFromSession()) {
       const data = getDataFromSession();
 
-      if (data.stats) {
-        setStats(data.stats);
-      }
-
-      if (data.reportCard) {
-        setReportCard(data.reportCard);
-      }
+      updateData(data);
     }
 
     // load user data on mount if loadOnMount is true

@@ -80,7 +80,7 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
           if (stats) {
             setStats(stats);
 
-            storeDataInSession({ stats, reportCard });
+            storeDataInSession({ stats });
           }
         }
 
@@ -96,7 +96,10 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
             setStats(_stats);
           }
 
-          storeDataInSession({ stats: _stats, reportCard });
+          storeDataInSession({
+            ...(reportCard ? { reportCard } : {}),
+            ...(_stats ? { stats: _stats } : {}),
+          });
 
           clearInterval(timer);
         }

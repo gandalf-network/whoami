@@ -29,10 +29,9 @@ async function stateThresholdCheck() {
         continue;
       }
 
-      if ( await checkQueueThresold(
-        sessionID,
-        queueNames.TVShowQuips as QueueName,
-      )) {
+      if (
+        await checkQueueThresold(sessionID, queueNames.TVShowQuips as QueueName)
+      ) {
         await updateUserStateBySession(sessionID, UserState.STATS_DATA_READY);
       }
 

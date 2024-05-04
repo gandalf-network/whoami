@@ -25,7 +25,7 @@ export default function Page() {
   }, []);
 
   useEffect(() => {
-    if (stats && reportCard) {
+    if (stats || reportCard) {
       router.push("/stories");
     }
   }, [stats, reportCard]);

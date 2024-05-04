@@ -92,7 +92,7 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
           const _stats = stats ? stats : await getStats(sessionId);
 
           if (reportCard) {
-            setReportCard(reportCard);
+            setReportCard({ ...reportCard });
           }
 
           if (_stats) {

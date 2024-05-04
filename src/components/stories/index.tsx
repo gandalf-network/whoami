@@ -16,7 +16,7 @@ export const UserStories = ({ stories, ...props }: Partial<StoriesProps>) => {
         width="100%"
         height="100%"
         stories={stories || [...statsStories, ...reportsStories]}
-        key={`user-stories-${reportCard.personality.personality || "loading"}`}
+        key={`user-stories-${reportCard?.personality?.personality || "loading"}`}
         {...props}
       />
     </UserDataProvider>

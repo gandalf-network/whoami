@@ -20,7 +20,6 @@ export const ReportstDetails = ({
     // play the story when data is loaded
     console.log({ isLoading, reportCard });
     const timer = setTimeout(() => {
-      console.log({ isLoading, reportCard });
       storyProps?.action?.(isLoading ? "pause" : "play");
     }, 100);
 

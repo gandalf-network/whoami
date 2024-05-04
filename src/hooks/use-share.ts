@@ -62,9 +62,11 @@ export const useShare = ({ storyId }: { storyId: AllStoryIds }) => {
 
         const shareData =
           type === "instagram"
-            ? { files: [imageFile] }
+            ? imageFile
+              ? { files: [imageFile] }
+              : { url: storyLink }
             : {
-                files: [imageFile],
+                ...(imageFile ? { files: [imageFile] } : {}),
                 url: storyLink,
               };
 

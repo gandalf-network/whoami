@@ -122,5 +122,17 @@ export const parseStatsBigIntValueAsJSONReady = (
         watchCount: (watchCount ? Number(watchCount) : 0).toString() as any,
       },
     },
+    watchHistory: {
+      ...stats.watchHistory,
+      topShows: stats.watchHistory.topShows.map((show) => {
+        return {
+          ...show,
+          watchCount: (show.watchCount
+            ? Number(show.watchCount)
+            : 0
+          ).toString() as any,
+        };
+      }),
+    },
   };
 };

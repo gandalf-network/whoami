@@ -52,7 +52,7 @@ export const GenreDistributionStory = ({
                       value={genre.percentage}
                       label={label}
                       className="w-full"
-                      containerClassName=""
+                      containerClassName="px-0"
                     />
                   );
                 })}

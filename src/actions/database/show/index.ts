@@ -309,19 +309,24 @@ export async function getUserAverageRottenTomatoScore(userID: string) {
         INNER JOIN "userShow" us ON ue."userShowID" = us.id
         INNER JOIN "show" s ON us."showID" = s.id
       WHERE
-        us."userID" = ${userID}
+        us."userID" = ${userID} AND
+        s."rottenTomatoScore" IS NOT NULL
       GROUP BY
         us."showID", s."numberOfEpisodes", s."rottenTomatoScore"
+    ),
+    TotalShows AS (
+        SELECT
+          COUNT(DISTINCT showId) AS totalShows
+        FROM
+          EpisodeCounts
     )
     SELECT
       SUM(
         (CAST(episodesWatched AS FLOAT) / CAST(totalEpisodes AS FLOAT)) * score
-      ) AS "weightedScore"
+      ) / (SELECT totalShows FROM TotalShows) AS "weightedScore"
     FROM
       EpisodeCounts;
     `;
-  console.log(result);
   const weightedScore = result[0].weightedScore as number;
-
-  return Number(weightedScore.toPrecision(3));
+  return weightedScore ? Number(weightedScore.toPrecision(3)) : 0;
 }

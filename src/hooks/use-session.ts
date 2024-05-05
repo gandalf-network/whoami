@@ -1,5 +1,5 @@
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { findOrCreateUser, getReportCard, getStats } from "@/actions";
 import {
@@ -16,6 +16,8 @@ import {
 } from "@/types";
 
 export const useSession = (options: UseSessionOptionsType = {}) => {
+  const intervalRef = useRef<number>();
+
   const searchParams = useSearchParams();
 
   // get data key
@@ -47,10 +49,7 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
 
     if (data?.reportCard) {
       setReportCard(data.reportCard);
-      console.log({ reportCard: data.reportCard });
     }
-
-    console.log({ data, stats, reportCard });
   };
 
   // get user data
@@ -121,6 +120,8 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
           clearInterval(timer);
         }
       }, interval);
+
+      intervalRef.current = timer as unknown as number;
     } else {
       getUser();
     }
@@ -183,6 +184,15 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
       refetch(5000);
     }
   }, [dataKey]);
+
+  useEffect(() => {
+    console.log({ user, stats, reportCard, effect: true });
+    if (user && user.state === "COMPLETED" && reportCard && stats) {
+      if (intervalRef?.current) {
+        clearInterval(intervalRef.current);
+      }
+    }
+  }, [stats, reportCard, user]);
 
   return {
     sessionId,

@@ -47,6 +47,7 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
 
     if (data?.reportCard) {
       setReportCard(data.reportCard);
+      console.log({ reportCard: data.reportCard });
     }
 
     console.log({ data, stats, reportCard });
@@ -96,10 +97,6 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
 
           if (stats) {
             updateData({ stats });
-
-            storeDataInSession({
-              stats: parseStatsBigIntValueAsJSONReady(stats),
-            });
           }
         }
 
@@ -107,14 +104,14 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
           const _reportCard = await getReportCard(sessionId);
           const _stats = stats ? stats : await getStats(sessionId);
 
-          storeDataInSession({
-            ...(_reportCard ? { reportCard: _reportCard } : {}),
-            ...(_stats
-              ? { stats: parseStatsBigIntValueAsJSONReady(_stats) }
-              : {}),
-          });
-
           updateData({ stats: _stats, reportCard: _reportCard });
+
+          if (_stats && _reportCard) {
+            storeDataInSession({
+              stats: parseStatsBigIntValueAsJSONReady(_stats),
+              reportCard: _reportCard,
+            });
+          }
 
           clearInterval(timer);
         }

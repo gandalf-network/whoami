@@ -17,7 +17,6 @@ import {
 
 export const useSession = (options: UseSessionOptionsType = {}) => {
   const searchParams = useSearchParams();
-
   // get data key
   const dataKey = searchParams.get("dataKey");
 

@@ -12,7 +12,7 @@ export const ReportstDetails = ({
   className,
   ...props
 }: StoryContentProps) => {
-  const { reportCard, stats } = useUserData();
+  const { reportCard } = useUserData();
 
   const isLoading = !reportCard;
 
@@ -27,10 +27,6 @@ export const ReportstDetails = ({
       clearTimeout(timer);
     };
   }, [reportCard]);
-
-  useEffect(() => {
-    console.log({ story: true, reportCard, stats });
-  }, [stats, reportCard]);
 
   return (
     <div

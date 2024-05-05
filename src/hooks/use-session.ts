@@ -52,6 +52,8 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
     if (data?.reportCard) {
       setReportCard(data.reportCard);
     }
+
+    console.log({ data });
   };
 
   // get user data
@@ -82,6 +84,8 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
         const _stats = stats ? stats : await getStats(sessionId);
 
         updateData({ stats: _stats, reportCard: _reportCard });
+
+        console.log({ _stats, _reportCard });
 
         if (_stats && _reportCard) {
           storeDataInSession({

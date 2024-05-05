@@ -67,9 +67,32 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
       const data = await findOrCreateUser(sessionId);
       setUser(data);
 
-      // call the onCompleted callback if it exists
-      if (options?.onCompleted && data.state === "COMPLETED") {
-        options.onCompleted();
+      // check if the user data is ready
+      if (data.state === "STATS_DATA_READY") {
+        const stats = await getStats(sessionId);
+
+        if (stats) {
+          updateData({ stats });
+        }
+      }
+
+      if (data.state === "COMPLETED") {
+        const _reportCard = await getReportCard(sessionId);
+        const _stats = stats ? stats : await getStats(sessionId);
+
+        updateData({ stats: _stats, reportCard: _reportCard });
+
+        if (_stats && _reportCard) {
+          storeDataInSession({
+            stats: parseStatsBigIntValueAsJSONReady(_stats),
+            reportCard: _reportCard,
+          });
+        }
+
+        // call the onCompleted callback if it exists
+        if (options?.onCompleted) {
+          options.onCompleted();
+        }
       }
 
       return data;
@@ -89,30 +112,12 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
 
     // if interval is provided, fetch user data every interval
     if (interval) {
-      const timer = setInterval(async () => {
-        const data = await getUser();
+      const timer = setInterval(() => {
+        getUser();
 
-        if (data.state === "STATS_DATA_READY") {
-          const stats = await getStats(sessionId);
+        console.log({ user });
 
-          if (stats) {
-            updateData({ stats });
-          }
-        }
-
-        if (data.state === "COMPLETED") {
-          const _reportCard = await getReportCard(sessionId);
-          const _stats = stats ? stats : await getStats(sessionId);
-
-          updateData({ stats: _stats, reportCard: _reportCard });
-
-          if (_stats && _reportCard) {
-            storeDataInSession({
-              stats: parseStatsBigIntValueAsJSONReady(_stats),
-              reportCard: _reportCard,
-            });
-          }
-
+        if (user?.state === "COMPLETED") {
           clearInterval(timer);
         }
       }, interval);

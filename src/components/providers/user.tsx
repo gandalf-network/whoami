@@ -1,4 +1,6 @@
 "use client";
+import { useEffect } from "react";
+
 import { createContext } from "@/helpers/context";
 import { useSession } from "@/hooks/use-session";
 import { UserReportCardType, UserStatsType } from "@/types";
@@ -23,6 +25,10 @@ export const UserDataProvider = (props: UserDataProviderProps) => {
   const { stats, reportCard } = useSession({ loadOnMount: true });
 
   const loading = !stats && !reportCard;
+
+  useEffect(() => {
+    console.log({ provider: true, reportCard, stats });
+  }, [stats, reportCard]);
 
   return (
     <UserDataContextProvider value={{ stats, reportCard }}>

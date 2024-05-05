@@ -22,7 +22,7 @@ export const [UserDataContextProvider, useUserDataContext] =
 export const UserDataProvider = (props: UserDataProviderProps) => {
   const { children } = props;
 
-  const { stats, reportCard } = useSession({ loadOnMount: true });
+  const { stats, reportCard } = useSession();
 
   const loading = !stats && !reportCard;
 

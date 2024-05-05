@@ -1,5 +1,5 @@
 import { useSearchParams } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { findOrCreateUser, getReportCard, getStats } from "@/actions";
 import {
@@ -15,9 +15,9 @@ import {
   UserStatsType,
 } from "@/types";
 
-export const useSession = (options: UseSessionOptionsType = {}) => {
-  const intervalRef = useRef<number>();
+import { useInterval } from "./use-interval";
 
+export const useSession = (options: UseSessionOptionsType = {}) => {
   const searchParams = useSearchParams();
 
   // get data key
@@ -26,6 +26,8 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
   const querySessionId = searchParams.get("sessionID");
 
   const sessionId = querySessionId || createOrGetSessionId();
+
+  const userKeyAvailable = !!(dataKey || sessionId);
 
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState<Awaited<
@@ -102,54 +104,15 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
     }
   };
 
-  // refetch user data
-  const refetch = async (interval?: number) => {
-    if (dataKey && sessionId) {
-      // this will make a request to the server
-      await fetch(`/api/callback?sessionID=${sessionId}&dataKey=${dataKey}`);
+  // pool user data
+  const refetch = async () => {
+    // if user key is not available, return
+    if (!userKeyAvailable) {
+      return;
     }
 
-    // if interval is provided, fetch user data every interval
-    if (interval) {
-      const timer = setInterval(() => {
-        getUser();
-
-        console.log({ user });
-
-        if (user?.state === "COMPLETED") {
-          clearInterval(timer);
-        }
-      }, interval);
-
-      intervalRef.current = timer as unknown as number;
-    } else {
-      getUser();
-    }
-  };
-
-  // get user stats and report card data
-  const getUserStatsAndReportCard = async () => {
-    const fetchData = () => {
-      // fetch user stats and report card data every 5 seconds
-      const timer = setInterval(async () => {
-        const stats = await getStats(sessionId);
-        const reportCard = await getReportCard(sessionId);
-
-        if (stats && reportCard) {
-          updateData({ stats, reportCard });
-          clearInterval(timer);
-        }
-      }, 5000);
-    };
-
-    if (dataKey && sessionId) {
-      // this will make a request to the server
-      await fetch(`/api/callback?sessionID=${sessionId}&dataKey=${dataKey}`);
-
-      fetchData();
-    } else if (sessionId) {
-      fetchData();
-    }
+    // get user data
+    await getUser();
   };
 
   useEffect(() => {
@@ -171,7 +134,7 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
 
     // load user data on mount if loadOnMount is true
     if (options?.loadOnMount) {
-      refetch(options?.refetchInterval);
+      refetch();
     }
 
     if (querySessionId) {
@@ -180,19 +143,25 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
   }, []);
 
   useEffect(() => {
-    if (dataKey) {
-      refetch(5000);
+    const triggerCallback = async () => {
+      // this will make a request to the server
+      await fetch(`/api/callback?sessionID=${sessionId}&dataKey=${dataKey}`);
+    };
+
+    if (dataKey && sessionId) {
+      triggerCallback();
     }
   }, [dataKey]);
 
-  useEffect(() => {
-    console.log({ user, stats, reportCard, effect: true });
-    if (user && user.state === "COMPLETED" && reportCard && stats) {
-      if (intervalRef?.current) {
-        clearInterval(intervalRef.current);
-      }
-    }
-  }, [stats, reportCard, user]);
+  useInterval(refetch, {
+    delay:
+      stats && reportCard
+        ? undefined
+        : options && options?.refetchInterval
+          ? options.refetchInterval
+          : 5000,
+    deps: dataKey ? [dataKey] : undefined,
+  });
 
   return {
     sessionId,
@@ -201,6 +170,5 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
     reportCard,
     loading,
     refetch,
-    getUserStatsAndReportCard,
   };
 };

@@ -1,4 +1,5 @@
 import { type ClassValue, clsx } from "clsx";
+import React from "react";
 import { twMerge } from "tailwind-merge";
 
 import { getEnvDetails, isProduction } from "./base";
@@ -46,12 +47,12 @@ export const formatStringArrayToJSX = ({
     return strings.map((str, index) => {
       const isLastItem = index === strings.length - 1;
       return (
-        <>
+        <React.Fragment key={`index-${index}`}>
           {isLastItem && <>and </>}
           <span className={className}>
             “{str}”{isLastItem ? "" : ", "}
           </span>
-        </>
+        </React.Fragment>
       );
     });
   }

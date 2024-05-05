@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import { Circle } from "@/components/icon";
+import { Circle, RottenTomatoeEclipseIcon } from "@/components/icon";
 import { StoryLoader } from "@/components/loader/story";
 import { useUserData } from "@/components/providers/user";
 import {
@@ -91,15 +91,7 @@ export const RottenTomatoeStory = ({
                 Rotten Tomatoes Score
               </Text>
 
-              <div className="flex-center-y gap-2 py-5">
-                <div className="relative translate-y-10">
-                  <Text
-                    className="w-16 text-sm -rotate-90 uppercase whitespace-nowrap opacity-50"
-                    font="heading"
-                  >
-                    The tomatometer ©
-                  </Text>
-                </div>
+              <div className="flex-center-y gap-2 py-5 translate-x-8 md:translate-x-4 flex-[0.6]">
                 <VerticalSlider
                   options={sliderOptions}
                   value={getRottenTomatoeScoreText(rtScore).toLowerCase()}
@@ -119,10 +111,7 @@ export const RottenTomatoeStory = ({
             </div>
           </div>
 
-          <Circle
-            className="absolute top-[7%] -left-[85%] w-[65vh] h-[60vh] pointer-events-none"
-            strokeWidth={0.2}
-          />
+          <RottenTomatoeEclipseIcon className="absolute left-0 w-[22vh] md:w-[23vh] top-20 md:top-16 pointer-events-none" />
 
           <div className="flex-center-x pb-4">
             <ShareButton

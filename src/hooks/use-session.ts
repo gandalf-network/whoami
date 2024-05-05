@@ -40,6 +40,9 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
   // user report card data
   const [reportCard, setReportCard] = useState<UserReportCardType | null>(null);
 
+  // retries
+  const [retries, setRetries] = useState(0);
+
   // update data
   const updateData = (data: {
     stats?: UserStatsType;
@@ -115,6 +118,9 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
       return;
     }
 
+    // increment retries
+    setRetries((prev) => prev + 1);
+
     // get user data
     await getUser();
   };
@@ -159,7 +165,7 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
 
   useInterval(refetch, {
     delay:
-      stats && reportCard
+      (stats && reportCard) || retries >= 60
         ? undefined
         : options && options?.refetchInterval
           ? options.refetchInterval

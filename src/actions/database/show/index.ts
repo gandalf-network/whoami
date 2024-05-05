@@ -151,32 +151,47 @@ export async function getTop5ShowsByUser(
   lastOneYear: boolean = true,
 ) {
   const topShows: Show[] = await prisma.$queryRaw`
+    WITH ShowDetails AS (
       SELECT 
-        s.id AS id, 
-        s.title AS title, 
-        s.summary as summary,
-        s.genre as genres,
-        s."imageURL",
-        s."numberOfEpisodes" as "numberOfEpisodes",
-      COUNT(ue.id) AS "watchCount",
-      COUNT(ue.id)::FLOAT / s."numberOfEpisodes" AS score
+          s.id AS id, 
+          s.title AS title, 
+          s.summary AS summary,
+          s.genre AS genres,
+          s."imageURL",
+          s."numberOfEpisodes",
+          COUNT(ue.id) AS "watchCount",
+          COUNT(ue.id)::FLOAT / NULLIF(s."numberOfEpisodes", 0) AS score
       FROM 
-        "userEpisode" ue
+          "userEpisode" ue
       INNER JOIN 
-        "userShow" us ON ue."userShowID" = us.id
+          "userShow" us ON ue."userShowID" = us.id
       INNER JOIN 
-        "show" s ON us."showID" = s.id
+          "show" s ON us."showID" = s.id
       WHERE 
-        us."userID" = ${userID}
-        AND (
-          ${lastOneYear} = false
-          OR ue."datePlayed" > CURRENT_DATE - INTERVAL '1 year'
-        )
+          us."userID" = ${userID}
+          AND (
+            ${lastOneYear} = false
+            OR ue."datePlayed" > CURRENT_DATE - INTERVAL '1 year'
+          )
       GROUP BY 
-        s.id
-      ORDER BY 
-        score DESC, "numberOfEpisodes" DESC
-      LIMIT 5;
+          s.id
+    )
+    SELECT 
+      id, 
+      title, 
+      summary, 
+      genres, 
+      "imageURL", 
+      "numberOfEpisodes",
+      "watchCount", 
+      score
+    FROM 
+      ShowDetails
+    ORDER BY 
+      score IS NULL ASC, 
+      score DESC,
+      "numberOfEpisodes" DESC
+    LIMIT 5;
     `;
   return topShows;
 }

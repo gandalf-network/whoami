@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "UserState" AS ENUM ('AWAITING_CONNECTION', 'CONNECTED', 'CRUNCHING_DATA', 'COMPLETED');
+CREATE TYPE "UserState" AS ENUM ('AWAITING_CONNECTION', 'CONNECTED', 'CRUNCHING_DATA', 'STATS_DATA_READY', 'COMPLETED');
 
 -- CreateEnum
 CREATE TYPE "AssistantName" AS ENUM ('TV_BFF', 'FIRST_AND_MOST_REWATCHED_SHOW_QUIPS', 'TOP_GENRES_STAR_SIGN');
@@ -10,6 +10,7 @@ CREATE TABLE "user" (
     "identifier" VARCHAR(255) NOT NULL,
     "state" "UserState" NOT NULL DEFAULT 'AWAITING_CONNECTION',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "dataKey" TEXT NOT NULL DEFAULT '',
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "user_pkey" PRIMARY KEY ("id")
@@ -23,7 +24,7 @@ CREATE TABLE "show" (
     "rottenTomatoScore" INTEGER,
     "genre" VARCHAR(255)[],
     "imageURL" VARCHAR(255),
-    "summary" VARCHAR(255),
+    "summary" VARCHAR(1089),
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -43,8 +44,8 @@ CREATE TABLE "userShow" (
 CREATE TABLE "userEpisode" (
     "id" TEXT NOT NULL,
     "title" TEXT NOT NULL,
-    "season" INTEGER NOT NULL,
-    "episode" INTEGER NOT NULL,
+    "season" INTEGER,
+    "episode" INTEGER,
     "datePlayed" TIMESTAMP(3) NOT NULL,
     "userShowID" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -56,7 +57,7 @@ CREATE TABLE "userEpisode" (
 -- CreateTable
 CREATE TABLE "actor" (
     "id" TEXT NOT NULL,
-    "name" VARCHAR(255) NOT NULL,
+    "name" TEXT NOT NULL,
     "imageURL" VARCHAR(255),
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -69,6 +70,7 @@ CREATE TABLE "showActor" (
     "actorID" TEXT NOT NULL,
     "showID" TEXT NOT NULL,
     "characterName" TEXT NOT NULL,
+    "popularity" INTEGER NOT NULL,
 
     CONSTRAINT "showActor_pkey" PRIMARY KEY ("actorID","showID")
 );
@@ -116,7 +118,7 @@ CREATE UNIQUE INDEX "userShow_userID_showID_key" ON "userShow"("userID", "showID
 CREATE INDEX "userEpisode_userShowID_idx" ON "userEpisode"("userShowID");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "userEpisode_userShowID_title_episode_season_key" ON "userEpisode"("userShowID", "title", "episode", "season");
+CREATE UNIQUE INDEX "userEpisode_userShowID_title_key" ON "userEpisode"("userShowID", "title");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "actor_name_key" ON "actor"("name");

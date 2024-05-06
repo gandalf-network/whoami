@@ -192,6 +192,9 @@ export async function getShowDataWithTVDB(
   for (const show of payload.Shows) {
     try {
       await tvdbClient.login(TVDB_API_KEY);
+      if (show.title.toLocaleLowerCase() === "top boy") {
+        show.title = "Top Boy 2019";
+      }
       const showResponse = await tvdbClient.searchTVShows(show.title);
       const showDetails = await tvdbClient.getTVShowDetails(
         showResponse[0].tvdb_id,
@@ -240,6 +243,9 @@ export async function getShowData(payload: ShowPayload): Promise<number> {
 
   for (const show of payload.Shows) {
     try {
+      if (show.title.toLocaleLowerCase() === "top boy") {
+        show.title = "Top Boy 2019";
+      }
       const showResponse = await tmdbClient.searchTVShows(show.title);
       const showDetails = await tmdbClient.getTVShowDetails(
         showResponse.results[0].id,
@@ -360,7 +366,7 @@ export async function getAndDumpActivities(
               extractEpisodeNumberFromTitle(parsedActivity.episodeTitle);
           }
 
-          const show = await upsertShow(title);
+          const show = await upsertShow(updatedTitle);
           const userShow = await upsertUserShow(user.id, show.id);
 
           const episode = {
@@ -372,8 +378,8 @@ export async function getAndDumpActivities(
           };
           episodes.push(episode);
 
-          if (!seenShows.has(title)) {
-            seenShows.add(title);
+          if (!seenShows.has(updatedTitle)) {
+            seenShows.add(updatedTitle);
             jobShows.push({
               id: show.id,
               title: show.title,

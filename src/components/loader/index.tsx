@@ -18,7 +18,7 @@ export interface LoadingScreenProps
 export const loadingTexts = [
   "Decrypting your binge DNA",
   "Compiling your watch matrix",
-  "Evaluating your episode entropy.",
+  "Evaluating your episode entropy",
   "Optimizing your genre vectors",
   "Quantifying your drama doses",
   "Refining your comedy catalysts",

@@ -91,7 +91,7 @@ export const RottenTomatoeStory = ({
                 Rotten Tomatoes Score
               </Text>
 
-              <div className="flex-center-y gap-2 py-5 translate-x-8 md:translate-x-4 flex-[0.6]">
+              <div className="flex-center-y gap-2 py-5 translate-x-4 md:translate-x-2 flex-[0.6]">
                 <VerticalSlider
                   options={sliderOptions}
                   value={getRottenTomatoeScoreText(rtScore).toLowerCase()}
@@ -111,7 +111,7 @@ export const RottenTomatoeStory = ({
             </div>
           </div>
 
-          <RottenTomatoeEclipseIcon className="absolute left-0 w-[22vh] md:w-[23vh] top-20 md:top-16 pointer-events-none" />
+          <RottenTomatoeEclipseIcon className="absolute left-0 w-[168px] md:w-[177px] top-20 md:top-16 pointer-events-none" />
 
           <div className="flex-center-x pb-4">
             <ShareButton

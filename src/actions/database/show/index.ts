@@ -317,7 +317,7 @@ export async function getUserAverageRottenTomatoScore(userID: string) {
         INNER JOIN "show" s ON us."showID" = s.id
       WHERE
         us."userID" = ${userID} AND
-        s."rottenTomatoScore" IS NOT NULL
+        s."rottenTomatoScore" > 0
       GROUP BY
         us."showID", s."numberOfEpisodes", s."rottenTomatoScore"
     ),

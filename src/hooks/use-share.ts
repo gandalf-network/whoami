@@ -109,6 +109,7 @@ export const useShare = ({ storyId }: { storyId: AllStoryIds }) => {
         openLinkInNewTab(link);
       }
     } catch (error) {
+      console.log(error);
       throw error;
     } finally {
       setLoading(false);

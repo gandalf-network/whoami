@@ -23,7 +23,7 @@ import {
   batchInsertEpisodes,
   getNumberOfUpdatedShowsByUser,
   getNumberOfUpdatedTomatoeScores,
-  getTop5ShowsByUser,
+  getTop3ShowsByUser,
   getTotalNumberOfShowsWatchedByUser,
   getUserAverageRottenTomatoScore,
   getUsersFirstShow,
@@ -139,7 +139,7 @@ export async function getAndUpdateTVShowQuips(
   sessionID: string,
 ): Promise<number> {
   const user = await findOrCreateUserBySessionID(sessionID);
-  const topShow = await getTop5ShowsByUser(user.id);
+  const topShow = await getTop3ShowsByUser(user.id);
   const firstShow = await getUsersFirstShow(user.id);
 
   const mostRewatchedShowQuips = await getFirstAndMostRewatchedShowQuips(
@@ -158,7 +158,7 @@ export async function getAndUpdateTVShowQuips(
 export async function getAndUpdateTVBFF(sessionID: string): Promise<number> {
   const user = await findOrCreateUserBySessionID(sessionID);
   const topGenres = await getUsersTopGenres(user.id);
-  const topShow = await getTop5ShowsByUser(user.id);
+  const topShow = await getTop3ShowsByUser(user.id);
   const showActors = await getActorsByShow(topShow[0].id);
   const characters: string[] = showActors.map((actor) => actor.characterName);
 

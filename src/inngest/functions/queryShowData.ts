@@ -1,4 +1,4 @@
-import { getCompletedShowDataBySession, getShowDataWithTVDB } from "@/actions";
+import { getCompletedShowDataBySession, getShowData } from "@/actions";
 import { eventNames } from "@/actions/lib/queue/event";
 import { ShowPayload } from "@/actions/lib/queue/producers";
 import {
@@ -14,7 +14,7 @@ async function queryShowData(event: { data: ShowPayload }) {
   const showPayload = event.data;
 
   try {
-    await getShowDataWithTVDB(event.data);
+    await getShowData(event.data);
     const processedData = await getCompletedShowDataBySession(
       showPayload.SessionID,
     );

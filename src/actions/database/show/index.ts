@@ -146,7 +146,7 @@ export async function getUsersFirstShow(userID: string): Promise<Show> {
   return usersFirstShow;
 }
 
-export async function getTop5ShowsByUser(
+export async function getTop3ShowsByUser(
   userID: string,
   lastOneYear: boolean = true,
 ) {
@@ -191,7 +191,7 @@ export async function getTop5ShowsByUser(
       score IS NULL ASC, 
       score DESC,
       "numberOfEpisodes" DESC
-    LIMIT 5;
+    LIMIT 3;
     `;
   return topShows;
 }

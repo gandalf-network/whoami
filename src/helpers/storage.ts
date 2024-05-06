@@ -34,8 +34,8 @@ export const initializeSessionId = async () => {
     const sessionId = getCookie(cookiesKey.sessionId);
 
     if (sessionId) {
-      const user = await getUser(sessionId);
-      console.log({ user });
+      const res = await fetch(`/api/user?sessionID=${sessionId}`);
+      const user = await res.json();
 
       if (!user) {
         storeSessionId(generateUUID());

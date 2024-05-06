@@ -192,6 +192,9 @@ export async function getShowDataWithTVDB(
   for (const show of payload.Shows) {
     try {
       await tvdbClient.login(TVDB_API_KEY);
+      if (show.title.toLocaleLowerCase() === "top boy") {
+        show.title = "Top Boy 2019";
+      }
       const showResponse = await tvdbClient.searchTVShows(show.title);
       const showDetails = await tvdbClient.getTVShowDetails(
         showResponse[0].tvdb_id,

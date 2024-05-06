@@ -1,9 +1,9 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
-import { createOrGetSessionId } from "@/helpers/storage";
+import { initializeSessionId } from "@/helpers/storage";
 import { openLinkInNewTab } from "@/helpers/utils";
 import { useIsAndroid } from "@/hooks/use-android";
 import { useGandalfConnect } from "@/hooks/use-connect";
@@ -14,6 +14,8 @@ import { Button } from "./button";
 
 export const StartButton = (props: ButtonProps) => {
   const { url, loading } = useGandalfConnect();
+
+  const [isLoading, setIsLoading] = useState(false);
 
   const isAndroid = useIsAndroid();
 
@@ -29,14 +31,23 @@ export const StartButton = (props: ButtonProps) => {
     }
   };
 
+  const init = async () => {
+    try {
+      setIsLoading(true);
+      initializeSessionId();
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
-    createOrGetSessionId();
+    init();
   }, []);
 
   if (url && isMobile) {
     return (
       <a href={url} target="_blank" rel="noreferrer">
-        <Button {...props} loading={loading}>
+        <Button {...props} loading={loading || isLoading}>
           Start
         </Button>
       </a>
@@ -48,7 +59,7 @@ export const StartButton = (props: ButtonProps) => {
       {...props}
       disabled={isAndroid}
       onClick={onClick}
-      loading={isMobile && loading}
+      loading={isMobile && (loading || isLoading)}
     >
       Start
     </Button>

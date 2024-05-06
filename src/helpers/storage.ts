@@ -1,5 +1,7 @@
 import { setCookie, getCookie } from "cookies-next";
 
+import { getUser } from "@/actions";
+
 import { generateUUID, isWindowDefined } from "./utils";
 
 export const cookiesKey = {
@@ -24,6 +26,26 @@ export const createOrGetSessionId = () => {
 
   // return the session id
   return sessionId;
+};
+
+export const initializeSessionId = async () => {
+  try {
+    // get the session id from the local storage
+    const sessionId = getCookie(cookiesKey.sessionId);
+
+    if (sessionId) {
+      const user = await getUser(sessionId);
+      console.log({ user });
+
+      if (!user) {
+        storeSessionId(generateUUID());
+      }
+    } else {
+      storeSessionId(generateUUID());
+    }
+  } catch {
+    storeSessionId(generateUUID());
+  }
 };
 
 export const storeDataInSession = (value: any) => {

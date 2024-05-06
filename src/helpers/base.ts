@@ -10,11 +10,14 @@ export const appendProtocolToUrl = (url: string) => {
 
 // this is a utility function that gets the environment details
 export const getEnvDetails = () => {
+  const vercelUrl =
+    process.env.NEXT_PUBLIC_VERCEL_BRANCH_URL ||
+    process.env.NEXT_PUBLIC_VERCEL_URL ||
+    "";
+
   const url = isProduction()
-    ? process.env.NEXT_PUBLIC_VERCEL_URL || ""
-    : process.env.NEXT_PUBLIC_VERCEL_URL ||
-      process.env.NEXT_PUBLIC_APP_URL ||
-      "";
+    ? vercelUrl
+    : vercelUrl || process.env.NEXT_PUBLIC_APP_URL || "";
 
   const sterilizeUrl = url ? new URL(appendProtocolToUrl(url)) : undefined;
 

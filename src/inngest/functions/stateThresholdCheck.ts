@@ -71,27 +71,32 @@ export const stateThresholdCheckTask = inngest.createFunction(
   { id: "state-threshold-check" },
   { cron: "*/1 * * * *" },
   async ({ event }) => {
-    console.log("> Initiating state threshold checks...");
-    const startTime = Date.now();
-    const maxDuration = 60000;
-    let results;
-    let interval: string | number | NodeJS.Timeout | undefined;
+    try {
+      console.log("> Initiating state threshold checks...");
+      const startTime = Date.now();
+      const maxDuration = 60000;
+      let results;
+      let interval: string | number | NodeJS.Timeout | undefined;
 
-    const check = async () => {
-      if (Date.now() - startTime > maxDuration) {
-        console.log("Reached maximum execution time. Ending checks.");
-        clearInterval(interval);
-        return;
-      }
+      const check = async () => {
+        if (Date.now() - startTime > maxDuration) {
+          console.log("Reached maximum execution time. Ending checks.");
+          clearInterval(interval);
+          return;
+        }
 
-      results = await stateThresholdCheck();
-    };
+        results = await stateThresholdCheck();
+      };
 
-    interval = setInterval(check, 5000);
+      interval = setInterval(check, 5000);
 
-    await new Promise((resolve) => setTimeout(resolve, maxDuration));
-    clearInterval(interval);
+      await new Promise((resolve) => setTimeout(resolve, maxDuration));
+      clearInterval(interval);
 
-    return { event, sessions: results };
+      return { event, sessions: results };
+    } catch (err) {
+      console.error(err);
+      return { event, sessions: null };
+    }
   },
 );

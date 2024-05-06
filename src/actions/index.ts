@@ -243,6 +243,9 @@ export async function getShowData(payload: ShowPayload): Promise<number> {
 
   for (const show of payload.Shows) {
     try {
+      if (show.title.toLocaleLowerCase() === "top boy") {
+        show.title = "Top Boy 2019";
+      }
       const showResponse = await tmdbClient.searchTVShows(show.title);
       const showDetails = await tmdbClient.getTVShowDetails(
         showResponse.results[0].id,

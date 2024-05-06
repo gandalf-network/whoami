@@ -76,7 +76,7 @@ model userEpisode {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
-  @@unique([userShowID, title, episode, season], name: "uniqueShowSeasonEpisode")
+  @@unique([userShowID, title], name: "uniqueShowSeasonEpisode")
   @@index([userShowID])
 }
 

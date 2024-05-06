@@ -11,11 +11,10 @@ export const PlaceholderImage = ({
 }: React.ImgHTMLAttributes<HTMLImageElement> & { iconClassName?: string }) => {
   if (src) {
     return (
-      <img
-        src={src}
-        alt="image"
+      <div
+        style={{ backgroundImage: `url(${src})` }}
         className={cn(
-          "rounded-lg flex-center w-full h-full border-2 shadow-black shadow-[4px_4px] relative bg-background object-cover",
+          "rounded-lg flex-center w-full h-full border-2 shadow-black shadow-[4px_4px] relative bg-background object-cover bg-cover bg-no-repeat ",
           className,
         )}
         {...props}

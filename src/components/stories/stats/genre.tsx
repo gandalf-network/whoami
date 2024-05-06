@@ -37,12 +37,12 @@ export const GenreDistributionStory = ({
             Genre Distribution
           </Text>
 
-          <div className="max-w-96 px-8">
+          <div className="px-8 max-w-full">
             <Text className="text-lg mb-2.5 font-medium">
               Your top {genreDistribution?.genres?.length} TV genres include:
             </Text>
             <div className="relative w-full">
-              <div className="my-3 flex flex-col gap-y-0.5 w-full z-10 relative">
+              <div className="min-w-80 mx-auto flex-center my-3 flex flex-col gap-y-0.5 w-full z-10 relative">
                 {genreDistribution?.genres?.map?.((genre, index) => {
                   const label = `${genre.genre} - ${parseInt((genre?.percentage || 0).toString(), 10)}%`;
                   return (

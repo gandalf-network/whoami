@@ -116,6 +116,31 @@ class TMDBClient {
       throw error;
     }
   }
+
+  async searchActors(
+    query: string,
+    page: number = 1,
+  ): Promise<SearchTVShowsResponse> {
+    try {
+      const response = await this.client.get<SearchTVShowsResponse>(
+        "/search/person",
+        {
+          params: {
+            query,
+            include_adult: true,
+            language: "en-US",
+            page,
+            api_key: this.apiKey,
+          },
+        },
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error searching TV shows:", error);
+      throw error;
+    }
+  }
+
   async getTVShowDetails(
     tvShowId: number,
     language: string = "en-US",

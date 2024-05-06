@@ -3,7 +3,7 @@ import { UserState } from "@prisma/client";
 import { createOrUpdateUsersAIResponse } from "./aiResponses";
 import {
   getUsersFirstShow,
-  getTop5ShowsByUser,
+  getTop3ShowsByUser,
   getUsersTopShowsByActor,
   getTotalNumberOfShowsWatchedByUser,
   getUsersTopGenres,
@@ -22,7 +22,7 @@ export async function getStatsResponse(sessionID: string) {
   }
 
   const usersFirstShow = await getUsersFirstShow(user.id);
-  const usersMostWatchedTVShows = await getTop5ShowsByUser(user.id, false);
+  const usersMostWatchedTVShows = await getTop3ShowsByUser(user.id, false);
   const usersMostWatchedTVShow = usersMostWatchedTVShows[0];
   const topShowsByActor = await getUsersTopShowsByActor(user.id);
   const watchCount = await getTotalNumberOfShowsWatchedByUser(user.id);
@@ -65,7 +65,7 @@ export async function getReportCardResponse(sessionID: string) {
   }
 
   const aiResponses = await createOrUpdateUsersAIResponse({ userID: user.id });
-  const topShows = await getTop5ShowsByUser(user.id);
+  const topShows = await getTop3ShowsByUser(user.id);
   const topShow = topShows[0];
   const rtScore = await getUserAverageRottenTomatoScore(user.id);
 

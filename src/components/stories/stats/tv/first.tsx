@@ -6,6 +6,7 @@ import {
   ShareButton,
   StoryDownloadContainer,
   Text,
+  PlaceholderImage,
 } from "@/components/themed";
 import { getDate } from "@/helpers/date";
 import { getStoryDownloadSelector } from "@/helpers/story";
@@ -20,6 +21,8 @@ export const FirstTVShowStory = ({
   const { stats } = useUserData();
 
   const firstTvShow = stats?.firstTvShow || {};
+
+  const showImage = firstTvShow?.show?.imageURL;
 
   return (
     <div
@@ -38,11 +41,7 @@ export const FirstTVShowStory = ({
         <div className="relative p-0 w-52 h-72">
           <QuadrilateralStar className="absolute w-10 -top-5 -left-5" />
           <DodecagramStar className="absolute w-24 -bottom-10 -right-12 z-10" />
-          <img
-            src={firstTvShow?.show?.imageURL}
-            alt="image"
-            className="rounded-lg w-full h-full object-cover border-2 shadow-black shadow-[4px_4px] relative z-20 bg-background"
-          />
+          <PlaceholderImage src={showImage} className="z-20" />
         </div>
 
         <div>
@@ -79,6 +78,8 @@ export const FirstTVShowDownloadStory = ({
 
   const firstTvShow = stats?.firstTvShow || {};
 
+  const showImage = firstTvShow?.show?.imageURL;
+
   return (
     <StoryDownloadContainer
       id={getStoryDownloadSelector("firstTvShow").id}
@@ -90,11 +91,7 @@ export const FirstTVShowDownloadStory = ({
         <div className="relative p-0 w-52 h-72">
           <QuadrilateralStar className="absolute w-10 -top-5 -left-5" />
           <DodecagramStar className="absolute w-24 -bottom-10 -right-12 z-10" />
-          <img
-            src={firstTvShow?.show?.imageURL}
-            alt="image"
-            className="rounded-lg w-full h-full object-cover border-2 shadow-black shadow-[4px_4px] relative z-20"
-          />
+          <PlaceholderImage src={showImage} className="z-20" />
         </div>
 
         <div>

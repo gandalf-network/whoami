@@ -3,6 +3,7 @@ import { Circle, GridDots, Rectangle } from "@/components/icon";
 import { useUserData } from "@/components/providers/user";
 import {
   PageHeader,
+  PlaceholderImage,
   ShareButton,
   StoryDownloadContainer,
   Text,
@@ -41,10 +42,9 @@ export const CrossOverStarStory = ({
             className="absolute w-8 bottom-6 right-4 z-20"
             strokeWidth={1.5}
           />
-          <img
+          <PlaceholderImage
+            className="rounded-full z-10"
             src={crossoverStar?.imageURL}
-            alt="image"
-            className="bg-background rounded-full w-full h-full object-cover border-2 shadow-black shadow-[6px_6px] relative z-10"
           />
         </div>
 
@@ -100,10 +100,10 @@ export const CrossOverStarDownloadStory = ({
           <GridDots className="absolute w-[375px] top-[-17%] -translate-x-2/4 left-2/4" />
           <Circle className="absolute w-16 -top-0 -left-0" />
           <Rectangle className="absolute w-12 bottom-6 -right-2 z-20" />
-          <img
+
+          <PlaceholderImage
+            className="rounded-full z-10"
             src={crossoverStar?.imageURL}
-            alt="image"
-            className="bg-background rounded-full w-full h-full object-cover border-2 shadow-black shadow-[6px_6px] relative z-10"
           />
         </div>
 

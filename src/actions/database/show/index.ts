@@ -146,37 +146,52 @@ export async function getUsersFirstShow(userID: string): Promise<Show> {
   return usersFirstShow;
 }
 
-export async function getTop5ShowsByUser(
+export async function getTop3ShowsByUser(
   userID: string,
   lastOneYear: boolean = true,
 ) {
   const topShows: Show[] = await prisma.$queryRaw`
+    WITH ShowDetails AS (
       SELECT 
-        s.id AS id, 
-        s.title AS title, 
-        s.summary as summary,
-        s.genre as genres,
-        s."imageURL",
-        s."numberOfEpisodes" as "numberOfEpisodes",
-      COUNT(ue.id) AS "watchCount",
-      COUNT(ue.id)::FLOAT / s."numberOfEpisodes" AS score
+          s.id AS id, 
+          s.title AS title, 
+          s.summary AS summary,
+          s.genre AS genres,
+          s."imageURL",
+          s."numberOfEpisodes",
+          COUNT(ue.id) AS "watchCount",
+          COUNT(ue.id)::FLOAT / NULLIF(s."numberOfEpisodes", 0) AS score
       FROM 
-        "userEpisode" ue
+          "userEpisode" ue
       INNER JOIN 
-        "userShow" us ON ue."userShowID" = us.id
+          "userShow" us ON ue."userShowID" = us.id
       INNER JOIN 
-        "show" s ON us."showID" = s.id
+          "show" s ON us."showID" = s.id
       WHERE 
-        us."userID" = ${userID}
-        AND (
-          ${lastOneYear} = false
-          OR ue."datePlayed" > CURRENT_DATE - INTERVAL '1 year'
-        )
+          us."userID" = ${userID}
+          AND (
+            ${lastOneYear} = false
+            OR ue."datePlayed" > CURRENT_DATE - INTERVAL '1 year'
+          )
       GROUP BY 
-        s.id
-      ORDER BY 
-        score DESC, "numberOfEpisodes" DESC
-      LIMIT 5;
+          s.id
+    )
+    SELECT 
+      id, 
+      title, 
+      summary, 
+      genres, 
+      "imageURL", 
+      "numberOfEpisodes",
+      "watchCount", 
+      score
+    FROM 
+      ShowDetails
+    ORDER BY 
+      score IS NULL ASC, 
+      score DESC,
+      "numberOfEpisodes" DESC
+    LIMIT 3;
     `;
   return topShows;
 }
@@ -294,19 +309,24 @@ export async function getUserAverageRottenTomatoScore(userID: string) {
         INNER JOIN "userShow" us ON ue."userShowID" = us.id
         INNER JOIN "show" s ON us."showID" = s.id
       WHERE
-        us."userID" = ${userID}
+        us."userID" = ${userID} AND
+        s."rottenTomatoScore" IS NOT NULL
       GROUP BY
         us."showID", s."numberOfEpisodes", s."rottenTomatoScore"
+    ),
+    TotalShows AS (
+        SELECT
+          COUNT(DISTINCT showId) AS totalShows
+        FROM
+          EpisodeCounts
     )
     SELECT
       SUM(
         (CAST(episodesWatched AS FLOAT) / CAST(totalEpisodes AS FLOAT)) * score
-      ) AS "weightedScore"
+      ) / (SELECT totalShows FROM TotalShows) AS "weightedScore"
     FROM
       EpisodeCounts;
     `;
-  console.log(result);
   const weightedScore = result[0].weightedScore as number;
-
-  return Number(weightedScore.toPrecision(3));
+  return weightedScore ? Number(weightedScore.toPrecision(3)) : 0;
 }

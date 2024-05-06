@@ -7,6 +7,7 @@ import {
   PageHeader,
   ShareButton,
   Text,
+  PlaceholderImage,
 } from "@/components/themed";
 import { getStoryDownloadSelector } from "@/helpers/story";
 import { cn } from "@/helpers/utils";
@@ -44,11 +45,8 @@ export const TVBFFStory = ({
             <div className="relative p-0 w-52 h-72">
               <Heart className="absolute w-12 -top-5 -right-5 z-30" />
               <Cross className="absolute w-[250px] rotate-45 bottom-10 -left-[80%] z-10" />
-              <img
-                src={imageURL || ""}
-                alt="image"
-                className="rounded-lg w-full h-full object-cover border-2 shadow-black shadow-[4px_4px] relative z-20 bg-background"
-              />
+
+              <PlaceholderImage src={imageURL || ""} className="z-20" />
             </div>
 
             <div>
@@ -99,11 +97,7 @@ export const TVBFFDownloadStory = ({ ...props }: StoryDownloadContentProps) => {
         <div className="relative p-0 w-52 h-72">
           <Heart className="absolute w-12 -top-5 -right-5 z-30" />
           <Cross className="absolute w-[250px] rotate-45 bottom-10 -left-[80%] z-10" />
-          <img
-            src={imageURL || ""}
-            alt="image"
-            className="rounded-lg w-full h-full object-cover border-2 shadow-black shadow-[4px_4px] relative z-20"
-          />
+          <PlaceholderImage src={imageURL || ""} className="z-20" />
         </div>
 
         <div>

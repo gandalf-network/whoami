@@ -16,13 +16,9 @@ import { useSession } from "@/hooks/use-session";
 export default function Page() {
   const { url: connectUrl, loading } = useGandalfConnect();
 
-  const { stats, reportCard, refetch } = useSession();
+  const { stats, reportCard } = useSession();
 
   const router = useRouter();
-
-  useEffect(() => {
-    refetch(5000);
-  }, []);
 
   useEffect(() => {
     if (stats || reportCard) {

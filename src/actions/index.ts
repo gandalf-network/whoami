@@ -23,7 +23,7 @@ import {
   batchInsertEpisodes,
   getNumberOfUpdatedShowsByUser,
   getNumberOfUpdatedTomatoeScores,
-  getTop5ShowsByUser,
+  getTop3ShowsByUser,
   getTotalNumberOfShowsWatchedByUser,
   getUserAverageRottenTomatoScore,
   getUsersFirstShow,
@@ -40,6 +40,7 @@ import {
 } from "./database/user";
 import Eye, { Source } from "./eyeofsauron";
 import { NetflixActivityMetadata } from "./eyeofsauron/gql/__generated__";
+import { TVDB_API_KEY } from "./helpers/constants";
 import {
   parseActivityInput,
   extractEpisodeNumberFromTitle,
@@ -138,7 +139,7 @@ export async function getAndUpdateTVShowQuips(
   sessionID: string,
 ): Promise<number> {
   const user = await findOrCreateUserBySessionID(sessionID);
-  const topShow = await getTop5ShowsByUser(user.id);
+  const topShow = await getTop3ShowsByUser(user.id);
   const firstShow = await getUsersFirstShow(user.id);
 
   const mostRewatchedShowQuips = await getFirstAndMostRewatchedShowQuips(
@@ -157,7 +158,7 @@ export async function getAndUpdateTVShowQuips(
 export async function getAndUpdateTVBFF(sessionID: string): Promise<number> {
   const user = await findOrCreateUserBySessionID(sessionID);
   const topGenres = await getUsersTopGenres(user.id);
-  const topShow = await getTop5ShowsByUser(user.id);
+  const topShow = await getTop3ShowsByUser(user.id);
   const showActors = await getActorsByShow(topShow[0].id);
   const characters: string[] = showActors.map((actor) => actor.characterName);
 
@@ -190,6 +191,7 @@ export async function getShowDataWithTVDB(
 
   for (const show of payload.Shows) {
     try {
+      await tvdbClient.login(TVDB_API_KEY);
       const showResponse = await tvdbClient.searchTVShows(show.title);
       const showDetails = await tvdbClient.getTVShowDetails(
         showResponse[0].tvdb_id,

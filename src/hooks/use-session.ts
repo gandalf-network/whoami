@@ -15,6 +15,8 @@ import {
   UserStatsType,
 } from "@/types";
 
+import { useInterval } from "./use-interval";
+
 export const useSession = (options: UseSessionOptionsType = {}) => {
   const searchParams = useSearchParams();
   // get data key
@@ -23,6 +25,8 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
   const querySessionId = searchParams.get("sessionID");
 
   const sessionId = querySessionId || createOrGetSessionId();
+
+  const userKeyAvailable = !!(dataKey || sessionId);
 
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState<Awaited<
@@ -34,6 +38,9 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
 
   // user report card data
   const [reportCard, setReportCard] = useState<UserReportCardType | null>(null);
+
+  // retries
+  const [retries, setRetries] = useState(0);
 
   // update data
   const updateData = (data: {
@@ -48,7 +55,7 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
       setReportCard(data.reportCard);
     }
 
-    console.log({ data, stats, reportCard });
+    console.log({ data });
   };
 
   // get user data
@@ -65,9 +72,34 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
       const data = await findOrCreateUser(sessionId);
       setUser(data);
 
-      // call the onCompleted callback if it exists
-      if (options?.onCompleted && data.state === "COMPLETED") {
-        options.onCompleted();
+      // check if the user data is ready
+      if (data.state === "STATS_DATA_READY") {
+        const stats = await getStats(sessionId);
+
+        if (stats) {
+          updateData({ stats });
+        }
+      }
+
+      if (data.state === "COMPLETED") {
+        const _reportCard = await getReportCard(sessionId);
+        const _stats = stats ? stats : await getStats(sessionId);
+
+        updateData({ stats: _stats, reportCard: _reportCard });
+
+        console.log({ _stats, _reportCard });
+
+        if (_stats && _reportCard) {
+          storeDataInSession({
+            stats: parseStatsBigIntValueAsJSONReady(_stats),
+            reportCard: _reportCard,
+          });
+        }
+
+        // call the onCompleted callback if it exists
+        if (options?.onCompleted) {
+          options.onCompleted();
+        }
       }
 
       return data;
@@ -78,74 +110,18 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
     }
   };
 
-  // refetch user data
-  const refetch = async (interval?: number) => {
-    if (dataKey && sessionId) {
-      // this will make a request to the server
-      await fetch(`/api/callback?sessionID=${sessionId}&dataKey=${dataKey}`);
+  // pool user data
+  const refetch = async () => {
+    // if user key is not available, return
+    if (!userKeyAvailable) {
+      return;
     }
 
-    // if interval is provided, fetch user data every interval
-    if (interval) {
-      const timer = setInterval(async () => {
-        const data = await getUser();
+    // increment retries
+    setRetries((prev) => prev + 1);
 
-        if (data.state === "STATS_DATA_READY") {
-          const stats = await getStats(sessionId);
-
-          if (stats) {
-            updateData({ stats });
-
-            storeDataInSession({
-              stats: parseStatsBigIntValueAsJSONReady(stats),
-            });
-          }
-        }
-
-        if (data.state === "COMPLETED") {
-          const _reportCard = await getReportCard(sessionId);
-          const _stats = stats ? stats : await getStats(sessionId);
-
-          storeDataInSession({
-            ...(_reportCard ? { reportCard: _reportCard } : {}),
-            ...(_stats
-              ? { stats: parseStatsBigIntValueAsJSONReady(_stats) }
-              : {}),
-          });
-
-          updateData({ stats: _stats, reportCard: _reportCard });
-
-          clearInterval(timer);
-        }
-      }, interval);
-    } else {
-      getUser();
-    }
-  };
-
-  // get user stats and report card data
-  const getUserStatsAndReportCard = async () => {
-    const fetchData = () => {
-      // fetch user stats and report card data every 5 seconds
-      const timer = setInterval(async () => {
-        const stats = await getStats(sessionId);
-        const reportCard = await getReportCard(sessionId);
-
-        if (stats && reportCard) {
-          updateData({ stats, reportCard });
-          clearInterval(timer);
-        }
-      }, 5000);
-    };
-
-    if (dataKey && sessionId) {
-      // this will make a request to the server
-      await fetch(`/api/callback?sessionID=${sessionId}&dataKey=${dataKey}`);
-
-      fetchData();
-    } else if (sessionId) {
-      fetchData();
-    }
+    // get user data
+    await getUser();
   };
 
   useEffect(() => {
@@ -167,7 +143,7 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
 
     // load user data on mount if loadOnMount is true
     if (options?.loadOnMount) {
-      refetch(options?.refetchInterval);
+      refetch();
     }
 
     if (querySessionId) {
@@ -176,10 +152,25 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
   }, []);
 
   useEffect(() => {
-    if (dataKey) {
-      refetch(5000);
+    const triggerCallback = async () => {
+      // this will make a request to the server
+      await fetch(`/api/callback?sessionID=${sessionId}&dataKey=${dataKey}`);
+    };
+
+    if (dataKey && sessionId) {
+      triggerCallback();
     }
   }, [dataKey]);
+
+  useInterval(refetch, {
+    delay:
+      (stats && reportCard) || retries >= 60
+        ? undefined
+        : options && options?.refetchInterval
+          ? options.refetchInterval
+          : 5000,
+    deps: dataKey ? [dataKey] : undefined,
+  });
 
   return {
     sessionId,
@@ -188,6 +179,5 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
     reportCard,
     loading,
     refetch,
-    getUserStatsAndReportCard,
   };
 };

@@ -1,4 +1,3 @@
-/* eslint-disable @next/next/no-img-element */
 import { Nonagram1Star, Quadrilateral1Star } from "@/components/icon";
 import { useUserData } from "@/components/providers/user";
 import {
@@ -6,6 +5,7 @@ import {
   ShareButton,
   StoryDownloadContainer,
   Text,
+  PlaceholderImage,
 } from "@/components/themed";
 import { getStoryDownloadSelector } from "@/helpers/story";
 import { cn } from "@/helpers/utils";
@@ -40,24 +40,19 @@ export const TotalTVShowStory = ({
         </Text>
 
         <div className="relative flex items-center gap-x-8 p-0 w-[90%] h-72">
-          <img
-            src={firstShowImage}
-            alt="image"
-            className="w-full h-64 rounded-lg object-cover border-2 shadow-black shadow-[4px_4px] bg-background"
-          />
+          <PlaceholderImage src={firstShowImage} className="h-64" />
 
           {secondShowImage || thirdShowImage ? (
-            <div className="flex flex-col gap-y-4 w-32 h-72 flex-shrink-0 relative z-10">
-              <img
+            <div className="flex flex-col gap-y-4 w-32 h-72 flex-shrink-0 relative z-10 pr-4">
+              <PlaceholderImage
                 src={secondShowImage}
-                alt="image"
-                className="w-full h-[48%] rounded-lg object-cover border-2 shadow-black shadow-[4px_4px] bg-background"
+                className="h-[48%]"
+                iconClassName="w-14"
               />
-
-              <img
+              <PlaceholderImage
                 src={thirdShowImage}
-                alt="image"
-                className="w-full h-[48%] rounded-lg object-cover border-2 shadow-black shadow-[4px_4px] bg-background"
+                className="h-[48%]"
+                iconClassName="w-14"
               />
             </div>
           ) : null}
@@ -118,24 +113,19 @@ export const TotalTVShowDownloadStory = ({
     >
       <div className="gap-y-10 flex-1 flex-col flex-center text-center">
         <div className="relative flex items-center gap-x-6 p-0 w-[90%] h-72">
-          <img
-            src={firstShowImage}
-            alt="image"
-            className="w-full h-64 rounded-lg object-cover border-2 shadow-black shadow-[4px_4px]"
-          />
+          <PlaceholderImage src={firstShowImage} className="h-64" />
 
           {secondShowImage || thirdShowImage ? (
-            <div className="flex flex-col gap-y-4 w-24 h-72 flex-shrink-0 relative z-10">
-              <img
+            <div className="flex flex-col gap-y-4 w-32 h-72 flex-shrink-0 relative z-10 pr-4">
+              <PlaceholderImage
                 src={secondShowImage}
-                alt="image"
-                className="w-full h-[48%] rounded-lg object-cover border-2 shadow-black shadow-[4px_4px]"
+                className="h-[48%]"
+                iconClassName="w-14"
               />
-
-              <img
+              <PlaceholderImage
                 src={thirdShowImage}
-                alt="image"
-                className="w-full h-[48%] rounded-lg object-cover border-2 shadow-black shadow-[4px_4px]"
+                className="h-[48%]"
+                iconClassName="w-14"
               />
             </div>
           ) : null}

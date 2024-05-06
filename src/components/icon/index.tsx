@@ -17,3 +17,4 @@ export * from "./netflix";
 export * from "./pause";
 export * from "./play";
 export * from "./tomatoe";
+export * from "./movie";

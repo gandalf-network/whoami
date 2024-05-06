@@ -2,6 +2,7 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { findOrCreateUser, getReportCard, getStats } from "@/actions";
+import { ReportsCardMockedData, TVStatsMockedData } from "@/helpers/mocked";
 import {
   createOrGetSessionId,
   getDataFromSession,
@@ -150,6 +151,14 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
     if (querySessionId) {
       storeSessionId(querySessionId);
     }
+
+    setTimeout(() => {
+      setStats(TVStatsMockedData);
+    }, 5000);
+
+    setTimeout(() => {
+      setReportCard(ReportsCardMockedData);
+    }, 20000);
   }, []);
 
   useEffect(() => {

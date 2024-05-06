@@ -360,7 +360,7 @@ export async function getAndDumpActivities(
               extractEpisodeNumberFromTitle(parsedActivity.episodeTitle);
           }
 
-          const show = await upsertShow(title);
+          const show = await upsertShow(updatedTitle);
           const userShow = await upsertUserShow(user.id, show.id);
 
           const episode = {
@@ -372,8 +372,8 @@ export async function getAndDumpActivities(
           };
           episodes.push(episode);
 
-          if (!seenShows.has(title)) {
-            seenShows.add(title);
+          if (!seenShows.has(updatedTitle)) {
+            seenShows.add(updatedTitle);
             jobShows.push({
               id: show.id,
               title: show.title,

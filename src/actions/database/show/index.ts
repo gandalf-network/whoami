@@ -159,8 +159,7 @@ export async function getTop3ShowsByUser(
           s.genre AS genres,
           s."imageURL",
           s."numberOfEpisodes",
-          COUNT(ue.id) AS "watchCount",
-          COUNT(ue.id)::FLOAT / NULLIF(s."numberOfEpisodes", 0) AS score
+          COUNT(ue.id) AS "watchCount"
       FROM 
           "userEpisode" ue
       INNER JOIN 
@@ -183,13 +182,11 @@ export async function getTop3ShowsByUser(
       genres, 
       "imageURL", 
       "numberOfEpisodes",
-      "watchCount", 
-      score
+      "watchCount"
     FROM 
       ShowDetails
-    ORDER BY 
-      score IS NULL ASC, 
-      score DESC,
+    ORDER BY  
+      "watchCount" DESC,
       "numberOfEpisodes" DESC
     LIMIT 3;
     `;

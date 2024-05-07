@@ -1,21 +1,5 @@
-import { UserState } from "@prisma/client";
-
-import { updateUserStateBySession } from "@/actions";
-import {
-  enqueueStarSignPicker,
-  enqueueTVBFF,
-  enqueueTVShowQuips,
-} from "@/actions/lib/queue/producers";
-import {
-  QueueName,
-  checkDependentQueuesThresold,
-  checkIndependentQueuesThresold,
-  checkQueueThresold,
-  getSessionsByState,
-  queueNames,
-  sessionStates,
-  setSessionIndex,
-} from "@/actions/lib/queue/state";
+import { enqueueStateThresholdCheckHandler } from "@/actions/lib/queue/producers";
+import { getSessionsByState, sessionStates } from "@/actions/lib/queue/state";
 
 import { inngest } from "../client";
 
@@ -23,43 +7,7 @@ async function stateThresholdCheck() {
   try {
     const sessionIDs = await getSessionsByState(sessionStates.PROCESSING);
     for (const sessionID of sessionIDs) {
-      if (await checkIndependentQueuesThresold(sessionID)) {
-        await updateUserStateBySession(sessionID, UserState.COMPLETED);
-        await setSessionIndex(sessionID, sessionStates.COMPLETED);
-        continue;
-      }
-
-      if (
-        await checkQueueThresold(sessionID, queueNames.TVShowQuips as QueueName)
-      ) {
-        await updateUserStateBySession(sessionID, UserState.STATS_DATA_READY);
-      }
-
-      if (
-        await checkQueueThresold(
-          sessionID,
-          queueNames.QueryShowData as QueueName,
-        )
-      ) {
-        await enqueueTVShowQuips(sessionID);
-      }
-
-      if (await checkDependentQueuesThresold(sessionID)) {
-        if (
-          !(await checkQueueThresold(sessionID, queueNames.TVBFF as QueueName))
-        ) {
-          await enqueueTVBFF(sessionID);
-        }
-
-        if (
-          !(await checkQueueThresold(
-            sessionID,
-            queueNames.StarSignPicker as QueueName,
-          ))
-        ) {
-          await enqueueStarSignPicker(sessionID);
-        }
-      }
+      enqueueStateThresholdCheckHandler(sessionID);
     }
     return sessionIDs;
   } catch (error) {
@@ -72,7 +20,7 @@ export const stateThresholdCheckTask = inngest.createFunction(
   { cron: "*/1 * * * *" },
   async ({ event }) => {
     try {
-      console.log("> Initiating state threshold checks...");
+      console.log("> running state threshold checks...");
       const startTime = Date.now();
       const maxDuration = 60000;
       let results;
@@ -88,8 +36,7 @@ export const stateThresholdCheckTask = inngest.createFunction(
         results = await stateThresholdCheck();
       };
 
-      interval = setInterval(check, 5000);
-
+      interval = setInterval(check, 10000);
       await new Promise((resolve) => setTimeout(resolve, maxDuration));
       clearInterval(interval);
 

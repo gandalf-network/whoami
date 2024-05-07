@@ -28,8 +28,8 @@ async function queryActivities(event: { data: ActivityDataPayload }) {
 
     const queueName = queueNames.QueryActivities as QueueName;
     await setQueueSessionState(sessionID, queueName, totalData, totalChunks);
-
-    console.log(`[totalData]:`, totalData, "[totalChunks]:", totalChunks);
+    
+    console.log(`> [totalData]:`, totalData, "[totalChunks]:", totalChunks);
     return totalData;
   } catch (error) {
     await updateUserStateBySession(sessionID, UserState.CRUNCHING_DATA);
@@ -41,7 +41,6 @@ export const queryActivitiesTask = inngest.createFunction(
   {
     id: "query-activities",
     concurrency: 50,
-    // idempotency: "event.activities",
   },
   { event: eventNames.QueryActivities },
   async ({ event }) => {
@@ -49,7 +48,7 @@ export const queryActivitiesTask = inngest.createFunction(
     const result = await queryActivities({ data: event.data });
     const endTime = performance.now();
 
-    console.log(`queryActivities took ${endTime - startTime} milliseconds.`);
+    console.log(`> queryActivities took ${endTime - startTime} milliseconds.`);
 
     return { event, processed: result };
   },

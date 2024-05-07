@@ -312,8 +312,8 @@ export async function getShowData(payload: ShowPayload): Promise<number> {
   return processed;
 }
 
-function generateJobId(pageCount: number, sessionId: string): string {
-  return `PC${pageCount}-SID${sessionId}`;
+function generateJobId(pageCount: number, chunkNumber: number, sessionId: string): string {
+  return `PC${pageCount}-CN${chunkNumber}-SID${sessionId}`;
 }
 
 export async function getAndDumpActivities(
@@ -321,6 +321,7 @@ export async function getAndDumpActivities(
   dataKey: string,
 ): Promise<number[]> {
   const limit = 400;
+  let totalChunks = 0;
   let total: number = 0;
   try {
     const user = await upsertUser(sessionID, dataKey);
@@ -401,20 +402,33 @@ export async function getAndDumpActivities(
         await batchInsertEpisodes(episodes);
         episodes.length = 0;
 
-        const jobId = generateJobId(activityResponse.page, sessionID);
-        const showPayload: ShowPayload = {
-          SessionID: sessionID,
-          Shows: jobShows,
-          JobID: jobId,
-        };
-        await enqueueShowData(showPayload);
+        const jobChunks = chunkShows(jobShows, 10);
+        for (let chunkIndex = 0; chunkIndex < jobChunks.length; chunkIndex++) {
+          const currentChunk = jobChunks[chunkIndex];
+          const jobId = generateJobId(activityResponse.page, chunkIndex, sessionID);
+          const showPayload: ShowPayload = {
+            SessionID: sessionID,
+            Shows: currentChunk,
+            JobID: jobId,
+          };
+          await enqueueShowData(showPayload);
+          totalChunks++;
+        }
         totalShows += jobShows.length;
       }
     }
-    return [totalShows, totalPages];
+    return [totalShows, totalChunks];
   } catch (error: any) {
     await updateUserStateBySession(sessionID, UserState.FAILED);
     console.error(`Failed to fetch data for user ${sessionID}`, error.message);
     throw error;
   }
+}
+
+function chunkShows<T>(shows: T[], chunkSize: number): T[][] {
+  const chunks: T[][] = [];
+  for (let i = 0; i < shows.length; i += chunkSize) {
+    chunks.push(shows.slice(i, i + chunkSize));
+  }
+  return chunks;
 }

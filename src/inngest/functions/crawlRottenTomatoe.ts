@@ -10,11 +10,13 @@ import {
 
 import { inngest } from "../client";
 
-async function crawlRottenTomatoes(event: { data: ShowPayload }) {
+async function crawlRottenTomatoes(event: { data: ShowPayload }, step: any) {
   try {
-    console.log("Recv crawlRottenTomatoes request...");
+    console.log("> Recv crawlRottenTomatoes request...");
     const showPayload = event.data;
-    const processedData = await getAndUpdateRottenTomatoesScore(showPayload);
+    const processedData = await step.run("get-and-update-rotten-tomatoes", async () => {
+      return await getAndUpdateRottenTomatoesScore(showPayload);
+    });
     const queueName = queueNames.CrawlRottenTomatoes as QueueName;
 
     const [, executedChunks] = await getQueueSessionState(
@@ -30,18 +32,18 @@ async function crawlRottenTomatoes(event: { data: ShowPayload }) {
     return processedData;
   } catch (error) {
     console.error("Error processing job:", error);
+    throw error
   }
 }
 
 export const crawlRottenTomatoesTask = inngest.createFunction(
   {
     id: "crawl-rotten-tomatoes",
-    // idempotency: "event.crawl.rottentomatoes",
     concurrency: 50,
   },
   { event: eventNames.CrawlRottenTomatoes },
-  async ({ event }) => {
-    const result = await crawlRottenTomatoes({ data: event.data });
+  async ({ event, step }) => {
+    const result = await crawlRottenTomatoes({ data: event.data }, step);
     return {
       event,
       processed: result,

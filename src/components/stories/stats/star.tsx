@@ -102,7 +102,7 @@ export const CrossOverStarDownloadStory = ({
           <Rectangle className="absolute w-12 bottom-6 -right-2 z-20" />
 
           <ThemedImage
-            className="rounded-full z-10"
+            className="rounded-full z-10 shadow-none border-4"
             src={crossoverStar?.imageURL}
           />
         </div>

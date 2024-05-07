@@ -39,11 +39,17 @@ export const useImage = () => {
         toPng(element as HTMLElement),
         toPng(element as HTMLElement),
         toPng(element as HTMLElement),
+      ]);
+
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
+      await Promise.all([
+        toPng(element as HTMLElement),
         toPng(element as HTMLElement),
         toPng(element as HTMLElement),
       ]);
 
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       // convert element to base64
       const base64 = await toPng(element as HTMLElement, {

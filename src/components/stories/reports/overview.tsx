@@ -208,7 +208,7 @@ export const ReportOverviewDownloadStory = ({
               <Box
                 key={`w-full summary-${index}`}
                 className={cn(
-                  "flex-center flex-col gap-y-2 px-5 py-4 shadow-[1px_2px] rounded-2xl h-[5.7rem] relative",
+                  "flex-center flex-col gap-y-2 px-5 py-4 shadow-none border-[3px] rounded-2xl h-[5.7rem] relative",
                   summary.className,
                 )}
               >

@@ -70,6 +70,7 @@ const tmdbClient = new TMDBClient(
 const tvdbClient = new TVDBClient();
 
 export async function createUser(sessionID: string) {
+  console.log(sessionID);
   return createUserBySessionID(sessionID);
 }
 

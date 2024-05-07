@@ -32,6 +32,7 @@ async function queryActivities(event: { data: ActivityDataPayload }) {
     console.log(`[totalData]:`, totalData, "[totalChunks]:", totalChunks);
     return totalData;
   } catch (error) {
+    await updateUserStateBySession(sessionID, UserState.CRUNCHING_DATA);
     console.error("Error processing job:", error);
   }
 }

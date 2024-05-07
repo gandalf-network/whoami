@@ -52,6 +52,7 @@ export default class TVDBClient {
           characterName: character.name as string,
           imageURL: character.image as string,
           popularity: character.sort,
+          totalEpisodeCount: 0,
         },
       ];
     }

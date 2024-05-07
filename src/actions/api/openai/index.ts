@@ -60,9 +60,9 @@ type OAIShowInput = {
   genres: string[];
   summary: string;
 };
-export async function getFirstAndMostRewatchedShowQuips(
+export async function getFirstAndMostWatchedShowQuips(
   firstShow: Show,
-  mostRewatchedShow: Show[],
+  mostWatchedShow: Show[],
 ): Promise<TVShowQuips> {
   const firstTVShow: OAIShowInput = {
     name: firstShow.title,
@@ -70,15 +70,15 @@ export async function getFirstAndMostRewatchedShowQuips(
     genres: firstShow.genres as string[],
   };
 
-  const mostRewatchedTVShow: OAIShowInput = {
-    name: mostRewatchedShow[0].title,
-    summary: mostRewatchedShow[0].summary as string,
-    genres: mostRewatchedShow[0].genres as string[],
+  const mostWatchedTVShow: OAIShowInput = {
+    name: mostWatchedShow[0].title,
+    summary: mostWatchedShow[0].summary as string,
+    genres: mostWatchedShow[0].genres as string[],
   };
 
   const input = {
     firstTVShow,
-    mostRewatchedTVShow,
+    mostWatchedTVShow,
   };
   return callOpenAI(
     input,

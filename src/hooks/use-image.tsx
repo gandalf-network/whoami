@@ -34,33 +34,14 @@ export const useImage = () => {
       element.classList.remove("hidden");
       element.classList.add("flex");
 
-      // write a fake promise to wait for the element to be displayed
-      const elementImages = element.querySelectorAll("img");
+      // convert element to bas64 three times to make sure the image is not blank
+      await Promise.all([
+        toPng(element as HTMLElement),
+        toPng(element as HTMLElement),
+        toPng(element as HTMLElement),
+      ]);
 
-      if (elementImages.length > 0) {
-        // wait for all images to be loaded
-        await Promise.all(
-          Array.from(elementImages).map((img) => {
-            return new Promise((resolve) => {
-              let retries = 0;
-
-              const timer = setInterval(() => {
-                retries += 1;
-
-                if (img.complete || retries > 10) {
-                  clearInterval(timer);
-                  resolve(true);
-                }
-              }, 1000);
-            });
-          }),
-        );
-
-        await new Promise((resolve) => setTimeout(resolve, 10000));
-      } else {
-        // wait for 10 seconds
-        await new Promise((resolve) => setTimeout(resolve, 8000));
-      }
+      await new Promise((resolve) => setTimeout(resolve, 2000));
 
       // convert element to base64
       const base64 = await toPng(element as HTMLElement, {

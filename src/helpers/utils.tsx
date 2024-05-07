@@ -98,3 +98,22 @@ export const openLinkInNewTab = (url: string) => {
 export const generateUUID = () => {
   return crypto.randomUUID();
 };
+
+export const fetchImageBase64Data = async (url?: string) => {
+  if (!url) {
+    return "";
+  }
+
+  try {
+    const req = await fetch("/api/image", {
+      method: "POST",
+      body: JSON.stringify({
+        url,
+      }),
+    });
+    const base64 = await req.text();
+    return base64;
+  } catch (err) {
+    throw err;
+  }
+};

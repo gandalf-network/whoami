@@ -1,7 +1,5 @@
 import { setCookie, getCookie } from "cookies-next";
 
-import { getUser } from "@/actions";
-
 import { generateUUID, isWindowDefined } from "./utils";
 
 export const cookiesKey = {

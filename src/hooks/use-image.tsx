@@ -56,10 +56,10 @@ export const useImage = () => {
           }),
         );
 
-        await new Promise((resolve) => setTimeout(resolve, 2000));
+        await new Promise((resolve) => setTimeout(resolve, 10000));
       } else {
         // wait for 10 seconds
-        await new Promise((resolve) => setTimeout(resolve, 3000));
+        await new Promise((resolve) => setTimeout(resolve, 8000));
       }
 
       // convert element to base64

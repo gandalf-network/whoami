@@ -414,7 +414,7 @@ export async function getAndDumpActivities(
     }
     return [totalShows, totalPages];
   } catch (error: any) {
-    await updateUserStateBySession(sessionID, UserState.INTERNAL_SERVER_ERROR);
+    await updateUserStateBySession(sessionID, UserState.FAILED);
     console.error(`Failed to fetch data for user ${sessionID}`, error.message);
     throw error;
   }

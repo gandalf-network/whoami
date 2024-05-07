@@ -98,3 +98,7 @@ export const openLinkInNewTab = (url: string) => {
 export const generateUUID = () => {
   return crypto.randomUUID();
 };
+
+export const removeNonAlphanumericLastChar = (str: string) => {
+  return str.replace(/[\W_]$/, "");
+};

@@ -1,10 +1,11 @@
 import { enqueueActivityData } from "@/actions/lib/queue/producers";
+import { removeNonAlphanumericLastChar } from "@/helpers/utils";
 
 export async function GET(req: Request) {
   const url = new URL(req.url);
   const searchParams = url.searchParams;
   const sessionID = searchParams.get("sessionID");
-  const dataKey = searchParams.get("dataKey");
+  let dataKey = searchParams.get("dataKey");
 
   if (!sessionID || !dataKey) {
     return new Response(
@@ -17,6 +18,8 @@ export async function GET(req: Request) {
       },
     );
   }
+
+  dataKey = removeNonAlphanumericLastChar(dataKey);
 
   await enqueueActivityData(sessionID, dataKey);
 

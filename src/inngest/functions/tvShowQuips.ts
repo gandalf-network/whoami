@@ -12,12 +12,15 @@ import { inngest } from "../client";
 async function tvShowQuips(event: { data: any }, step: any) {
   const { sessionID } = event.data;
   try {
-    const processedData = await step.run("get-and-update-tv-quips", async () => {
-      return await getAndUpdateTVShowQuips(sessionID);
-    });
+    const processedData = await step.run(
+      "get-and-update-tv-quips",
+      async () => {
+        return await getAndUpdateTVShowQuips(sessionID);
+      },
+    );
     const queueName = queueNames.TVShowQuips as QueueName;
     const [, totalChunks] = await getSessionGlobalState(sessionID);
-    
+
     await setQueueSessionState(
       sessionID,
       queueName,
@@ -26,7 +29,7 @@ async function tvShowQuips(event: { data: any }, step: any) {
     );
   } catch (error) {
     console.error("Error processing job:", error);
-    throw error
+    throw error;
   }
 }
 

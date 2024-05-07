@@ -59,7 +59,7 @@ export const stateThresholdCheckHandlerTask = inngest.createFunction(
       return { event };
     } catch (error) {
       console.error("Error processing job:", error);
-      throw error
+      throw error;
     }
   },
 );

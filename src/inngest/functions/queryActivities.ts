@@ -28,7 +28,7 @@ async function queryActivities(event: { data: ActivityDataPayload }) {
 
     const queueName = queueNames.QueryActivities as QueueName;
     await setQueueSessionState(sessionID, queueName, totalData, totalChunks);
-    
+
     console.log(`> [totalData]:`, totalData, "[totalChunks]:", totalChunks);
     return totalData;
   } catch (error) {

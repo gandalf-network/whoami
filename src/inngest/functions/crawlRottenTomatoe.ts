@@ -14,9 +14,12 @@ async function crawlRottenTomatoes(event: { data: ShowPayload }, step: any) {
   try {
     console.log("> Recv crawlRottenTomatoes request...");
     const showPayload = event.data;
-    const processedData = await step.run("get-and-update-rotten-tomatoes", async () => {
-      return await getAndUpdateRottenTomatoesScore(showPayload);
-    });
+    const processedData = await step.run(
+      "get-and-update-rotten-tomatoes",
+      async () => {
+        return await getAndUpdateRottenTomatoesScore(showPayload);
+      },
+    );
     const queueName = queueNames.CrawlRottenTomatoes as QueueName;
 
     const [, executedChunks] = await getQueueSessionState(
@@ -32,7 +35,7 @@ async function crawlRottenTomatoes(event: { data: ShowPayload }, step: any) {
     return processedData;
   } catch (error) {
     console.error("Error processing job:", error);
-    throw error
+    throw error;
   }
 }
 

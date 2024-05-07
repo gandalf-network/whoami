@@ -312,7 +312,11 @@ export async function getShowData(payload: ShowPayload): Promise<number> {
   return processed;
 }
 
-function generateJobId(pageCount: number, chunkNumber: number, sessionId: string): string {
+function generateJobId(
+  pageCount: number,
+  chunkNumber: number,
+  sessionId: string,
+): string {
   return `PC${pageCount}-CN${chunkNumber}-SID${sessionId}`;
 }
 
@@ -405,7 +409,11 @@ export async function getAndDumpActivities(
         const jobChunks = chunkShows(jobShows, 10);
         for (let chunkIndex = 0; chunkIndex < jobChunks.length; chunkIndex++) {
           const currentChunk = jobChunks[chunkIndex];
-          const jobId = generateJobId(activityResponse.page, chunkIndex, sessionID);
+          const jobId = generateJobId(
+            activityResponse.page,
+            chunkIndex,
+            sessionID,
+          );
           const showPayload: ShowPayload = {
             SessionID: sessionID,
             Shows: currentChunk,

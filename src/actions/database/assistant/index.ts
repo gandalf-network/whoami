@@ -9,12 +9,11 @@ type CreateAssistantInput = {
 export async function createAssistant(
   createAssistantInput: CreateAssistantInput,
 ) {
-  
   const assistant = await prisma.assistant.upsert({
     where: {
       name: createAssistantInput.name,
     },
-    update: {}, 
+    update: {},
     create: {
       name: createAssistantInput.name,
       assistantID: createAssistantInput.assistantID,
@@ -23,7 +22,6 @@ export async function createAssistant(
 
   return assistant;
 }
-
 
 export async function getAssistantByName(name: AssistantName) {
   const assistant = await prisma.assistant.findFirstOrThrow({

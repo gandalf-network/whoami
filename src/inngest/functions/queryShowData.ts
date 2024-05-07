@@ -20,13 +20,13 @@ async function queryShowData(event: { data: ShowPayload }) {
       showPayload.SessionID,
     );
     const queueName = queueNames.QueryShowData as QueueName;
-    const [, totalChunks] = await getSessionGlobalState(showPayload.SessionID)
+    const [, totalChunks] = await getSessionGlobalState(showPayload.SessionID);
     let [, executedChunks] = await getQueueSessionState(
       showPayload.SessionID,
       queueName,
     );
 
-    executedChunks = executedChunks + 1
+    executedChunks = executedChunks + 1;
     if (executedChunks >= totalChunks) {
       await enqueueTVShowQuips(showPayload.SessionID);
     }
@@ -40,7 +40,7 @@ async function queryShowData(event: { data: ShowPayload }) {
     return processedData;
   } catch (error) {
     console.error("Error processing job:", error);
-    throw error
+    throw error;
   }
 }
 

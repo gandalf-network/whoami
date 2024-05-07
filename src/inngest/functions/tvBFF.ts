@@ -26,7 +26,7 @@ async function tvBFF(event: { data: any }, step: any) {
     );
   } catch (error) {
     console.error("Error processing job:", error);
-    throw error
+    throw error;
   }
 }
 
@@ -35,7 +35,7 @@ export const tvBFFTask = inngest.createFunction(
     id: "tv-bff",
   },
   { event: eventNames.TVBFF },
-  async ({ event , step}) => {
+  async ({ event, step }) => {
     console.log("Recv tvBFF request...");
     const result = await tvBFF({ data: event.data }, step);
     return { event, processed: result };

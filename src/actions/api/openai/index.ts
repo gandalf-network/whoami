@@ -92,7 +92,17 @@ async function callOpenAI(
   assistantCreateParams: AssistantCreateParams,
   assistantName: AssistantName,
 ) {
-  const inputJSON = JSON.stringify(input);
+  let inputJSON = "";
+  try {
+    inputJSON = JSON.stringify(input);
+  } catch (error) {
+    console.log(
+      `Stringify Error for ${assistantName} Assistant with input ${input}`,
+      error,
+    );
+    throw error;
+  }
+
   let assistantID: string;
 
   try {

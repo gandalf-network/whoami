@@ -41,7 +41,7 @@ export const queryActivitiesTask = inngest.createFunction(
   {
     id: "query-activities",
     concurrency: {
-      limit: 20,
+      limit: 50,
     },
   },
   { event: eventNames.QueryActivities },

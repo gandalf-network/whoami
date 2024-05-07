@@ -42,7 +42,9 @@ async function crawlRottenTomatoes(event: { data: ShowPayload }, step: any) {
 export const crawlRottenTomatoesTask = inngest.createFunction(
   {
     id: "crawl-rotten-tomatoes",
-    concurrency: 50,
+    concurrency: {
+      limit: 50,
+    },
   },
   { event: eventNames.CrawlRottenTomatoes },
   async ({ event, step }) => {

@@ -36,6 +36,9 @@ async function tvShowQuips(event: { data: any }, step: any) {
 export const tvShowQuipsTask = inngest.createFunction(
   {
     id: "tv-show-quips",
+    concurrency: {
+      limit: 50,
+    },
   },
   { event: eventNames.TVShowQuips },
   async ({ event, step }) => {

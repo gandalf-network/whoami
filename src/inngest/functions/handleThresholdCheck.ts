@@ -21,6 +21,9 @@ import { inngest } from "../client";
 export const stateThresholdCheckHandlerTask = inngest.createFunction(
   {
     id: "state-threshold-check-handler",
+    concurrency: {
+      limit: 50,
+    },
   },
   { event: eventNames.StateThresholdCheckHandler },
   async ({ event }) => {

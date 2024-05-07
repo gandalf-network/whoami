@@ -35,6 +35,9 @@ async function starSignPicker(event: { data: any }, step: any) {
 export const starSignPickerTask = inngest.createFunction(
   {
     id: "star-sign-picker",
+    concurrency: {
+      limit: 50,
+    },
   },
   { event: eventNames.StarSignPicker },
   async ({ event, step }) => {

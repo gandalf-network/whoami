@@ -33,6 +33,9 @@ async function tvBFF(event: { data: any }, step: any) {
 export const tvBFFTask = inngest.createFunction(
   {
     id: "tv-bff",
+    concurrency: {
+      limit: 50,
+    },
   },
   { event: eventNames.TVBFF },
   async ({ event, step }) => {

@@ -44,7 +44,7 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
 
   // session id
   const [sessionId, setSessionId] = useState<string>(
-    "fb676485-a658-4728-b953-edee814d6d77",
+    querySessionId || createOrGetSessionId(),
   );
 
   // store session valid state

@@ -73,7 +73,7 @@ export async function createUser(sessionID: string) {
   return createUserBySessionID(sessionID);
 }
 
-export async function getUser(sessionID: string) {
+export async function findUser(sessionID: string) {
   return findUserBySessionID(sessionID);
 }
 

@@ -14,6 +14,8 @@ export async function GET(req: Request) {
 
     const user = await getUser(sessionID);
 
+    console.log({ user });
+
     if (user) {
       return Response.json(user);
     } else {

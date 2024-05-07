@@ -1,33 +1,27 @@
 import { useState, useEffect } from "react";
 
+import { checkIfMobile } from "@/helpers/utils";
+
 // Define the hook
 export const useIsMobile = (): boolean => {
-  const [isMobile, setIsMobile] = useState<boolean>(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    // check if the device is a mobile device
-    const checkIsMobile = () => {
-      const isMobileDevice =
-        typeof window !== "undefined" && window.innerWidth < 768;
-      setIsMobile(isMobileDevice);
-    };
+    // Initial check
+    setIsMobile(checkIfMobile());
 
-    // Initial check on mount
-    checkIsMobile();
-
-    // Event listener for window resize to dynamically update isMobile
+    // Set up an event listener for screen resizing (useful for responsive designs)
     const handleResize = () => {
-      checkIsMobile();
+      setIsMobile(checkIfMobile());
     };
 
-    // Attach the event listener
     window.addEventListener("resize", handleResize);
 
-    // Clean up the event listener on unmount
+    // Cleanup the event listener on component unmount
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, []);
+  }, []); // Empty dependency array to ensure it runs only once on component mount
 
   return isMobile;
 };

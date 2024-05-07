@@ -121,3 +121,28 @@ export const fetchImageBase64Data = async (url?: string) => {
 export const removeNonAlphanumericLastChar = (str: string) => {
   return str.replace(/[\W_]$/, "");
 };
+
+// Function to detect mobile using user agent and screen size
+export const checkIfMobile = () => {
+  if (!isWindowDefined()) {
+    return false;
+  }
+
+  const mobileUserAgents = [
+    "Android",
+    "iPhone",
+    "iPad",
+    "iPod",
+    "BlackBerry",
+    "Windows Phone",
+  ];
+
+  const isMobileUserAgent = mobileUserAgents.some((ua) =>
+    navigator.userAgent.includes(ua),
+  );
+
+  // Additionally, check if screen width is below a threshold (like 768px for common mobile breakpoint)
+  const isMobileScreenSize = window.innerWidth <= 768;
+
+  return isMobileUserAgent || isMobileScreenSize;
+};

@@ -165,21 +165,3 @@ class TMDBClient {
 }
 
 export default TMDBClient;
-
-async function tryStuff() {
-  const tmdbClient = new TMDBClient(
-    "https://api.themoviedb.org/3",
-    "1fec1a2cc673920b47f6daccf8de076f",
-  );
-
-  const showResponse = await tmdbClient.searchTVShows("Shameless");
-  for (const res of showResponse.results) {
-    const showDetails = await tmdbClient.getTVShowDetails(res.id);
-    console.log(showDetails.origin_country);
-  }
-  // const showDetails = await tmdbClient.getTVShowDetails(
-  //   showResponse.results[0].id,
-  // );
-}
-
-tryStuff();

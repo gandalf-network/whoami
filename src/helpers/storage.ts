@@ -11,13 +11,13 @@ export const storeSessionId = (sessionId: string) => {
   setCookie(cookiesKey.sessionId, sessionId);
 };
 
-export const createOrGetSessionId = () => {
+export const createOrGetSessionId = (options: { new?: boolean } | void) => {
   // get the session id from the local storage
   let sessionId = getCookie(cookiesKey.sessionId);
 
   // if the session id is not available
   // create a new session id and store it in the local storage
-  if (!sessionId) {
+  if (!sessionId || options?.new) {
     sessionId = generateUUID();
     storeSessionId(sessionId);
   }

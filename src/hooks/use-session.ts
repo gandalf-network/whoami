@@ -162,8 +162,33 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
 
   useEffect(() => {
     const triggerCallback = async () => {
+      let requestSessionId = sessionId;
+
+      /**
+       * If the querySessionId is not available
+       * make a request to the server to get the user data
+       * and if the user data is not available
+       * create a new session id
+       * and make a request to the server
+       */
+      if (!querySessionId) {
+        const res = await fetch(`/api/user?sessionID=${sessionId}`);
+        const user = await res.json();
+
+        if (!user) {
+          requestSessionId = createOrGetSessionId({ new: true });
+        }
+      }
+
       // this will make a request to the server
-      await fetch(`/api/callback?sessionID=${sessionId}&dataKey=${dataKey}`);
+      await fetch(
+        `/api/callback?sessionID=${requestSessionId}&dataKey=${dataKey}`,
+      );
+
+      // remove data key from the query params
+      router.replace("/stories", {
+        scroll: false,
+      });
     };
 
     if (dataKey && sessionId) {

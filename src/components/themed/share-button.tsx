@@ -16,6 +16,7 @@ import {
   XSocialIcon,
   WhatsAppIcon,
 } from "../icon/";
+import { LoadingIcon } from "../loader/base";
 import { AlertDialogCancel } from "../ui/alert-dialog";
 
 export const ShareDialogContent = ({ storyId }: { storyId: AllStoryIds }) => {
@@ -47,11 +48,13 @@ export const ShareDialogContent = ({ storyId }: { storyId: AllStoryIds }) => {
     {
       name: "Download",
       icon: <DownloadIcon className="w-10" />,
+      loadingIcon: <LoadingIcon className="bg-primary-blue " />,
       type: "download",
     },
     {
       name: "Share link",
       icon: <CopyIcon className="w-10" />,
+      loadingIcon: <LoadingIcon className="bg-primary-amber" />,
       type: "share",
       className: "md:hidden",
     },
@@ -81,10 +84,16 @@ export const ShareDialogContent = ({ storyId }: { storyId: AllStoryIds }) => {
               "text-foreground flex-col flex-center text-sm gap-y-1.5 h-auto px-0 font-normal",
               medium?.className,
             )}
-            disabled={selectedMedium === medium.type ? loading : undefined}
+            disabled={
+              selectedMedium === medium.type && !medium.loadingIcon
+                ? loading
+                : undefined
+            }
           >
             <span className="flex-shrink-0 flex justify-center">
-              {medium.icon}
+              {loading && medium?.loadingIcon && selectedMedium === medium.type
+                ? medium.loadingIcon
+                : medium.icon}
             </span>
             {medium.name}
           </BaseButton>

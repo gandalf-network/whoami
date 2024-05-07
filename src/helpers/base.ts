@@ -1,6 +1,5 @@
 // this is a utility function that checks if the current environment is production
 export const isProduction = () =>
-  process.env.NODE_ENV === "production" ||
   process.env.NEXT_PUBLIC_VERCEL_ENV === "production";
 
 // this is a utility function that appends the protocol to the url

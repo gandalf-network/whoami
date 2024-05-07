@@ -1,4 +1,6 @@
-import { useSearchParams } from "next/navigation";
+"use client";
+
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { findOrCreateUser, getReportCard, getStats } from "@/actions";
@@ -27,6 +29,8 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
   const sessionId = querySessionId || createOrGetSessionId();
 
   const userKeyAvailable = !!(dataKey || sessionId);
+
+  const router = useRouter();
 
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState<Awaited<
@@ -72,6 +76,10 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
       const data = await findOrCreateUser(sessionId);
       setUser(data);
 
+      if (data.state === "INTERNAL_SERVER_ERROR") {
+        throw new Error("Internal server error while crunching the data");
+      }
+
       // check if the user data is ready
       if (data.state === "STATS_DATA_READY") {
         const stats = await getStats(sessionId);
@@ -104,6 +112,7 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
 
       return data;
     } catch (error) {
+      router.push("/");
       throw error;
     } finally {
       setLoading(false);

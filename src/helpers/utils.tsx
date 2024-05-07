@@ -117,3 +117,7 @@ export const fetchImageBase64Data = async (url?: string) => {
     throw err;
   }
 };
+
+export const removeNonAlphanumericLastChar = (str: string) => {
+  return str.replace(/[\W_]$/, "");
+};

@@ -144,7 +144,7 @@ export async function getAndUpdateTVShowQuips(
   sessionID: string,
 ): Promise<number> {
   const user = await findOrCreateUserBySessionID(sessionID);
-  const topShow = await getTop3ShowsByUser(user.id);
+  const topShow = await getTop3ShowsByUser(user.id, false);
   const firstShow = await getUsersFirstShow(user.id);
 
   const mostWatchedShowQuips = await getFirstAndMostWatchedShowQuips(

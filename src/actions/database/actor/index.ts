@@ -114,31 +114,52 @@ export async function getActorsImageByCharacterNameAndShow(
   name: string,
   showID: string,
 ) {
-  const actorRes = await prisma.showActor.findMany({
+  let actor = await prisma.showActor.findFirst({
     where: {
       showID,
+      characterName: name,
     },
     include: {
       actor: true,
     },
   });
 
-  if (!actorRes) throw new Error(`"actor ${name} not found`);
+  if (!actor) {
+    const actorRes = await prisma.showActor.findMany({
+      where: {
+        showID,
+      },
+      include: {
+        actor: true,
+      },
+      orderBy: [
+        {
+          totalEpisodeCount: "desc",
+        },
+        {
+          popularity: "desc",
+        },
+      ],
+    });
 
-  let imageURL = "";
-  for (const actor of actorRes) {
-    const levenshteinDistance = levenshtein(
-      standardizeName(actor.characterName),
-      standardizeName(name),
-    );
-    const threshold = 0.25 * Math.max(actor.characterName.length, name.length);
-    if (levenshteinDistance > threshold) {
-      continue;
+    if (!actorRes) throw new Error(`"actor ${name} not found`);
+
+    for (const possibleActor of actorRes) {
+      console.log(possibleActor);
+      const levenshteinDistance = levenshtein(
+        standardizeName(possibleActor.characterName),
+        standardizeName(name),
+      );
+      const threshold =
+        0.25 * Math.max(possibleActor.characterName.length, name.length);
+      if (levenshteinDistance <= threshold) {
+        actor = possibleActor;
+        break;
+      }
     }
-    imageURL = actor.actor.imageURL ? actor.actor.imageURL : "";
   }
 
-  return imageURL;
+  return actor?.actor.imageURL ? actor.actor.imageURL : "";
 }
 
 type UpdateActorInput = {

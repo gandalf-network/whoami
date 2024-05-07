@@ -5,7 +5,6 @@ import { eventNames } from "@/actions/lib/queue/event";
 import {
   enqueueStarSignPicker,
   enqueueTVBFF,
-  enqueueTVShowQuips,
 } from "@/actions/lib/queue/producers";
 import {
   QueueName,

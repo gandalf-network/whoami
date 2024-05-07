@@ -2,6 +2,8 @@ import downloadJS from "downloadjs";
 import { toPng } from "html-to-image";
 import { Options } from "html-to-image/lib/types";
 
+import usePageLoaded from "./use-page-loaded";
+
 interface ConvertOptionType extends Options {
   selector?: string;
   node?: HTMLElement;
@@ -10,6 +12,8 @@ interface ConvertOptionType extends Options {
 }
 
 export const useImage = () => {
+  const isPageLoaded = usePageLoaded();
+
   const convertImageToBase64 = async ({
     selector,
     node,
@@ -33,6 +37,11 @@ export const useImage = () => {
        */
       element.classList.remove("hidden");
       element.classList.add("flex");
+
+      // write a fake promise to wait for the element to be displayed
+      await new Promise((resolve) =>
+        setTimeout(resolve, isPageLoaded ? 2000 : 5000),
+      );
 
       // convert element to base64
       const base64 = await toPng(element as HTMLElement, {

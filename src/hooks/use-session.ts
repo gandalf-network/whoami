@@ -42,7 +42,7 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
   // retries
   const [retries, setRetries] = useState(0);
 
-  // session id
+  // session id state
   const [sessionId, setSessionId] = useState<string>(
     querySessionId || createOrGetSessionId(),
   );

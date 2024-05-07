@@ -95,10 +95,14 @@ export async function getActorsByShow(showID: string) {
     include: {
       actor: true,
     },
-    orderBy: {
-      totalEpisodeCount: "desc",
-      popularity: "desc",
-    },
+    orderBy: [
+      {
+        totalEpisodeCount: "desc",
+      },
+      {
+        popularity: "desc",
+      },
+    ],
   });
 
   if (!actorsRes) throw new Error(`"actor ${name} not found`);

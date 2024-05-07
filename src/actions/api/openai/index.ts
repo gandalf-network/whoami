@@ -92,16 +92,7 @@ async function callOpenAI(
   assistantCreateParams: AssistantCreateParams,
   assistantName: AssistantName,
 ) {
-  let inputJSON = "";
-  try {
-    inputJSON = JSON.stringify(input);
-  } catch (error) {
-    console.log(
-      `Stringify Error for ${assistantName} Assistant with input ${input}`,
-      error,
-    );
-    throw error;
-  }
+  const inputJSON = JSON.stringify(input);
 
   let assistantID: string;
 
@@ -143,13 +134,32 @@ async function callOpenAI(
     }
   });
 
-  await stream.done();
+  for await (const event of stream) {
+    if (event.event === "thread.run.requires_action") {
+      const runID = event.data.id;
+      const threadID = event.data.thread_id;
+
+      await openai.beta.threads.runs.submitToolOutputs(threadID, runID, {
+        tool_outputs: [
+          {
+            output: "",
+            tool_call_id:
+              event.data.required_action?.submit_tool_outputs.tool_calls[0].id,
+          },
+        ],
+      });
+
+      res = event.data.required_action?.submit_tool_outputs.tool_calls[0]
+        .function.arguments as string;
+      break;
+    }
+  }
 
   try {
     const resOBJ = JSON.parse(res);
     return resOBJ;
   } catch (error) {
-    console.log(`Error Parsing ${AssistantName} AI JSON: ${res}`, error);
+    console.log(`Error Parsing ${assistantName} AI JSON: ${res}`, error);
     throw error;
   }
 }

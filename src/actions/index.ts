@@ -47,6 +47,7 @@ import {
   extractEpisodeNumberFromTitle,
   parseDate,
 } from "./helpers/parser";
+import { handleShowTitleEdgeCases } from "./helpers/utils";
 import {
   JobShow,
   ShowPayload,
@@ -198,9 +199,7 @@ export async function getShowDataWithTVDB(
   for (const show of payload.Shows) {
     try {
       await tvdbClient.login(TVDB_API_KEY);
-      if (show.title.toLocaleLowerCase() === "top boy") {
-        show.title = "Top Boy 2019";
-      }
+      show.title = handleShowTitleEdgeCases(show.title);
       const showResponse = await tvdbClient.searchTVShows(show.title);
       const showDetails = await tvdbClient.getTVShowDetails(
         showResponse[0].tvdb_id,
@@ -249,9 +248,7 @@ export async function getShowData(payload: ShowPayload): Promise<number> {
 
   for (const show of payload.Shows) {
     try {
-      if (show.title.toLocaleLowerCase() === "top boy") {
-        show.title = "Top Boy 2019";
-      }
+      show.title = handleShowTitleEdgeCases(show.title);
       const showResponse = await tmdbClient.searchTVShows(show.title);
       const showDetails = await tmdbClient.getTVShowDetails(
         showResponse.results[0].id,

@@ -135,6 +135,11 @@ async function callOpenAI(
 
   await stream.done();
 
-  const resOBJ = JSON.parse(res);
-  return resOBJ;
+  try {
+    const resOBJ = JSON.parse(res);
+    return resOBJ;
+  } catch (error) {
+    console.log(`Error Parsing ${AssistantName} AI JSON: ${res}`, error);
+    throw error;
+  }
 }

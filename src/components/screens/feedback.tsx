@@ -26,7 +26,7 @@ export const FeedbackScreen = ({
 
         <div className="flex-1 flex-center flex-col gap-4 mb-12">
           <WarningIcon className="w-20" />
-          <p className="text-base md:text-lg text-center max-w-72 font-medium mb-8">
+          <p className="text-lg text-center max-w-72 font-medium mb-8">
             {title}
           </p>
           {cta && (

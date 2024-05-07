@@ -186,9 +186,9 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
       );
 
       // remove data key from the query params
-      router.replace("/stories", {
-        scroll: false,
-      });
+      // router.replace("/stories", {
+      //   scroll: false,
+      // });
     };
 
     if (dataKey && sessionId) {

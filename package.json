@@ -12,7 +12,7 @@
     "prisma-deploy": "npx prisma migrate deploy"
   },
   "dependencies": {
-    "@enipx/react-insta-stories": "^1.0.2",
+    "@enipx/react-insta-stories": "^1.0.3",
     "@gandalf-network/connect": "^1.0.5",
     "@prisma/client": "^5.13.0",
     "@radix-ui/react-alert-dialog": "^1.0.5",

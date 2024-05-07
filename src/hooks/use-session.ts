@@ -76,7 +76,7 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
       const data = await findOrCreateUser(sessionId);
       setUser(data);
 
-      if (data.state === "INTERNAL_SERVER_ERROR") {
+      if (data.state === "FAILED") {
         throw new Error("Internal server error while crunching the data");
       }
 

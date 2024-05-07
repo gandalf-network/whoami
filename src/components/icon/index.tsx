@@ -18,3 +18,4 @@ export * from "./pause";
 export * from "./play";
 export * from "./tomatoe";
 export * from "./movie";
+export * from "./warning";

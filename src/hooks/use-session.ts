@@ -3,7 +3,7 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
-import { findOrCreateUser, getReportCard, getStats } from "@/actions";
+import { createUser, findUser, getReportCard, getStats } from "@/actions";
 import {
   createOrGetSessionId,
   getDataFromSession,
@@ -33,9 +33,9 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
   const router = useRouter();
 
   const [loading, setLoading] = useState(false);
-  const [user, setUser] = useState<Awaited<
-    ReturnType<typeof findOrCreateUser>
-  > | null>(null);
+  const [user, setUser] = useState<Awaited<ReturnType<typeof findUser>> | null>(
+    null,
+  );
 
   // user stats data
   const [stats, setStats] = useState<UserStatsType | null>(null);
@@ -73,7 +73,12 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
       }
 
       // get user data
-      const data = await findOrCreateUser(sessionId);
+      let data = await findUser(sessionId);
+
+      if (!data) {
+        data = await createUser(sessionId);
+      }
+
       setUser(data);
 
       if (data.state === "FAILED") {

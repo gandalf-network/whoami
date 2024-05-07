@@ -34,6 +34,7 @@ import {
   upsertUserShow,
 } from "./database/show";
 import {
+  createUserBySessionID,
   findOrCreateUserBySessionID,
   findUserBySessionID,
   updateUser,
@@ -68,11 +69,11 @@ const tmdbClient = new TMDBClient(
 
 const tvdbClient = new TVDBClient();
 
-export async function findOrCreateUser(sessionID: string) {
-  return findOrCreateUserBySessionID(sessionID);
+export async function createUser(sessionID: string) {
+  return createUserBySessionID(sessionID);
 }
 
-export async function getUser(sessionID: string) {
+export async function findUser(sessionID: string) {
   return findUserBySessionID(sessionID);
 }
 

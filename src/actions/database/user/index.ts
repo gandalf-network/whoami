@@ -1,6 +1,15 @@
 import { PrismaClient, UserState } from "@prisma/client";
 const prisma = new PrismaClient();
 
+export async function createUserBySessionID(sessionID: string) {
+  const user = await prisma.user.create({
+    data: {
+      identifier: sessionID,
+    },
+  });
+  return user;
+}
+
 export async function findOrCreateUserBySessionID(sessionID: string) {
   const user = await prisma.user.upsert({
     where: {
@@ -33,7 +42,9 @@ export async function upsertUser(sessionID: string, dataKey: string) {
       identifier: sessionID,
       dataKey,
     },
-    update: {},
+    update: {
+      dataKey,
+    },
   });
   return user;
 }

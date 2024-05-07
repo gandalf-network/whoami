@@ -1,4 +1,4 @@
-import { getUser } from "@/actions";
+import { findUser } from "@/actions";
 
 export async function GET(req: Request) {
   const url = new URL(req.url);
@@ -12,7 +12,7 @@ export async function GET(req: Request) {
       });
     }
 
-    const user = await getUser(sessionID);
+    const user = await findUser(sessionID);
 
     console.log({ user });
 

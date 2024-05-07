@@ -39,6 +39,8 @@ export const useImage = () => {
         toPng(element as HTMLElement),
         toPng(element as HTMLElement),
         toPng(element as HTMLElement),
+        toPng(element as HTMLElement),
+        toPng(element as HTMLElement),
       ]);
 
       await new Promise((resolve) => setTimeout(resolve, 2000));

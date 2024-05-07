@@ -46,6 +46,9 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
   // retries
   const [retries, setRetries] = useState(0);
 
+  // store session valid state
+  const [sessionValid, setSessionValid] = useState(false);
+
   // update data
   const updateData = (data: {
     stats?: UserStatsType;
@@ -183,6 +186,11 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
         if (!user) {
           requestSessionId = createOrGetSessionId({ new: true });
         }
+
+        // set session valid state to true
+        setSessionValid(true);
+      } else {
+        setSessionValid(true);
       }
 
       // this will make a request to the server
@@ -203,7 +211,7 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
 
   useInterval(refetch, {
     delay:
-      (stats && reportCard) || retries >= 60
+      (stats && reportCard) || retries >= 60 || !sessionValid
         ? undefined
         : options && options?.refetchInterval
           ? options.refetchInterval

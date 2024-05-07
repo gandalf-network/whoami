@@ -7,9 +7,7 @@ export async function GET(req: Request) {
 
   try {
     if (!sessionID) {
-      return new Response("Session id not found", {
-        status: 422,
-      });
+      return Response.json({ error: "No sessionID found" }, { status: 404 });
     }
 
     const user = await findUser(sessionID);
@@ -22,8 +20,6 @@ export async function GET(req: Request) {
       throw new Error("No user found");
     }
   } catch {
-    return new Response(`No user found`, {
-      status: 400,
-    });
+    return Response.json({ error: "No user found" }, { status: 404 });
   }
 }

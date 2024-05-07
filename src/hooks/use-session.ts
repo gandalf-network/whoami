@@ -44,7 +44,7 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
 
   // session id
   const [sessionId, setSessionId] = useState<string>(
-    querySessionId || createOrGetSessionId(),
+    "fb676485-a658-4728-b953-edee814d6d77",
   );
 
   // store session valid state
@@ -64,8 +64,6 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
     if (data?.reportCard) {
       setReportCard(data.reportCard);
     }
-
-    console.log({ data });
   };
 
   // get user data
@@ -186,7 +184,7 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
         const res = await fetch(`/api/user?sessionID=${sessionId}`);
         const user = await res.json();
 
-        if (!user) {
+        if (!user.id) {
           requestSessionId = createOrGetSessionId({ new: true });
           setSessionId(requestSessionId);
         }

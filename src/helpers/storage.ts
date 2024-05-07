@@ -35,7 +35,7 @@ export const initializeSessionId = async () => {
       const res = await fetch(`/api/user?sessionID=${sessionId}`);
       const user = await res.json();
 
-      if (!user) {
+      if (!user?.id) {
         storeSessionId(generateUUID());
       }
     } else {

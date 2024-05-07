@@ -8,7 +8,7 @@ import { cn, fetchImageBase64Data } from "@/helpers/utils";
 
 import { MovieIcon } from "../icon";
 
-export const PlaceholderImage = ({
+export const ThemedImage = ({
   src,
   className,
   iconClassName,

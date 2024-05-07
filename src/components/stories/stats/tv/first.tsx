@@ -6,7 +6,7 @@ import {
   ShareButton,
   StoryDownloadContainer,
   Text,
-  PlaceholderImage,
+  ThemedImage,
 } from "@/components/themed";
 import { getDate } from "@/helpers/date";
 import { getStoryDownloadSelector } from "@/helpers/story";
@@ -41,7 +41,7 @@ export const FirstTVShowStory = ({
         <div className="relative p-0 w-52 h-72">
           <QuadrilateralStar className="absolute w-10 -top-5 -left-5" />
           <DodecagramStar className="absolute w-24 -bottom-10 -right-12 z-10" />
-          <PlaceholderImage src={showImage} className="z-20" />
+          <ThemedImage src={showImage} className="z-20" />
         </div>
 
         <div>
@@ -91,7 +91,7 @@ export const FirstTVShowDownloadStory = ({
         <div className="relative p-0 w-52 h-72">
           <QuadrilateralStar className="absolute w-10 -top-5 -left-5" />
           <DodecagramStar className="absolute w-24 -bottom-10 -right-12 z-10" />
-          <PlaceholderImage src={showImage} className="z-20" />
+          <ThemedImage src={showImage} className="z-20" />
         </div>
 
         <div>

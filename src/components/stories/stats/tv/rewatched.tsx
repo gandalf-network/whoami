@@ -6,7 +6,7 @@ import {
   ShareButton,
   StoryDownloadContainer,
   Text,
-  PlaceholderImage,
+  ThemedImage,
 } from "@/components/themed";
 import { getStoryDownloadSelector } from "@/helpers/story";
 import { cn } from "@/helpers/utils";
@@ -47,7 +47,7 @@ export const MostRewatchTVShowStory = ({
           <NonagramStar className="absolute w-12 -top-4 -right-8 z-30" />
           <PentagramStar className="absolute w-24 -bottom-10 -left-12 z-10" />
 
-          <PlaceholderImage src={showImage} className="z-20" />
+          <ThemedImage src={showImage} className="z-20" />
         </div>
 
         <div>
@@ -116,7 +116,7 @@ export const MostRewatchTVShowDownloadStory = ({
           <NonagramStar className="absolute w-12 -top-4 -right-8 z-30" />
           <PentagramStar className="absolute w-24 -bottom-10 -left-12 z-10" />
 
-          <PlaceholderImage src={showImage} className="z-20" />
+          <ThemedImage src={showImage} className="z-20" />
         </div>
 
         <div>

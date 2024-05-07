@@ -26,10 +26,6 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
 
   const querySessionId = searchParams.get("sessionID");
 
-  const sessionId = querySessionId || createOrGetSessionId();
-
-  const userKeyAvailable = !!(dataKey || sessionId);
-
   const router = useRouter();
 
   const [loading, setLoading] = useState(false);
@@ -46,8 +42,15 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
   // retries
   const [retries, setRetries] = useState(0);
 
+  // session id
+  const [sessionId, setSessionId] = useState<string>(
+    querySessionId || createOrGetSessionId(),
+  );
+
   // store session valid state
   const [sessionValid, setSessionValid] = useState(false);
+
+  const userKeyAvailable = !!(dataKey || sessionId);
 
   // update data
   const updateData = (data: {
@@ -185,6 +188,7 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
 
         if (!user) {
           requestSessionId = createOrGetSessionId({ new: true });
+          setSessionId(requestSessionId);
         }
 
         // set session valid state to true

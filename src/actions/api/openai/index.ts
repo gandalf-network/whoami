@@ -1,6 +1,7 @@
 import { AssistantName } from "@prisma/client";
 import OpenAI from "openai";
 import { AssistantCreateParams } from "openai/resources/beta/assistants";
+import { Run } from "openai/resources/beta/threads/runs/runs";
 
 import {
   createAssistant,
@@ -113,48 +114,19 @@ async function callOpenAI(
     });
   }
 
-  let res: string = "";
-  const stream = await openai.beta.threads.createAndRunStream({
+  const thread = await openai.beta.threads.create();
+  await openai.beta.threads.messages.create(thread.id, {
+    role: "user",
+    content: inputJSON,
+  });
+
+  // Create and poll run
+  const run = await openai.beta.threads.runs.createAndPoll(thread.id, {
     assistant_id: assistantID,
-    tool_choice: "required",
-    thread: {
-      messages: [
-        {
-          content: inputJSON,
-          role: "user",
-        },
-      ],
-    },
   });
 
-  await stream.on("event", async (listner) => {
-    if (listner.event === "thread.run.requires_action") {
-      res = listner.data.required_action?.submit_tool_outputs.tool_calls[0]
-        .function.arguments as string;
-    }
-  });
-
-  for await (const event of stream) {
-    if (event.event === "thread.run.requires_action") {
-      const runID = event.data.id;
-      const threadID = event.data.thread_id;
-
-      await openai.beta.threads.runs.submitToolOutputs(threadID, runID, {
-        tool_outputs: [
-          {
-            output: "",
-            tool_call_id:
-              event.data.required_action?.submit_tool_outputs.tool_calls[0].id,
-          },
-        ],
-      });
-
-      res = event.data.required_action?.submit_tool_outputs.tool_calls[0]
-        .function.arguments as string;
-      break;
-    }
-  }
-
+  let result;
+  const res = await handleRunStatus(run, thread.id, result);
   try {
     const resOBJ = JSON.parse(res);
     return resOBJ;
@@ -163,3 +135,44 @@ async function callOpenAI(
     throw error;
   }
 }
+
+const handleRequiresAction = async (run: Run, threadID: string, res: any) => {
+  if (
+    run.required_action &&
+    run.required_action.submit_tool_outputs &&
+    run.required_action.submit_tool_outputs.tool_calls
+  ) {
+    run = await openai.beta.threads.runs.submitToolOutputsAndPoll(
+      threadID,
+      run.id,
+      {
+        tool_outputs: [
+          {
+            output: JSON.stringify({ success: true }),
+            tool_call_id:
+              run.required_action.submit_tool_outputs.tool_calls[0].id,
+          },
+        ],
+      },
+    );
+
+    return handleRunStatus(run, threadID, res);
+  }
+};
+
+const handleRunStatus = async (
+  run: Run,
+  threadID: string,
+  res: any,
+): Promise<any> => {
+  if (run.status === "completed") {
+    await openai.beta.threads.messages.list(threadID);
+    return res;
+  } else if (run.status === "requires_action") {
+    res = run.required_action?.submit_tool_outputs.tool_calls[0].function
+      .arguments as string;
+    return await handleRequiresAction(run, threadID, res);
+  } else {
+    console.error("Run did not complete:", run);
+  }
+};

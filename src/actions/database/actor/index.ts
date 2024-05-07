@@ -117,7 +117,10 @@ export async function getActorsImageByCharacterNameAndShow(
   let actor = await prisma.showActor.findFirst({
     where: {
       showID,
-      characterName: name,
+      characterName: {
+        contains: name,
+        mode: "insensitive",
+      },
     },
     include: {
       actor: true,
@@ -145,13 +148,12 @@ export async function getActorsImageByCharacterNameAndShow(
     if (!actorRes) throw new Error(`"actor ${name} not found`);
 
     for (const possibleActor of actorRes) {
-      console.log(possibleActor);
       const levenshteinDistance = levenshtein(
         standardizeName(possibleActor.characterName),
         standardizeName(name),
       );
       const threshold =
-        0.25 * Math.max(possibleActor.characterName.length, name.length);
+        0.3 * Math.max(possibleActor.characterName.length, name.length);
       if (levenshteinDistance <= threshold) {
         actor = possibleActor;
         break;

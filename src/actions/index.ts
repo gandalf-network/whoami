@@ -3,7 +3,7 @@
 import { UserState } from "@prisma/client";
 
 import {
-  getFirstAndMostRewatchedShowQuips,
+  getFirstAndMostWatchedShowQuips,
   getStarSign,
   getTVBFF,
 } from "./api/openai";
@@ -147,13 +147,13 @@ export async function getAndUpdateTVShowQuips(
   const topShow = await getTop3ShowsByUser(user.id);
   const firstShow = await getUsersFirstShow(user.id);
 
-  const mostRewatchedShowQuips = await getFirstAndMostRewatchedShowQuips(
+  const mostWatchedShowQuips = await getFirstAndMostWatchedShowQuips(
     firstShow,
     topShow,
   );
 
   await createOrUpdateUsersAIResponse({
-    ...mostRewatchedShowQuips,
+    ...mostWatchedShowQuips,
     userID: user.id,
   });
 
@@ -164,11 +164,12 @@ export async function getAndUpdateTVBFF(sessionID: string): Promise<number> {
   const user = await findOrCreateUserBySessionID(sessionID);
   const topGenres = await getUsersTopGenres(user.id);
   const topShow = await getTop3ShowsByUser(user.id);
-  const showActors = await getActorsByShow(topShow[0].id);
+  let showActors = await getActorsByShow(topShow[0].id);
+  showActors = showActors.slice(0, 5);
   const characters: string[] = showActors.map((actor) => actor.characterName);
 
   const characterPersonalities = await getPersonalities(
-    characters.slice(0, 5),
+    characters,
     topShow[0].title,
   );
   const tvBFF = await getTVBFF(topGenres, characterPersonalities);
@@ -267,6 +268,9 @@ export async function getShowData(payload: ShowPayload): Promise<number> {
         const actor = {
           name: currentActor.name,
           popularity: currentActor.popularity,
+          totalEpisodeCount: currentActor.total_episode_count
+            ? currentActor.total_episode_count
+            : 0,
           characterName:
             currentActor.roles && currentActor.roles.length > 0
               ? currentActor.roles[0].character
@@ -410,7 +414,8 @@ export async function getAndDumpActivities(
     }
     return [totalShows, totalPages];
   } catch (error: any) {
-    console.error("Failed to fetch data", error.message);
+    await updateUserStateBySession(sessionID, UserState.INTERNAL_SERVER_ERROR);
+    console.error(`Failed to fetch data for user ${sessionID}`, error.message);
     throw error;
   }
 }

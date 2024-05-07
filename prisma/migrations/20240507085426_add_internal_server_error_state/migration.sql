@@ -1,0 +1,2 @@
+-- AlterEnum
+ALTER TYPE "UserState" ADD VALUE 'INTERNAL_SERVER_ERROR';

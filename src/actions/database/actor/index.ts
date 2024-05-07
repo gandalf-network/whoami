@@ -37,6 +37,7 @@ export async function createActorsAndConnectToShow(
         showID,
         characterName: actor.characterName,
         popularity: actor.popularity,
+        totalEpisodeCount: actor.totalEpisodeCount,
       };
     });
 
@@ -95,6 +96,7 @@ export async function getActorsByShow(showID: string) {
       actor: true,
     },
     orderBy: {
+      totalEpisodeCount: "desc",
       popularity: "desc",
     },
   });

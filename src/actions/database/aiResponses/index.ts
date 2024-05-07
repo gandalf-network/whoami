@@ -9,7 +9,7 @@ export type CreateOrUpdateUsersAIResponseInput = {
   personality?: string;
   personalityQuip?: string;
   firstTVShowQuip?: string;
-  mostRewatchedTVShowQuip?: string;
+  mostWatchedTVShowQuip?: string;
   bffImageURL?: string;
   userID: string;
   BFF?: string;
@@ -44,8 +44,8 @@ function getData(input: CreateOrUpdateUsersAIResponseInput) {
     ...(input.personality && { personality: input.personality }),
     ...(input.personalityQuip && { personalityQuip: input.personalityQuip }),
     ...(input.firstTVShowQuip && { firstTVShowQuip: input.firstTVShowQuip }),
-    ...(input.mostRewatchedTVShowQuip && {
-      mostRewatchedTVShowQuip: input.mostRewatchedTVShowQuip,
+    ...(input.mostWatchedTVShowQuip && {
+      mostWatchedTVShowQuip: input.mostWatchedTVShowQuip,
     }),
     ...(input.BFF && { bff: input.BFF }),
     ...(input.BFFQuip && { bffQuip: input.BFFQuip }),

@@ -9,6 +9,7 @@ export type ActorInput = {
   imageURL?: string;
   characterName: string;
   popularity: number;
+  totalEpisodeCount: number;
 };
 
 export type Show = {
@@ -83,7 +84,7 @@ export type TopGenresPersonalityAndStarSignAIResults = {
 
 export type TVShowQuips = {
   firstTVShowQuip: string;
-  mostRewatchedTVShowQuip: string;
+  mostWatchedTVShowQuip: string;
 };
 
 export type ParsedActivity = {

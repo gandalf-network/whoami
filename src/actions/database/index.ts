@@ -40,8 +40,8 @@ export async function getStatsResponse(sessionID: string) {
     },
     mostWatchedTvShow: {
       show: mostWatchedTvShow,
-      quip: aiResponses.mostRewatchedTVShowQuip
-        ? aiResponses.mostRewatchedTVShowQuip
+      quip: aiResponses.mostWatchedTVShowQuip
+        ? aiResponses.mostWatchedTVShowQuip
         : "",
     },
     yourCrossoverStar: topShowsByActor,

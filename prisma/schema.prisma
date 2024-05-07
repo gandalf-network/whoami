@@ -17,6 +17,7 @@ datasource db {
 enum UserState {
   AWAITING_CONNECTION
   CONNECTED
+  INTERNAL_SERVER_ERROR
   CRUNCHING_DATA
   STATS_DATA_READY
   COMPLETED
@@ -90,10 +91,11 @@ model actor {
 }
 
 model showActor {
-  actorID        String  
-  showID         String  
-  characterName  String
-  popularity     Int
+  actorID           String  
+  showID            String  
+  characterName     String
+  popularity        Int
+  totalEpisodeCount Int @default(0)
 
   actor      actor   @relation(fields: [actorID], references: [id])
   show       show    @relation(fields: [showID], references: [id])
@@ -123,6 +125,7 @@ model aiResponse {
   personalityQuip  String?
   firstTVShowQuip  String?
   mostRewatchedTVShowQuip String?
+  mostWatchedTVShowQuip String?
   bff              String?
   bffQuip          String?
   bffImageURL      String?

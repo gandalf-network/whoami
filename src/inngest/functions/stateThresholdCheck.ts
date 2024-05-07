@@ -17,8 +17,8 @@ async function stateThresholdCheck() {
 
 export const stateThresholdCheckTask = inngest.createFunction(
   { id: "state-threshold-check" },
-  { 
-    cron: "*/1 * * * *" ,
+  {
+    cron: "*/1 * * * *",
     concurrency: {
       limit: 50,
     },

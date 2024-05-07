@@ -81,10 +81,10 @@
   dependencies:
     "@edge-runtime/primitives" "4.1.0"
 
-"@enipx/react-insta-stories@^1.0.3":
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/@enipx/react-insta-stories/-/react-insta-stories-1.0.3.tgz#1882ad43cfa636c7542941d0d4a2c15b1def1772"
-  integrity sha512-Sfp6QmLWGWCrbydiDBeA4nLy7wheC0L5sQZ0IYG1WvOOlPbQCl45MLUYfH1qOMjVfJ/MjsnyHE+hpcwBMtwJIg==
+"@enipx/react-insta-stories@^1.0.5":
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/@enipx/react-insta-stories/-/react-insta-stories-1.0.5.tgz#fac64c55db569fb513da51d716716d1f83bce982"
+  integrity sha512-y5NhD40F/mhQ3v7c0p/EbZeajZOJ6nBzCi0I4D5n7+6FBH4vh3JZTUJPKiWXM7E8kmoPVFaWTCyimcboOUg6ag==
 
 "@eslint-community/eslint-utils@^4.2.0", "@eslint-community/eslint-utils@^4.4.0":
   version "4.4.0"

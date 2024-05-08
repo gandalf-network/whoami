@@ -75,7 +75,7 @@ TMDB_API_KEY=YOUR_TMDB_API_KEY
 
 ### Deploy to Vercel
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fgandalf-network%2Fwhoami&env=NEXT_PUBLIC_GANDALF_PUBLIC_KEY,GANDALF_PRIVATE_KEY,GANDALF_SAURON_URL,POSTGRES_URL,POSTGRES_PRISMA_URL,TMDB_BASE_URL,TMDB_API_KEY,PERPLEXITY_API_KEY,REDIS_URL,OPENAI_API_KEY&envDescription=Environment%20variables%20for%20the%20Gandalf%20API&envLink=https%3A%2F%2Fgandalf-api.com%2Fdashboard&project-name=whoami&repository-name=whoami&needed-albacore-37030.upstash.io)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fgandalf-network%2Fwhoami&env=NEXT_PUBLIC_GANDALF_PUBLIC_KEY,GANDALF_PRIVATE_KEY,GANDALF_SAURON_URL,POSTGRES_URL,POSTGRES_PRISMA_URL,TMDB_BASE_URL,TMDB_API_KEY,PERPLEXITY_API_KEY,REDIS_URL,OPENAI_API_KEY&envDescription=Environment%20variables%20for%20the%20Gandalf%20API&envLink=https%3A%2F%2Fgandalf-api.com%2Fdashboard&project-name=whoami&repository-name=whoami&integration-ids=needed-albacore-37030.upstash.io)
 
 ---
 

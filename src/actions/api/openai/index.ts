@@ -7,10 +7,10 @@ import {
   createAssistant,
   getAssistantByName,
 } from "@/actions/database/assistant";
-import { OPENAI_API_KEY } from "@/actions/helpers/constants";
 import { BFFAssistant } from "@/helpers/assistants/bff-picker";
 import { GeneralShowAssistant } from "@/helpers/assistants/first-and-most-watched-shows-quips";
 import { StarSignAssistant } from "@/helpers/assistants/top-genres-star-sign-rtscore-and-personality-quips";
+import { OPENAI_API_KEY } from "@/helpers/constants";
 import {
   BFF,
   Show,
@@ -94,6 +94,7 @@ async function callOpenAI(
   assistantName: AssistantName,
 ) {
   const inputJSON = JSON.stringify(input);
+
   let assistantID: string;
 
   try {
@@ -101,6 +102,8 @@ async function callOpenAI(
     assistantID = savedAssistant.assistantID;
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error: any) {
+    // console.info(error);
+
     const assistant = await openai.beta.assistants.create(
       assistantCreateParams,
     );
@@ -111,81 +114,79 @@ async function callOpenAI(
     });
   }
 
-  const maxRetries = 3;
-  let retryCount = 0;
-  const initialDelay = 1000;
+  const thread = await openai.beta.threads.create();
+  await openai.beta.threads.messages.create(thread.id, {
+    role: "user",
+    content: inputJSON,
+  });
 
-  async function exponentialBackoff(): Promise<any> {
-    try {
-      const thread = await openai.beta.threads.create();
-      await openai.beta.threads.messages.create(thread.id, {
-        role: "user",
-        content: inputJSON,
-      });
+  // Create and poll run
+  const run = await openai.beta.threads.runs.createAndPoll(thread.id, {
+    assistant_id: assistantID,
+  });
 
-      const run = await openai.beta.threads.runs.createAndPoll(thread.id, {
-        assistant_id: assistantID,
-      });
-
-      let result;
-      const res = await handleRunStatus(run, thread.id, result);
-      const resOBJ = JSON.parse(res);
-      return resOBJ;
-    } catch (error: any) {
-      if (retryCount < maxRetries && shouldRetry(error)) {
-        retryCount++;
-        const delay = initialDelay * Math.pow(2, retryCount);
-        console.log(`Retrying after ${delay}ms...`);
-        await new Promise((resolve) => setTimeout(resolve, delay));
-        return exponentialBackoff();
-      } else {
-        console.log(`Error after ${retryCount} retries: `, error);
-        throw error;
-      }
-    }
+  let result;
+  const runs = 0;
+  const res = await handleRunStatus(run, thread.id, result, runs);
+  try {
+    const resOBJ = JSON.parse(res);
+    return resOBJ;
+  } catch (error) {
+    console.log(
+      `Error Parsing ${assistantName} AI JSON: ${res}. With Input: ${inputJSON}`,
+      error,
+    );
+    throw error;
   }
-
-  return exponentialBackoff();
 }
 
-const shouldRetry = (error: any): boolean => {
-  // Check if the error is due to rate limiting
-  return error.message === "rate_limit_exceeded";
+const handleRequiresAction = async (
+  run: Run,
+  threadID: string,
+  res: any,
+  runs: number,
+) => {
+  if (
+    run.required_action &&
+    run.required_action.submit_tool_outputs &&
+    run.required_action.submit_tool_outputs.tool_calls
+  ) {
+    run = await openai.beta.threads.runs.submitToolOutputsAndPoll(
+      threadID,
+      run.id,
+      {
+        tool_outputs: [
+          {
+            output: JSON.stringify(
+              run.required_action?.submit_tool_outputs.tool_calls[0].function
+                .arguments,
+            ),
+            tool_call_id:
+              run.required_action.submit_tool_outputs.tool_calls[0].id,
+          },
+        ],
+      },
+    );
+
+    return handleRunStatus(run, threadID, res, runs);
+  }
 };
 
 const handleRunStatus = async (
   run: Run,
   threadID: string,
   res: any,
+  runs: number,
 ): Promise<any> => {
-  if (run.status === "completed") {
-    return res;
-  } else if (run.status === "requires_action") {
+  if (run.status === "requires_action") {
+    runs++;
     res = run.required_action?.submit_tool_outputs.tool_calls[0].function
       .arguments as string;
-    return await handleRequiresAction(run, threadID, res);
+    if (runs > 1) {
+      return res;
+    }
+    return await handleRequiresAction(run, threadID, res, runs);
   } else {
-    throw new Error(run.last_error?.code);
+    return res;
   }
-};
-
-const handleRequiresAction = async (run: Run, threadID: string, res: any) => {
-  run = await openai.beta.threads.runs.submitToolOutputsAndPoll(
-    threadID,
-    run.id,
-    {
-      tool_outputs: [
-        {
-          output: JSON.stringify(
-            run.required_action?.submit_tool_outputs.tool_calls[0].function
-              .arguments,
-          ),
-          tool_call_id:
-            run.required_action?.submit_tool_outputs.tool_calls[0].id,
-        },
-      ],
-    },
-  );
-
-  return handleRunStatus(run, threadID, res);
 };

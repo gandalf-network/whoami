@@ -1,4 +1,4 @@
-import { ParsedActivity } from "../../types";
+import { ParsedActivity } from "../types";
 
 export function parseActivityInput(input: string): ParsedActivity | null {
   const regex = /^(.+?): Season (\d+):(?: Episode (\d+))?(.*)$/;

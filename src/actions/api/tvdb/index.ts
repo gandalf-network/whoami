@@ -1,8 +1,7 @@
 import axios from "axios";
 
-// import RateLimiter from "bottleneck";
-import { TVDB_BASE_URL } from "@/actions/helpers/constants";
-import { ActorInput, TVDBSearchReturn } from "@/types";
+import { TVDB_BASE_URL } from "@/helpers/constants";
+import { TVDBSearchReturn, ActorInput } from "@/types";
 
 export default class TVDBClient {
   private token: string = "";

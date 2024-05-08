@@ -2,7 +2,7 @@
 
 ## Data Processing Workflow
 
- This workflow is designed to by-pass the limitations of serverless functions, which are constrained by
+ This workflow is designed to bypass the limitations of serverless functions, which are constrained by
  execution time limits (seconds to minutes). It utilizes Inngest to manage a series of queues and execution flow, enabling asynchronous,
   batched data processing in chunks. Serverless/edge functions are activated through API requests from functions initialized by inngest. These functions, upon detecting new events (pushed by the producer) executes neeccessary stats logic on it.
  A state management system constantly tracks progress (`AWAITING_CONNECTION`, `FAILED`, `CRUNCHING_DATA`, `COMPLETED`)

@@ -43,7 +43,7 @@ export const crawlRottenTomatoesTask = inngest.createFunction(
   {
     id: "crawl-rotten-tomatoes",
     concurrency: {
-      limit: 50,
+      limit: 100,
     },
   },
   { event: eventNames.CrawlRottenTomatoes },

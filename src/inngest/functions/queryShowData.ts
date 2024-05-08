@@ -48,7 +48,7 @@ export const queryShowDataTask = inngest.createFunction(
   {
     id: "query-show-data",
     concurrency: {
-      limit: 50,
+      limit: 100,
     },
   },
   { event: eventNames.QueryShowData },

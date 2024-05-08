@@ -324,7 +324,8 @@ export async function getAndDumpActivities(
   sessionID: string,
   dataKey: string,
 ): Promise<number[]> {
-  const limit = 400;
+  const limit = 500;
+  const chunkLimit = 5;
   let totalChunks = 0;
   let total: number = 0;
   try {
@@ -347,8 +348,7 @@ export async function getAndDumpActivities(
 
     const totalPages = Math.ceil(total / limit);
     const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
-
-    // Parallel fetch of all pages
+    console.log(pageNumbers)
     const fetchPromises = pageNumbers.map((page) =>
       eye.getActivity({ dataKey, source: Source.Netflix, limit, page }),
     );
@@ -406,7 +406,7 @@ export async function getAndDumpActivities(
         await batchInsertEpisodes(episodes);
         episodes.length = 0;
 
-        const jobChunks = chunkShows(jobShows, 10);
+        const jobChunks = chunkShows(jobShows, chunkLimit);
         for (let chunkIndex = 0; chunkIndex < jobChunks.length; chunkIndex++) {
           const currentChunk = jobChunks[chunkIndex];
           const jobId = generateJobId(

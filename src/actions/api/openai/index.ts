@@ -3,12 +3,10 @@ import OpenAI from "openai";
 import { AssistantCreateParams } from "openai/resources/beta/assistants";
 import { Run } from "openai/resources/beta/threads/runs/runs";
 
-import { getActorsByShow } from "@/actions/database/actor";
 import {
   createAssistant,
   getAssistantByName,
 } from "@/actions/database/assistant";
-import { getUsersTopGenres, getTop3ShowsByUser } from "@/actions/database/show";
 import { OPENAI_API_KEY } from "@/actions/helpers/constants";
 import { BFFAssistant } from "@/helpers/assistants/bff-picker";
 import { GeneralShowAssistant } from "@/helpers/assistants/first-and-most-watched-shows-quips";
@@ -20,8 +18,6 @@ import {
   TopGenres,
   TVShowQuips,
 } from "@/types";
-
-import { getPersonalities } from "../perplexity";
 
 const openai = new OpenAI({
   apiKey: OPENAI_API_KEY,

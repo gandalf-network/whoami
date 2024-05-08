@@ -7,10 +7,10 @@ import {
   createAssistant,
   getAssistantByName,
 } from "@/actions/database/assistant";
-import { OPENAI_API_KEY } from "@/actions/helpers/constants";
 import { BFFAssistant } from "@/helpers/assistants/bff-picker";
 import { GeneralShowAssistant } from "@/helpers/assistants/first-and-most-watched-shows-quips";
 import { StarSignAssistant } from "@/helpers/assistants/top-genres-star-sign-rtscore-and-personality-quips";
+import { OPENAI_API_KEY } from "@/helpers/constants";
 import {
   BFF,
   Show,

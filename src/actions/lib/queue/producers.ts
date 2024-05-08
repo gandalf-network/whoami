@@ -1,4 +1,4 @@
-import { inngest } from "@/inngest/client";
+import { inngest } from "@/actions/inngest/client";
 
 import { eventNames } from "./event";
 

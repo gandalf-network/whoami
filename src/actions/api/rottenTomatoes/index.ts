@@ -4,8 +4,8 @@ import {
   ROTTEN_TOMATOES_ALGOLIA_API_KEY,
   ROTTEN_TOMATOES_ALGOLIA_APPLICATION_ID,
   ROTTEN_TOMATOES_ALGOLIA_BASE_URL,
-} from "@/actions/helpers/constants";
-import { standardizeName } from "@/actions/helpers/utils";
+} from "@/helpers/constants";
+import { standardizeName } from "@/helpers/utils";
 
 export async function getRottenTomatoScore(
   title: string,

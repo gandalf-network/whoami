@@ -1,18 +1,3 @@
-/**
- * State Tracking in Workflow:
- *
- * Designed to oversee the progress of tasks distributed across various queues, this state tracking logic uses a
- * `sessionId` as a unique identifier for collections of tasks tailored to specific user activities. This identifier
- * is key to efficiently monitoring, tracking, and aggregating job statuses throughout different phases of the processing
- * workflow. Each job's state is dynamically updated to reflect its current state based on the total jobs and completed jobs,
- * ensuring real-time oversight of the workflow.
- *
- * The idea is to employ a dynamic percentage completion model to gauge the progress of each job:
- * - 0% indicates a job is identified but not yet initiated.
- * - 1% to 99% indicates that a job is currently been processed.
- * - 100% completion signifies a job has been successfully completed but we only care about 97% completion.
- */
-
 import { kv } from "@vercel/kv";
 
 export type QueueName =

@@ -1,6 +1,6 @@
 import api from "api";
 
-import { PERPLEXITY_API_KEY } from "../../../actions/helpers/constants";
+import { PERPLEXITY_API_KEY } from "../../../helpers/constants";
 
 const perplexityAPI = api("@pplx/v0#29jnn2rlt35the2");
 

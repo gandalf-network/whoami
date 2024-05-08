@@ -351,7 +351,7 @@ export async function getAndDumpActivities(
   dataKey: string,
 ): Promise<number[]> {
   const limit = 500;
-  const chunkLimit = 6;
+  const chunkLimit = 2;
   let totalChunks = 0;
   let total: number = 0;
   try {

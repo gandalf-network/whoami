@@ -16,7 +16,9 @@ import { useSession } from "@/hooks/use-session";
 export default function Page() {
   const { url: connectUrl, loading } = useGandalfConnect();
 
-  const { stats, reportCard } = useSession();
+  const { stats, reportCard } = useSession({
+    initializeUser: true,
+  });
 
   const router = useRouter();
 

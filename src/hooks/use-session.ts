@@ -3,7 +3,7 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
-import { findOrCreateUser, getReportCard, getStats } from "@/actions";
+import { findOrCreateUser, findUser, getReportCard, getStats } from "@/actions";
 import {
   createOrGetSessionId,
   getDataFromSession,
@@ -165,13 +165,27 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
         const user = await findOrCreateUser(sessionId);
 
         setUser(user);
+        setSessionValid(true);
       };
 
       initUser();
     }
 
     if (querySessionId) {
-      storeSessionId(querySessionId);
+      /**
+       * If the querySessionId is available
+       * we can assume that the user scanned the QR code
+       * and we can store the session id in the session storage
+       */
+      const storeQuerySessionId = async () => {
+        const user = await findUser(sessionId);
+
+        if (user) {
+          storeSessionId(querySessionId);
+        }
+      };
+
+      storeQuerySessionId();
     }
   }, []);
 

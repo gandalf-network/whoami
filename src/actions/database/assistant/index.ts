@@ -1,5 +1,6 @@
-import { AssistantName, PrismaClient } from "@prisma/client";
-const prisma = new PrismaClient();
+import { AssistantName } from "@prisma/client";
+
+import { prisma } from "@/actions/store/prisma";
 
 type CreateAssistantInput = {
   name: AssistantName;
@@ -9,8 +10,12 @@ type CreateAssistantInput = {
 export async function createAssistant(
   createAssistantInput: CreateAssistantInput,
 ) {
-  const assistant = await prisma.assistant.create({
-    data: {
+  const assistant = await prisma.assistant.upsert({
+    where: {
+      name: createAssistantInput.name,
+    },
+    update: {},
+    create: {
       name: createAssistantInput.name,
       assistantID: createAssistantInput.assistantID,
     },

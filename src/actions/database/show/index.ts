@@ -1,8 +1,6 @@
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "@/actions/store/prisma";
 
 import { Show, TopGenres, YourCrossoverStar } from "../../../types";
-
-const prisma = new PrismaClient();
 
 export type insertEpisodeInput = {
   title: string;

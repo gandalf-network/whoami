@@ -2,6 +2,7 @@ import { serve } from "inngest/next";
 
 import { inngest } from "@/inngest/client";
 import { crawlRottenTomatoesTask } from "@/inngest/functions/crawlRottenTomatoe";
+import { stateThresholdCheckHandlerTask } from "@/inngest/functions/handleThresholdCheck";
 import { queryActivitiesTask } from "@/inngest/functions/queryActivities";
 import { queryShowDataTask } from "@/inngest/functions/queryShowData";
 import { starSignPickerTask } from "@/inngest/functions/starSignPicker";
@@ -21,5 +22,6 @@ export const { GET, POST, PUT } = serve({
     starSignPickerTask,
     tvBFFTask,
     stateThresholdCheckTask,
+    stateThresholdCheckHandlerTask,
   ],
 });

@@ -4,7 +4,7 @@
  * This workflow is designed to by-pass the limitations of serverless functions, which are constrained by
  * execution time limits (seconds to minutes). It utilizes Inngest to manage a series of queues and execution flow, enabling asynchronous,
  *  batched data processing in chunks. Serverless/edge functions are activated through API requests from functions initialized
- * at application by inngest. These functions, upon detecting new events (pushed by the producer) executes neeccessary stats logic on it.
+ * by inngest. These functions, upon detecting new events (pushed by the producer) executes neeccessary stats logic on it.
  * A state management system constantly tracks progress (NOT_INITIATED, PROCESSING, COMPLETED)
  * across each stage, ensuring an orderly and reliable data flow.
  *
@@ -35,7 +35,7 @@
  * |------------------------|------------------------------|-------------------------------|
  * | queryActivitiesQueue   | Initial data fetching        | --> queryShowDataQueue        |
  * |                        |                              |                               |
- * | queryShowDataQueue     |  Actors & show information   | --> tvBFFQueue                |
+ * | queryShowDataQueue     | Actors & show information   | --> tvBFFQueue                |
  * |                        |                              | --> starSignPickerQueue       |
  * |                        |                              |                               |
  * | crawlRottenTomatoesQueue| Rotten Tomatoes crawling    | (Ends after processing)       |
@@ -48,6 +48,7 @@ export const eventNames = {
   QueryShowData: "app/show.data.query.requested",
   CrawlRottenTomatoes: "app/rotten.tomatoes.query.requested",
   TVBFF: "app/tv.bff.requested",
+  StateThresholdCheckHandler: "app/state.threshold.check.handler",
   TVShowQuips: "app/tv.show.quips.requested",
   StarSignPicker: "app/star.sign.picker.requested",
   StateThresholdCheck: "app/state.threshold.check",

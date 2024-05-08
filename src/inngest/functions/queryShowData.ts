@@ -1,9 +1,10 @@
 import { getCompletedShowDataBySession, getShowData } from "@/actions";
 import { eventNames } from "@/actions/lib/queue/event";
-import { ShowPayload } from "@/actions/lib/queue/producers";
+import { ShowPayload, enqueueTVShowQuips } from "@/actions/lib/queue/producers";
 import {
   QueueName,
   getQueueSessionState,
+  getSessionGlobalState,
   queueNames,
   setQueueSessionState,
 } from "@/actions/lib/queue/state";
@@ -19,27 +20,36 @@ async function queryShowData(event: { data: ShowPayload }) {
       showPayload.SessionID,
     );
     const queueName = queueNames.QueryShowData as QueueName;
-    const [, executedChunks] = await getQueueSessionState(
+    const [, totalChunks] = await getSessionGlobalState(showPayload.SessionID);
+    let [, executedChunks] = await getQueueSessionState(
       showPayload.SessionID,
       queueName,
     );
+
+    executedChunks = executedChunks + 1;
+    if (executedChunks >= totalChunks) {
+      await enqueueTVShowQuips(showPayload.SessionID);
+    }
+
     await setQueueSessionState(
       showPayload.SessionID,
       queueName,
       processedData,
-      executedChunks + 1,
+      executedChunks,
     );
     return processedData;
   } catch (error) {
     console.error("Error processing job:", error);
+    throw error;
   }
 }
 
 export const queryShowDataTask = inngest.createFunction(
   {
     id: "query-show-data",
-    // idempotency: "event.show.data",
-    concurrency: 50,
+    concurrency: {
+      limit: 100,
+    },
   },
   { event: eventNames.QueryShowData },
   async ({ event }) => {

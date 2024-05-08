@@ -1,5 +1,4 @@
 "use server";
-
 import { UserState } from "@prisma/client";
 
 import {
@@ -9,7 +8,7 @@ import {
 } from "./api/openai";
 import { getPersonalities } from "./api/perplexity";
 import { getRottenTomatoScore } from "./api/rottenTomatoes";
-import TMDBClient from "./api/tmdb";
+import TMDBClient, { TVShowDetails } from "./api/tmdb";
 import TVDBClient from "./api/tvdb";
 import { getReportCardResponse, getStatsResponse } from "./database";
 import {
@@ -113,22 +112,26 @@ export async function getAndUpdateRottenTomatoesScore(
   payload: ShowPayload,
 ): Promise<number> {
   const user = await findOrCreateUserBySessionID(payload.SessionID);
-  let processed: number = 0;
-  for (const show of payload.Shows) {
+
+  const fetchPromises = payload.Shows.map(async (show) => {
     try {
       const score = await getRottenTomatoScore(show.title, show.actors);
       if (score != null) {
         await updateShow({ id: show.id, rottenTomatoScore: score });
-        processed += 1;
+        return 1;
+      } else {
+        return 0;
       }
     } catch (error: any) {
       console.log(
         `RottenTomatoesScore: title ${show.title} failed with error: `,
         error,
       );
+      return 0;
     }
-  }
+  });
 
+  await Promise.allSettled(fetchPromises);
   return await getNumberOfUpdatedTomatoeScores(user.id);
 }
 
@@ -259,36 +262,41 @@ export async function getShowDataWithTVDB(
 }
 
 export async function getShowData(payload: ShowPayload): Promise<number> {
-  const jobShows: JobShow[] = [];
   let processed: number = 0;
   console.log("> Number of shows:", payload?.Shows?.length);
 
-  for (const show of payload.Shows) {
+  const queryShowPromises = payload.Shows.map(async (show) => {
     try {
       show.title = handleShowTitleEdgeCases(show.title);
       const showResponse = await tmdbClient.searchTVShows(show.title);
-      const showDetails = await tmdbClient.getTVShowDetails(
-        showResponse.results[0].id,
-      );
-      const genres: string[] = [];
-
-      for (const genre of showDetails.genres) {
-        genres.push(genre.name);
+      if (showResponse.results.length === 0) {
+        throw new Error(`No results found for title: ${show.title}`);
       }
 
-      const actorNames: string[] = [];
+      const showId = showResponse.results[0].id;
+      const showDetails = await tmdbClient.getTVShowDetails(showId);
+      return { show, showDetails };
+    } catch (error) {
+      console.log(`Search failed for show title: ${show.title}, error:`, error);
+      return null;
+    }
+  });
+
+  const fetchedShows = (await Promise.all(queryShowPromises)).filter(
+    Boolean,
+  ) as { show: JobShow; showDetails: TVShowDetails }[];
+  const saveShowPromises = fetchedShows.map(async ({ show, showDetails }) => {
+    try {
+      const genres: string[] = showDetails.genres.map((genre) => genre.name);
       const actors: ActorInput[] = [];
+      const actorNames: string[] = [];
+
       for (const currentActor of showDetails.aggregate_credits.cast) {
         const actor = {
           name: currentActor.name,
           popularity: currentActor.popularity,
-          totalEpisodeCount: currentActor.total_episode_count
-            ? currentActor.total_episode_count
-            : 0,
-          characterName:
-            currentActor.roles && currentActor.roles.length > 0
-              ? currentActor.roles[0].character
-              : "",
+          totalEpisodeCount: currentActor.total_episode_count ?? 0,
+          characterName: currentActor.roles?.[0]?.character ?? "",
           imageURL: currentActor.profile_path
             ? `https://image.tmdb.org/t/p/w1280/${currentActor.profile_path}`
             : "",
@@ -296,6 +304,7 @@ export async function getShowData(payload: ShowPayload): Promise<number> {
         actors.push(actor);
         actorNames.push(currentActor.name);
       }
+
       await createActorsAndConnectToShow(actors, show.id);
 
       const updatedShow: UpdateShowInput = {
@@ -308,34 +317,45 @@ export async function getShowData(payload: ShowPayload): Promise<number> {
 
       await updateShow(updatedShow);
 
-      jobShows.push({
+      return {
         id: show.id,
         title: show.title,
         actors: actorNames,
-      });
-      processed += 1;
-    } catch (error: any) {
+      };
+    } catch (error) {
       console.log(
-        `getShowData: show  title ${show.title} failed with error: `,
+        `getShowData: show title ${show.title} failed with error:`,
         error,
       );
+      return null;
     }
-  }
+  });
 
-  payload.Shows = jobShows;
+  const results = (await Promise.all(saveShowPromises)).filter(
+    Boolean,
+  ) as JobShow[];
+  payload.Shows = results;
+  processed = results.length;
   await enqueueRottenTomatoes(payload);
+
   return processed;
 }
 
-function generateJobId(pageCount: number, sessionId: string): string {
-  return `PC${pageCount}-SID${sessionId}`;
+function generateJobId(
+  pageCount: number,
+  chunkNumber: number,
+  sessionId: string,
+): string {
+  return `PC${pageCount}-CN${chunkNumber}-SID${sessionId}`;
 }
 
 export async function getAndDumpActivities(
   sessionID: string,
   dataKey: string,
 ): Promise<number[]> {
-  const limit = 400;
+  const limit = 500;
+  const chunkLimit = 8;
+  let totalChunks = 0;
   let total: number = 0;
   try {
     const user = await upsertUser(sessionID, dataKey);
@@ -358,7 +378,6 @@ export async function getAndDumpActivities(
     const totalPages = Math.ceil(total / limit);
     const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
 
-    // Parallel fetch of all pages
     const fetchPromises = pageNumbers.map((page) =>
       eye.getActivity({ dataKey, source: Source.Netflix, limit, page }),
     );
@@ -414,22 +433,38 @@ export async function getAndDumpActivities(
 
       if (jobShows.length > 0) {
         await batchInsertEpisodes(episodes);
-        episodes.length = 0;
 
-        const jobId = generateJobId(activityResponse.page, sessionID);
-        const showPayload: ShowPayload = {
-          SessionID: sessionID,
-          Shows: jobShows,
-          JobID: jobId,
-        };
-        await enqueueShowData(showPayload);
+        const jobChunks = chunkShows(jobShows, chunkLimit);
+        for (let chunkIndex = 0; chunkIndex < jobChunks.length; chunkIndex++) {
+          const currentChunk = jobChunks[chunkIndex];
+          const jobId = generateJobId(
+            activityResponse.page,
+            chunkIndex,
+            sessionID,
+          );
+          const showPayload: ShowPayload = {
+            SessionID: sessionID,
+            Shows: currentChunk,
+            JobID: jobId,
+          };
+          await enqueueShowData(showPayload);
+          totalChunks++;
+        }
         totalShows += jobShows.length;
       }
     }
-    return [totalShows, totalPages];
+    return [totalShows, totalChunks];
   } catch (error: any) {
     await updateUserStateBySession(sessionID, UserState.FAILED);
     console.error(`Failed to fetch data for user ${sessionID}`, error.message);
     throw error;
   }
+}
+
+function chunkShows<T>(shows: T[], chunkSize: number): T[][] {
+  const chunks: T[][] = [];
+  for (let i = 0; i < shows.length; i += chunkSize) {
+    chunks.push(shows.slice(i, i + chunkSize));
+  }
+  return chunks;
 }

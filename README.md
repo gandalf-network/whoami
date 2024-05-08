@@ -29,37 +29,45 @@ cd whoami
 yarn install
 ```
 
-#### Environment Configuration:
+#### Environment Configuration
+
 Create a .env file in the project root and add the following keys
 
-Gandalf - https://dashboard.gandalf.network
+Gandalf - <https://dashboard.gandalf.network>
+
 ```bash
 GANDALF_SAURON_URL=YOUR_GANDALF_SAURON_URL
-GANDALF_APP_PRIVATE_KEY=YOUR_GANDALF_APP_PRIVATE_KEY
+GANDALF_PRIVATE_KEY=YOUR_GANDALF_PRIVATE_KEY
+NEXT_PUBLIC_GANDALF_PUBLIC_KEY=YOUR_GANDALF_PUBLIC_KEY
 ```
 
-OpenAI - https://platform.openai.com/api-keys
+OpenAI - <https://platform.openai.com/api-keys>
+
 ```bash
 OPENAI_API_KEY=YOUR_OPENAI_API_KEY
 ```
 
-Perplexity - https://docs.perplexity.ai/docs/getting-started
+Perplexity - <https://docs.perplexity.ai/docs/getting-started>
+
 ```bash
 PERPLEXITY_API_KEY=YOUR_PERPLEXITY_API_KEY
 ```
 
-Postgres - https://vercel.com/storage/postgres
+Postgres - <https://vercel.com/storage/postgres>
+
 ```bash
 POSTGRES_URL=YOUR_POSTGRES_URL
 POSTGRES_PRISMA_URL=YOUR_POSTGRES_URL
 ```
 
-Redis - https://vercel.com/docs/storage/vercel-kv/quickstart
+Redis - <https://vercel.com/docs/storage/vercel-kv/quickstart>
+
 ```bash
 REDIS_URL=YOUR_REDIS_URL
 ```
 
-TMDB - https://developer.themoviedb.org/reference/intro/getting-started
+TMDB - <https://developer.themoviedb.org/reference/intro/getting-started>
+
 ```bash
 TMDB_BASE_URL=YOUR_TMDB_BASE_URL
 TMDB_API_KEY=YOUR_TMDB_API_KEY
@@ -67,11 +75,12 @@ TMDB_API_KEY=YOUR_TMDB_API_KEY
 
 ### Deploy to Vercel
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fgandalf-network%2Fwhoami&env=NEXT_PUBLIC_GANDALF_PUBLIC_KEY,GANDALF_PRIVATE_KEY&envDescription=Environment%20variables%20for%20the%20Gandalf%20API&envLink=https%3A%2F%2Fgandalf-api.com%2Fdashboard&project-name=whoami&repository-name=whoami)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fgandalf-network%2Fwhoami&env=NEXT_PUBLIC_GANDALF_PUBLIC_KEY,GANDALF_PRIVATE_KEY,GANDALF_SAURON_URL,POSTGRES_URL,POSTGRES_PRISMA_URL,TMDB_BASE_URL,TMDB_API_KEY,PERPLEXITY_API_KEY,REDIS_URL,OPENAI_API_KEY&envDescription=Environment%20variables%20for%20the%20Gandalf%20API&envLink=https%3A%2F%2Fgandalf-api.com%2Fdashboard&project-name=whoami&repository-name=whoami)
 
 ---
 
 ## Project Structure
+
 This section provides an overview of the folder structure and key technologies used in the whoami.tv project. Understanding this will help you effectively navigate and customize the project.
 
 ### Technology Stack
@@ -85,8 +94,7 @@ This section provides an overview of the folder structure and key technologies u
 - [Rotten Tomatoes](https://www.rottentomatoes.com/): Fetching tv show rotten tomato scores.
 - [OpenAI Assistants API](https://platform.openai.com/docs/assistants/overview): Generating user persona's based on their TV show preferences.
 - [Perplexity API](https://www.perplexity.ai/): Used for browsing the internet to get information about characters from a TV show.
-  
-  
+
 ### Folder Structure
 
 The codebase follows a well-organized folder structure to keep your codebase clean and maintainable:
@@ -101,17 +109,25 @@ The codebase follows a well-organized folder structure to keep your codebase cle
     |-- store - Contains the logic for initializing the Redis store.
 |-- app
     |-- api - Contains all the serveless functions.
-      |-- callback - This is the endpoint the user is redirected to after connecting their Netflix account to the Gandalf Network.
-      |-- image - 
-      |-- inngest
-      |-- og - 
-      |-- user - 
+        |-- callback - This is the endpoint the user is redirected to after connecting their Netflix account to the Gandalf Network.
+        |-- image - This endpoint returns the base64 value of an image.
+        |-- inngest - Contains functionality related to Inngest.
+        |-- og - This endpoint is for fetching generated OpenGraph images.
+        |-- user - This endpoint is for fetching the current user via session ID
 |-- components
-|-- helpers
-|-- hooks
-|-- types
+    |-- icon - Contain the icon assets used throughout the application
+    |-- images - Contains the OpenGraph image assets
+    |-- loader - Contains components related to loading animations or visual indicators
+    |-- providers - This folder includes higher-level components for managing application context and state providers.
+    |-- screens - Contains components that represent different screens within the app
+    |-- stories - Contains components that represent individual user data stories
+    |-- themed - Contains components that are styled based on our theme
+|-- helpers - This folder contains functions and other code snippets that assist with common tasks.
+|-- hooks - This folder contains custom hooks designed to encapsulate reusable logic and improve code structure.
+|-- types - This folder contains the TypeScript type definitions and interfaces used throughout the app
 |-- ...
 ```
+
 **actions**: Server action methods goes here
 
 **app**: Place your page here, organized by functionality.
@@ -125,6 +141,7 @@ The codebase follows a well-organized folder structure to keep your codebase cle
 **types**: Add your typescript types here
 
 ### Data Procession Workflow
+
 A detailed overview of how we are working with the limitations of Vercel's serverless functions can be found here: [Data Processing Wrokflow](https://github.com/gandalf-network/whoami/blob/chore/update-readme/src/actions/lib/queue/Readme.md)
 
 ## Contributing

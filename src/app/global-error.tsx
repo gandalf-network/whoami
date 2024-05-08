@@ -23,6 +23,7 @@ export default function GlobalError({
         <Container className="relative">
           <FeedbackScreen
             title="Oops! Something went wrong"
+            href="/"
             cta={{
               onClick: reset,
               children: "Go Home",

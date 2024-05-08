@@ -5,8 +5,8 @@
 
 ## How it works
 
-- Data Collection: Users authorize our application to collect their viewing data via Gandalf.
-- Data Enrichment: We fetch additional show details such as actors, episode counts, rotten tomato scores and images from TMDB and RottenTomato.
+- Data Collection: Users authorize our application to collect their viewing data via [Gandalf](https://gandalf.network/).
+- Data Enrichment: We fetch additional show details such as actors, episode counts, rotten tomato scores and images from TVDB and RottenTomato.
 - Insight Generation: Our algorithms analyze the collected data to extract meaningful insights about viewing patterns and preferences.
 - Personality Creation: Based on the analysis, We use OpenAI assistants and Perplexity create personality profiles that reflects each user’s TV show preferences.
 

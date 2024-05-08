@@ -130,7 +130,7 @@ The codebase follows a well-organized folder structure to keep your codebase cle
 
 ### Data Processing Workflow
 
-A detailed overview of how we are working with the limitations of Vercel's serverless functions can be found here: [Data Processing Workflow](https://github.com/gandalf-network/whoami/blob/chore/update-readme/src/actions/lib/queue/Readme.md)
+A detailed overview of how we are working with the limitations of Vercel's serverless functions can be found here: [Workflows](https://github.com/gandalf-network/whoami/blob/chore/update-readme/src/actions/lib/queue/Readme.md)
 
 ## Contributing
 

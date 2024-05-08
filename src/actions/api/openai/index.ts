@@ -126,8 +126,7 @@ async function callOpenAI(
   });
 
   let result;
-  const runs = 0;
-  const res = await handleRunStatus(run, thread.id, result, runs);
+  const res = await handleRunStatus(run, thread.id, result);
   try {
     const resOBJ = JSON.parse(res);
     return resOBJ;
@@ -140,12 +139,7 @@ async function callOpenAI(
   }
 }
 
-const handleRequiresAction = async (
-  run: Run,
-  threadID: string,
-  res: any,
-  runs: number,
-) => {
+const handleRequiresAction = async (run: Run, threadID: string, res: any) => {
   if (
     run.required_action &&
     run.required_action.submit_tool_outputs &&
@@ -168,7 +162,7 @@ const handleRequiresAction = async (
       },
     );
 
-    return handleRunStatus(run, threadID, res, runs);
+    return handleRunStatus(run, threadID, res);
   }
 };
 
@@ -176,16 +170,11 @@ const handleRunStatus = async (
   run: Run,
   threadID: string,
   res: any,
-  runs: number,
 ): Promise<any> => {
   if (run.status === "requires_action") {
-    runs++;
     res = run.required_action?.submit_tool_outputs.tool_calls[0].function
       .arguments as string;
-    if (runs > 1) {
-      return res;
-    }
-    return await handleRequiresAction(run, threadID, res, runs);
+    return await handleRequiresAction(run, threadID, res);
   } else {
     return res;
   }

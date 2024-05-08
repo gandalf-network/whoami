@@ -1,18 +1,18 @@
 
 # whoami. tv
 
-[whoami. tv](https://whoami.tv/) is a fun, shareable web application that shows users all kinds of cool facts and stats about their TV taste based on their Netflix viewing history.
+[whoami.tv](https://whoami.tv/) is a fun web app that shows users all kinds of cool facts and stats about themselves based on their Netflix viewing history.
 
 ## How it works
 
-- Data Collection: Users authorize our application to collect their Netflix viewing data via [Gandalf](https://gandalf.network/).
-- Data Enrichment: We fetch additional show details such as actors, episode counts, rotten tomato scores, and images from [TMDB](https://developer.themoviedb.org/reference/intro/getting-started) and [RottenTomato](https://www.rottentomatoes.com/).
-- Insight Generation: Our algorithms analyze the collected data to extract meaningful insights about viewing patterns and preferences.
-- Personality Creation: Based on the analysis, We use [OpenAI assistants](https://platform.openai.com/docs/assistants/overview) and [Perplexity AI](https://www.perplexity.ai/) to create personality profiles that reflect each user’s TV show preferences.
+- Netflix Data Collection: Users authorize our application to collect their Netflix viewing data via [Gandalf](https://docs.gandalf.network/).
+- Data Enrichment: We fetch additional show details such as actors, episode counts, Rotten Tomatoes scores, and images from [TMDB](https://developer.themoviedb.org/reference/intro/getting-started) and [RottenTomato](https://www.rottentomatoes.com/).
+- Stats Calculation: We analyze the collected data to extract meaningful insights about viewing patterns and preferences.
+- AI Generation: We use [OpenAI assistants](https://platform.openai.com/docs/assistants/overview) and [Perplexity AI](https://www.perplexity.ai/) to generate witty quips based on the user's viewing stats & to generate some facts that reflect each user’s TV persona.
 
 ## Getting Started
 
-This section provides a quick overview of how to do this project locally and deploy your version live!
+This section provides a quick overview of how to run this project locally and deploy your own instance!
 
 ### Local Setup and Installation
 
@@ -81,25 +81,25 @@ TMDB_API_KEY=YOUR_TMDB_API_KEY
 
 ## Project Structure
 
-This section provides an overview of the folder structure and key technologies used in the whoami.tv project. Understanding this will help you effectively navigate and customize the project.
+This section is an overview of the folder structure and key APIs, libraries etc used in the whoami.tv project. Understanding this should help you navigate and customize the project.
 
 ### Technology Stack
 
-- [Gandalf Connect](https://github.com/gandalf-network/connect): Lets your users to link their accounts to the [Gandalf Network](https://gandalf.network/).
+- [Gandalf Connect](https://github.com/gandalf-network/connect): Connect is the client-side component that your users will interact with in order to link their accounts to [Gandalf](https://docs.gandalf.network/) and allow you to access their data.
 - [eyeofsauron](https://github.com/gandalf-network/eyeofsauron): Command-line tool designed to generate the necessary files that makes it super easy to query user data from the Gandalf Network.
 - [Next.js](https://nextjs.org/): The core framework that powers the server-side rendering and static generation.
-- [Inngest](https://www.inngest.com/): Inngest works by serving an HTTP API endpoint which exposes functions that can be called on-demand.
-- [Prisma](https://github.com/prisma/prisma): NodeJS ORM.
+- [Inngest](https://www.inngest.com/): Inngest helps create and manage serverless background tasks without needing additional infrastructure like queues or workers. It simplifies building and operating event-driven, durable functions directly within applications.
+- [Prisma](https://github.com/prisma/prisma): NodeJS ORM. This is how we speak to the Postgres database.
 - [TMDB API](https://developer.themoviedb.org/reference/intro/getting-started): Fetching detailed information about shows and actors.
-- [Rotten Tomatoes](https://www.rottentomatoes.com/): Fetching tv show rotten tomato scores.
-- [OpenAI Assistants API](https://platform.openai.com/docs/assistants/overview): Used to generate user personas based on their TV show preferences.
-- [Perplexity API](https://www.perplexity.ai/): Used for browsing the internet to get information about characters from a TV show.
+- [Rotten Tomatoes](https://www.rottentomatoes.com/): Fetching tv show Rotten Tomatoes scores.
+- [OpenAI Assistants API](https://platform.openai.com/docs/assistants/overview): Used to generate witty quips based on the user's viewing stats & to generate some facts that reflect each user’s TV persona.
+- [Perplexity API](https://www.perplexity.ai/): Used for their online models. whoami.tv needs to know the characters (& their personalities) of any TV show and that data needs to be grounded in real world information/be as updated as possible.
 
 ### Folder Structure
 
 The codebase follows a well-organized folder structure to keep your codebase clean and maintainable:
 
-``` lua
+```bash
 |-- actions
     |-- API - Contains all the logic for making API calls to OpenAI, RottenTomatoes, Perplexity, and TVDB.
     |-- database - Contains all the database functions for creating new users, saving user Netflix data, and querying the data.

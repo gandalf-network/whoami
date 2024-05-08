@@ -56,7 +56,7 @@ interface CastMember {
   roles: Role[];
 }
 
-interface TVShowDetails {
+export interface TVShowDetails {
   id: number;
   name: string;
   overview: string;

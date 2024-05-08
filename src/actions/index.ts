@@ -9,7 +9,7 @@ import {
 } from "./api/openai";
 import { getPersonalities } from "./api/perplexity";
 import { getRottenTomatoScore } from "./api/rottenTomatoes";
-import TMDBClient from "./api/tmdb";
+import TMDBClient, { TVShowDetails } from "./api/tmdb";
 import TVDBClient from "./api/tvdb";
 import { getReportCardResponse, getStatsResponse } from "./database";
 import {
@@ -259,32 +259,41 @@ export async function getShowDataWithTVDB(
 }
 
 export async function getShowData(payload: ShowPayload): Promise<number> {
-  const jobShows: JobShow[] = [];
   let processed: number = 0;
   console.log("> Number of shows:", payload?.Shows?.length);
 
-  for (const show of payload.Shows) {
+  const queryShowPromises = payload.Shows.map(async (show) => {
     try {
       show.title = handleShowTitleEdgeCases(show.title);
       const showResponse = await tmdbClient.searchTVShows(show.title);
-      const showDetails = await tmdbClient.getTVShowDetails(
-        showResponse.results[0].id,
-      );
-      const genres: string[] = showDetails.genres.map((genre) => genre.name);
+      if (showResponse.results.length === 0) {
+        throw new Error(`No results found for title: ${show.title}`);
+      }
 
-      const actorNames: string[] = [];
+      const showId = showResponse.results[0].id;
+      const showDetails = await tmdbClient.getTVShowDetails(showId);
+      return { show, showDetails };
+    } catch (error) {
+      console.log(`Search failed for show title: ${show.title}, error:`, error);
+      return null;
+    }
+  });
+
+  const fetchedShows = (await Promise.all(queryShowPromises)).filter(
+    Boolean,
+  ) as { show: JobShow; showDetails: TVShowDetails }[];
+  const saveShowPromises = fetchedShows.map(async ({ show, showDetails }) => {
+    try {
+      const genres: string[] = showDetails.genres.map((genre) => genre.name);
       const actors: ActorInput[] = [];
+      const actorNames: string[] = [];
+
       for (const currentActor of showDetails.aggregate_credits.cast) {
         const actor = {
           name: currentActor.name,
           popularity: currentActor.popularity,
-          totalEpisodeCount: currentActor.total_episode_count
-            ? currentActor.total_episode_count
-            : 0,
-          characterName:
-            currentActor.roles && currentActor.roles.length > 0
-              ? currentActor.roles[0].character
-              : "",
+          totalEpisodeCount: currentActor.total_episode_count ?? 0,
+          characterName: currentActor.roles?.[0]?.character ?? "",
           imageURL: currentActor.profile_path
             ? `https://image.tmdb.org/t/p/w1280/${currentActor.profile_path}`
             : "",
@@ -292,6 +301,7 @@ export async function getShowData(payload: ShowPayload): Promise<number> {
         actors.push(actor);
         actorNames.push(currentActor.name);
       }
+
       await createActorsAndConnectToShow(actors, show.id);
 
       const updatedShow: UpdateShowInput = {
@@ -304,22 +314,27 @@ export async function getShowData(payload: ShowPayload): Promise<number> {
 
       await updateShow(updatedShow);
 
-      jobShows.push({
+      return {
         id: show.id,
         title: show.title,
         actors: actorNames,
-      });
-      processed += 1;
-    } catch (error: any) {
+      };
+    } catch (error) {
       console.log(
-        `getShowData: show  title ${show.title} failed with error: `,
+        `getShowData: show title ${show.title} failed with error:`,
         error,
       );
+      return null;
     }
-  }
+  });
 
-  payload.Shows = jobShows;
+  const results = (await Promise.all(saveShowPromises)).filter(
+    Boolean,
+  ) as JobShow[];
+  payload.Shows = results;
+  processed = results.length;
   await enqueueRottenTomatoes(payload);
+
   return processed;
 }
 

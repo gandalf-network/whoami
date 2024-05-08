@@ -11,9 +11,13 @@ export const storeSessionId = (sessionId: string) => {
   setCookie(cookiesKey.sessionId, sessionId);
 };
 
+export const getSessionId = () => {
+  return getCookie(cookiesKey.sessionId);
+};
+
 export const createOrGetSessionId = (options: { new?: boolean } | void) => {
   // get the session id from the local storage
-  let sessionId = getCookie(cookiesKey.sessionId);
+  let sessionId = getSessionId();
 
   // if the session id is not available
   // create a new session id and store it in the local storage
@@ -29,13 +33,13 @@ export const createOrGetSessionId = (options: { new?: boolean } | void) => {
 export const initializeSessionId = async () => {
   try {
     // get the session id from the local storage
-    const sessionId = getCookie(cookiesKey.sessionId);
+    const sessionId = getSessionId();
 
     if (sessionId) {
       const res = await fetch(`/api/user?sessionID=${sessionId}`);
       const user = await res.json();
 
-      if (!user?.id) {
+      if (!user) {
         storeSessionId(generateUUID());
       }
     } else {

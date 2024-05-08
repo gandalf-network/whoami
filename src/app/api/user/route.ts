@@ -17,7 +17,7 @@ export async function GET(req: Request) {
     if (user) {
       return Response.json(user);
     } else {
-      throw new Error("No user found");
+      return Response.json({ user: null });
     }
   } catch {
     return Response.json({ error: "No user found" }, { status: 404 });

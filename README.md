@@ -6,7 +6,7 @@
 ## How it works
 
 - Netflix Data Collection: Users authorize our application to collect their Netflix viewing data via [Gandalf](https://docs.gandalf.network/).
-- Data Enrichment: We fetch additional show details such as actors, episode counts, Rotten Tomatoes scores, and images from [TMDB](https://developer.themoviedb.org/reference/intro/getting-started) and [RottenTomato](https://www.rottentomatoes.com/).
+- Data Enrichment: We fetch additional show details such as actors, episode counts, Rotten Tomatoes scores, and images from [TMDB](https://developer.themoviedb.org/reference/intro/getting-started) and [Rotten Tomatoes](https://www.rottentomatoes.com/).
 - Stats Calculation: We analyze the collected data to extract meaningful insights about viewing patterns and preferences.
 - AI Generation: We use [OpenAI assistants](https://platform.openai.com/docs/assistants/overview) and [Perplexity AI](https://www.perplexity.ai/) to generate witty quips based on the user's viewing stats & to generate some facts that reflect each user’s TV persona.
 

@@ -100,6 +100,12 @@ The codebase follows a well-organized folder structure to keep your codebase cle
     |-- lib - Contains logic for enquing and tracking the jobs in the Redis store.
     |-- store - Contains the logic for initializing the Redis store.
 |-- app
+    |-- api - Contains all the serveless functions.
+      |-- callback - This is the endpoint the user is redirected to after connecting their Netflix account to the Gandalf Network.
+      |-- image - 
+      |-- inngest
+      |-- og - 
+      |-- user - 
 |-- components
 |-- helpers
 |-- hooks

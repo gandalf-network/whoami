@@ -1,4 +1,5 @@
 import { AssistantName } from "@prisma/client";
+
 import { prisma } from "@/actions/store/prisma";
 
 type CreateAssistantInput = {

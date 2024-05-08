@@ -1,5 +1,6 @@
 "use server";
 import { UserState } from "@prisma/client";
+
 import {
   getFirstAndMostWatchedShowQuips,
   getStarSign,
@@ -117,16 +118,16 @@ export async function getAndUpdateRottenTomatoesScore(
       const score = await getRottenTomatoScore(show.title, show.actors);
       if (score != null) {
         await updateShow({ id: show.id, rottenTomatoScore: score });
-        return 1; 
+        return 1;
       } else {
-        return 0; 
+        return 0;
       }
     } catch (error: any) {
       console.log(
         `RottenTomatoesScore: title ${show.title} failed with error: `,
         error,
       );
-      return 0; 
+      return 0;
     }
   });
 
@@ -353,7 +354,7 @@ export async function getAndDumpActivities(
   dataKey: string,
 ): Promise<number[]> {
   const limit = 500;
-  const chunkLimit = 10;
+  const chunkLimit = 8;
   let totalChunks = 0;
   let total: number = 0;
   try {

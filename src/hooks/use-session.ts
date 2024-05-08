@@ -213,11 +213,11 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
 
   useInterval(refetch, {
     delay:
-      (stats && reportCard) || retries >= 60 || !sessionValid
+      (stats && reportCard) || retries >= 300 || !sessionValid
         ? undefined
         : options && options?.refetchInterval
           ? options.refetchInterval
-          : 5000,
+          : 1000,
     deps: dataKey ? [dataKey] : undefined,
   });
 

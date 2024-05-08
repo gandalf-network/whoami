@@ -1,9 +1,8 @@
-import { PrismaClient } from "@prisma/client";
 import levenshtein from "js-levenshtein";
 
 import { standardizeName } from "@/actions/helpers/utils";
 import { Actor, ActorInput } from "@/types";
-const prisma = new PrismaClient();
+import { prisma } from "@/actions/store/prisma";
 
 export async function createActorsAndConnectToShow(
   actors: ActorInput[],

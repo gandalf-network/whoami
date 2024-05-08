@@ -255,11 +255,7 @@ export async function getShowData(payload: ShowPayload): Promise<number> {
       const showDetails = await tmdbClient.getTVShowDetails(
         showResponse.results[0].id,
       );
-      const genres: string[] = [];
-
-      for (const genre of showDetails.genres) {
-        genres.push(genre.name);
-      }
+      const genres: string[] = showDetails.genres.map(genre => genre.name);
 
       const actorNames: string[] = [];
       const actors: ActorInput[] = [];
@@ -348,7 +344,7 @@ export async function getAndDumpActivities(
 
     const totalPages = Math.ceil(total / limit);
     const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
-    console.log(pageNumbers)
+    
     const fetchPromises = pageNumbers.map((page) =>
       eye.getActivity({ dataKey, source: Source.Netflix, limit, page }),
     );
@@ -404,8 +400,7 @@ export async function getAndDumpActivities(
 
       if (jobShows.length > 0) {
         await batchInsertEpisodes(episodes);
-        episodes.length = 0;
-
+        
         const jobChunks = chunkShows(jobShows, chunkLimit);
         for (let chunkIndex = 0; chunkIndex < jobChunks.length; chunkIndex++) {
           const currentChunk = jobChunks[chunkIndex];

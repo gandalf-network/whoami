@@ -1,5 +1,5 @@
-import { PrismaClient, UserState } from "@prisma/client";
-const prisma = new PrismaClient();
+import { UserState } from "@prisma/client";
+import { prisma } from "@/actions/store/prisma";
 
 export async function createUserBySessionID(sessionID: string) {
   const user = await prisma.user.create({

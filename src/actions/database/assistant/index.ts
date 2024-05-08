@@ -1,5 +1,5 @@
-import { AssistantName, PrismaClient } from "@prisma/client";
-const prisma = new PrismaClient();
+import { AssistantName } from "@prisma/client";
+import { prisma } from "@/actions/store/prisma";
 
 type CreateAssistantInput = {
   name: AssistantName;

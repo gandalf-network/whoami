@@ -1,7 +1,5 @@
 "use server";
-
 import { UserState } from "@prisma/client";
-
 import {
   getFirstAndMostWatchedShowQuips,
   getStarSign,
@@ -113,22 +111,26 @@ export async function getAndUpdateRottenTomatoesScore(
   payload: ShowPayload,
 ): Promise<number> {
   const user = await findOrCreateUserBySessionID(payload.SessionID);
-  let processed: number = 0;
-  for (const show of payload.Shows) {
+
+  const fetchPromises = payload.Shows.map(async (show) => {
     try {
       const score = await getRottenTomatoScore(show.title, show.actors);
       if (score != null) {
         await updateShow({ id: show.id, rottenTomatoScore: score });
-        processed += 1;
+        return 1; 
+      } else {
+        return 0; 
       }
     } catch (error: any) {
       console.log(
         `RottenTomatoesScore: title ${show.title} failed with error: `,
         error,
       );
+      return 0; 
     }
-  }
+  });
 
+  await Promise.allSettled(fetchPromises);
   return await getNumberOfUpdatedTomatoeScores(user.id);
 }
 

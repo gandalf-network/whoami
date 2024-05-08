@@ -3,7 +3,7 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
-import { createUser, findUser, getReportCard, getStats } from "@/actions";
+import { findOrCreateUser, getReportCard, getStats } from "@/actions";
 import {
   createOrGetSessionId,
   getDataFromSession,
@@ -29,9 +29,9 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
   const router = useRouter();
 
   const [loading, setLoading] = useState(false);
-  const [user, setUser] = useState<Awaited<ReturnType<typeof findUser>> | null>(
-    null,
-  );
+  const [user, setUser] = useState<Awaited<
+    ReturnType<typeof findOrCreateUser>
+  > | null>(null);
 
   // user stats data
   const [stats, setStats] = useState<UserStatsType | null>(null);
@@ -77,11 +77,7 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
       }
 
       // get user data
-      let data = await findUser(sessionId);
-
-      if (!data) {
-        data = await createUser(sessionId);
-      }
+      const data = await findOrCreateUser(sessionId);
 
       setUser(data);
 
@@ -162,6 +158,16 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
     // load user data on mount if loadOnMount is true
     if (options?.loadOnMount) {
       refetch();
+    }
+
+    if (options && options?.initializeUser) {
+      const initUser = async () => {
+        const user = await findOrCreateUser(sessionId);
+
+        setUser(user);
+      };
+
+      initUser();
     }
 
     if (querySessionId) {

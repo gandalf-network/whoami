@@ -78,6 +78,21 @@ export async function findUser(sessionID: string) {
   return findUserBySessionID(sessionID);
 }
 
+export async function findOrCreateUser(sessionID: string) {
+  try {
+    const user = await findUser(sessionID);
+    console.log({ user, sessionID });
+
+    if (!user) {
+      return createUser(sessionID);
+    }
+
+    return user;
+  } catch (error: any) {
+    throw error;
+  }
+}
+
 export async function getStats(sessionID: string) {
   return getStatsResponse(sessionID);
 }

@@ -73,7 +73,7 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
 
       // if no session id is found, throw an error
       if (!sessionId) {
-        throw new Error("No session ID found");
+        // throw new Error("No session ID found");
       }
 
       // get user data

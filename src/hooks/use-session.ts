@@ -48,7 +48,7 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
   );
 
   // store session valid state
-  const [sessionValid, setSessionValid] = useState(false);
+  const [sessionValid, setSessionValid] = useState(true);
 
   const userKeyAvailable = !!(dataKey || sessionId);
 
@@ -186,6 +186,10 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
       };
 
       storeQuerySessionId();
+    }
+
+    if (!sessionId) {
+      setSessionValid(false);
     }
   }, []);
 

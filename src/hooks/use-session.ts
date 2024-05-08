@@ -7,7 +7,6 @@ import { findOrCreateUser, findUser, getReportCard, getStats } from "@/actions";
 import {
   createOrGetSessionId,
   getDataFromSession,
-  getSessionId,
   storeDataInSession,
   storeSessionId,
 } from "@/helpers/storage";
@@ -45,9 +44,7 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
 
   // session id state
   const [sessionId, setSessionId] = useState<string>(
-    querySessionId || getSessionId() || (options && options?.initializeUser)
-      ? createOrGetSessionId({ new: true })
-      : "",
+    querySessionId || createOrGetSessionId(),
   );
 
   // store session valid state
@@ -102,6 +99,8 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
         const _stats = stats ? stats : await getStats(sessionId);
 
         updateData({ stats: _stats, reportCard: _reportCard });
+
+        console.log({ _stats, _reportCard });
 
         if (_stats && _reportCard) {
           storeDataInSession({
@@ -183,8 +182,6 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
 
         if (user) {
           storeSessionId(querySessionId);
-        } else {
-          setSessionValid(false);
         }
       };
 
@@ -193,7 +190,6 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
 
     if (!sessionId) {
       setSessionValid(false);
-      router.push("/");
     }
   }, []);
 
@@ -208,11 +204,11 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
        * create a new session id
        * and make a request to the server
        */
-      if (!querySessionId && sessionId) {
+      if (!querySessionId) {
         const res = await fetch(`/api/user?sessionID=${sessionId}`);
         const user = await res.json();
 
-        if (!user) {
+        if (!user.id) {
           requestSessionId = createOrGetSessionId({ new: true });
           setSessionId(requestSessionId);
         }

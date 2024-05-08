@@ -126,17 +126,26 @@ async function callOpenAI(
   });
 
   let result;
-  const res = await handleRunStatus(run, thread.id, result);
+  const runs = 0;
+  const res = await handleRunStatus(run, thread.id, result, runs);
   try {
     const resOBJ = JSON.parse(res);
     return resOBJ;
   } catch (error) {
-    console.log(`Error Parsing ${assistantName} AI JSON: ${res}`, error);
+    console.log(
+      `Error Parsing ${assistantName} AI JSON: ${res}. With Input: ${inputJSON}`,
+      error,
+    );
     throw error;
   }
 }
 
-const handleRequiresAction = async (run: Run, threadID: string, res: any) => {
+const handleRequiresAction = async (
+  run: Run,
+  threadID: string,
+  res: any,
+  runs: number,
+) => {
   if (
     run.required_action &&
     run.required_action.submit_tool_outputs &&
@@ -148,7 +157,10 @@ const handleRequiresAction = async (run: Run, threadID: string, res: any) => {
       {
         tool_outputs: [
           {
-            output: JSON.stringify({ success: true }),
+            output: JSON.stringify(
+              run.required_action?.submit_tool_outputs.tool_calls[0].function
+                .arguments,
+            ),
             tool_call_id:
               run.required_action.submit_tool_outputs.tool_calls[0].id,
           },
@@ -156,7 +168,7 @@ const handleRequiresAction = async (run: Run, threadID: string, res: any) => {
       },
     );
 
-    return handleRunStatus(run, threadID, res);
+    return handleRunStatus(run, threadID, res, runs);
   }
 };
 
@@ -164,15 +176,17 @@ const handleRunStatus = async (
   run: Run,
   threadID: string,
   res: any,
+  runs: number,
 ): Promise<any> => {
-  if (run.status === "completed") {
-    await openai.beta.threads.messages.list(threadID);
-    return res;
-  } else if (run.status === "requires_action") {
+  if (run.status === "requires_action") {
+    runs++;
     res = run.required_action?.submit_tool_outputs.tool_calls[0].function
       .arguments as string;
-    return await handleRequiresAction(run, threadID, res);
+    if (runs > 1) {
+      return res;
+    }
+    return await handleRequiresAction(run, threadID, res, runs);
   } else {
-    console.error("Run did not complete:", run);
+    return res;
   }
 };

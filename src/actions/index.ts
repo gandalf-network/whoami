@@ -456,9 +456,10 @@ export async function getAndDumpActivities(
       }
     }
 
-   
     const endTime = performance.now();
-    console.log(`> getAndDumpActivities took ${(endTime - startTime)/1000} seconds.`);
+    console.log(
+      `> getAndDumpActivities took ${(endTime - startTime) / 1000} seconds.`,
+    );
 
     return [totalShows, totalChunks];
   } catch (error: any) {

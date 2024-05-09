@@ -27,8 +27,8 @@ export const UserDataProvider = (props: UserDataProviderProps) => {
   const { children } = props;
 
   const { firstPhaseData, secondPhaseData, reportCard } = useSession();
-
   const loading = !firstPhaseData && !secondPhaseData && !reportCard;
+  console.log(firstPhaseData, secondPhaseData, reportCard, loading)
   return (
     <UserDataContextProvider
       value={{ firstPhaseData, secondPhaseData, reportCard }}

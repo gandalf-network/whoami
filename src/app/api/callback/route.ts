@@ -25,7 +25,6 @@ export async function GET(req: Request) {
   dataKey = removeNonAlphanumericLastChar(dataKey);
 
   await enqueueActivityData(sessionID, dataKey);
-  await enqueueStateThresholdCheck(sessionID);
 
   return new Response(JSON.stringify({ message: "Crunching you data..." }), {
     status: 200,

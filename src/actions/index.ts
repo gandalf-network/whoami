@@ -497,6 +497,10 @@ export async function getAndDumpActivities(
     });
     const pageResults = await Promise.all(fetchPromises);
 
+    const midTime = performance.now();
+    console.log(
+      `> getAndDumpActivities took ${(midTime - startTime)/1000} seconds.`,
+    );
     let totalShows = 0;
     for (const activityResponse of pageResults) {
       const jobShows: JobShow[] = [];
@@ -570,9 +574,9 @@ export async function getAndDumpActivities(
     }
 
     console.log("\n............Data Fetching Complete......................\n");
-    const endTime = performance.now();
+    const finalTime = performance.now();
     console.log(
-      `> getAndDumpActivities took ${(endTime - startTime) / 1000}·seconds.`,
+      `> getAndDumpActivities took ${(finalTime - startTime)/1000} seconds.`,
     );
     preloadTopShowsData(sessionID);
 

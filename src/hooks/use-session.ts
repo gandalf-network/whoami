@@ -105,7 +105,6 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
       // check if the user's first phase data is ready
       if (data.state === "FIRST_PHASE_READY") {
         const firstPhaseData = await getFirstPhaseData(sessionId);
-
         if (firstPhaseData) {
           updateData({ firstPhaseData });
         }

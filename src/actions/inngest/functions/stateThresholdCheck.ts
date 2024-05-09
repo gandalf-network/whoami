@@ -15,6 +15,8 @@ import {
   sessionStates,
   setSessionIndex,
   checkSecondPhaseThreshold,
+  setSessionStartTime,
+  getSessionStartTime,
 } from "@/actions/lib/queue/state";
 
 import { inngest } from "../client";
@@ -28,6 +30,10 @@ export const stateThresholdCheckTask = inngest.createFunction(
   async ({ event, step }) => {
     const { sessionID } = event.data;
     if (!sessionID) return;
+
+    if(await getSessionStartTime(sessionID) == 0) {
+      await setSessionStartTime(sessionID, performance.now())
+    }
 
     console.log(`> Running state threshold checks... SID: ${sessionID}`);
 

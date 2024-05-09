@@ -3,7 +3,7 @@ import { performance } from "perf_hooks";
 
 import { getAndDumpActivities, updateUserStateBySession } from "@/actions";
 import { eventNames } from "@/actions/lib/queue/event";
-import { ActivityDataPayload } from "@/actions/lib/queue/producers";
+import { ActivityDataPayload, enqueueStateThresholdCheck } from "@/actions/lib/queue/producers";
 import {
   setSessionIndex,
   sessionStates,
@@ -18,6 +18,10 @@ import { inngest } from "../client";
 async function queryActivities(event: { data: ActivityDataPayload }) {
   const { sessionID, dataKey } = event.data;
   try {
+    // enqueue state threshold check 
+    await enqueueStateThresholdCheck(sessionID);
+
+    // set session index and user state to `PROCESSING`
     await setSessionIndex(sessionID, sessionStates.PROCESSING);
     await updateUserStateBySession(sessionID, UserState.PROCESSING);
 
@@ -51,6 +55,7 @@ export const queryActivitiesTask = inngest.createFunction(
   { event: eventNames.QueryActivities },
   async ({ event }) => {
     const startTime = performance.now();
+
     const result = await queryActivities({ data: event.data });
     const endTime = performance.now();
 

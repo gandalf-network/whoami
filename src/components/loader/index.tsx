@@ -255,7 +255,7 @@ export const LoadingScreen = ({
             <p className="text-center text-lg font-medium">{title}</p>
           </div>
         ) : (
-          <div className="flex-center flex-col gap-2 pb-14 px-2 w-full">
+          <div className="flex-center flex-col gap-2 pb-14 px-2 w-full mb-4">
             <img
               src="/loading.gif"
               className="w-16 h-16 object-cover"

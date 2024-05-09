@@ -82,17 +82,20 @@ export async function setSessionGlobalState(
   await kv.set(makeGlobalKey(sessionId, "totalChunks"), totalChunks.toString());
 }
 
-export async function setSessionStartTime(sessionId: string, startTime: number) {
+export async function setSessionStartTime(
+  sessionId: string,
+  startTime: number,
+) {
   await kv.set(makeGlobalKey(sessionId, "startTime"), startTime);
 }
 
-export async function getSessionStartTime(sessionId: string
-):  Promise<number>  {
-  const startTimeString: string | null = await kv.get(makeGlobalKey(sessionId, "startTime"));
+export async function getSessionStartTime(sessionId: string): Promise<number> {
+  const startTimeString: string | null = await kv.get(
+    makeGlobalKey(sessionId, "startTime"),
+  );
   const startTime = parseInt(startTimeString || "0");
-  return startTime
+  return startTime;
 }
-
 
 export async function getSessionGlobalState(
   sessionId: string,

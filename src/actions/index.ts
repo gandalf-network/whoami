@@ -499,7 +499,7 @@ export async function getAndDumpActivities(
 
     const midTime = performance.now();
     console.log(
-      `> getAndDumpActivities took ${(midTime - startTime)/1000} seconds.`,
+      `> getAndDumpActivities took ${(midTime - startTime) / 1000} seconds.`,
     );
     let totalShows = 0;
     for (const activityResponse of pageResults) {
@@ -576,7 +576,7 @@ export async function getAndDumpActivities(
     console.log("\n............Data Fetching Complete......................\n");
     const finalTime = performance.now();
     console.log(
-      `> getAndDumpActivities took ${(finalTime - startTime)/1000} seconds.`,
+      `> getAndDumpActivities took ${(finalTime - startTime) / 1000} seconds.`,
     );
     preloadTopShowsData(sessionID);
 

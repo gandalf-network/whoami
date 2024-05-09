@@ -145,7 +145,7 @@ export const TotalTVShowDownloadStory = ({
               return (
                 <div
                   key={`${show?.title}-${index}`}
-                  className="flex-center-y font-semibold text-2xl mb-1.5"
+                  className="flex-center-y font-semibold text-xl mb-1.5"
                 >
                   <p className="w-6">{index + 1}</p>
                   <p className="capitalize">{show?.title}</p>

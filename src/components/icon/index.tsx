@@ -19,3 +19,4 @@ export * from "./play";
 export * from "./tomatoe";
 export * from "./movie";
 export * from "./warning";
+export * from "./text";

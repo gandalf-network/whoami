@@ -97,7 +97,9 @@ export const StarSignDownloadStory = ({
           <Text className="text-2xl font-bold mt-2 mb-4 capitalize">
             {starSign?.name}
           </Text>
-          <Text className="text-xl font-semibold">{starSign?.show}</Text>
+          {starSign?.reason && (
+            <Text className="text-sm mb-3">{starSign.reason}</Text>
+          )}
         </div>
 
         <DodecagramStar className="absolute w-20 rotate-[-40deg] -left-5 -bottom-7" />

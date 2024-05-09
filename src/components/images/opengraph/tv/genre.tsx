@@ -74,7 +74,10 @@ export const TVGenreOGImage = ({
                   ...ogStyles.flexCenter,
                 }}
               >
-                <OGText size="1.85rem" style={{ fontWeight: "bold" }}>
+                <OGText
+                  size="1.6rem"
+                  style={{ fontWeight: "bold", whiteSpace: "nowrap" }}
+                >
                   {label}
                 </OGText>
               </div>

@@ -31,13 +31,15 @@ export interface ButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
   disabled?: boolean;
 }
 
+export type ShareStoryProps = {
+  id: AllStoryIds;
+  action?: Action;
+  isPaused?: boolean;
+  info?: any;
+};
+
 export interface ShareButtonProps extends ButtonProps {
-  storyProps: {
-    id: AllStoryIds;
-    action?: Action;
-    isPaused?: boolean;
-    info?: any;
-  };
+  storyProps: ShareStoryProps;
 }
 
 export interface PageHeaderProps extends React.HTMLAttributes<HTMLDivElement> {

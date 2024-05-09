@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import { useEffect, useState } from "react";
+import { memo, useState } from "react";
 
 import { Button as BaseButton } from "@/components/ui/button";
 import { cn, shuffleArray } from "@/helpers/utils";
@@ -138,7 +138,7 @@ export const loadingTexts = [
   },
 ];
 
-export const LoadingTrivia = () => {
+export const LoadingTrivia = memo(function LoadingTrivaComponent() {
   const texts = shuffleArray(loadingTexts.map((text) => text.description));
 
   const [index, setIndex] = useState(0);
@@ -208,7 +208,7 @@ export const LoadingTrivia = () => {
       </div>
     </div>
   );
-};
+});
 
 export const LoadingScreen = ({
   className,

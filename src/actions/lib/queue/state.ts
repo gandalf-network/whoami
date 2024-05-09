@@ -26,7 +26,7 @@ const makeKey = (sessionId: string, queueName: QueueName, suffix: string) =>
 const makeGlobalKey = (sessionId: string, suffix: string) =>
   `session:${sessionId}:${suffix}`;
 
-const COMPLETION_THRESHOLD = 95;
+const COMPLETION_THRESHOLD = 90;
 
 export const sessionStates: Record<string, SessionState> = {
   NOT_STARTED: "NOT_STARTED",

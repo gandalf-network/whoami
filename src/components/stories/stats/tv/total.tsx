@@ -84,6 +84,7 @@ export const TotalTVShowStory = ({
         <ShareButton
           storyProps={{
             id: "totalShows",
+            info: watchHistory.totalShowsWatched,
             ...storyProps,
           }}
         />

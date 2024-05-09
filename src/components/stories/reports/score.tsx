@@ -117,6 +117,7 @@ export const RottenTomatoeStory = ({
             <ShareButton
               storyProps={{
                 id: "rottenTomatoesScore",
+                info: rtScore,
                 ...storyProps,
               }}
             />

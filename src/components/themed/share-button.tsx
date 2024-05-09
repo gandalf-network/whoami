@@ -5,9 +5,10 @@ import { Button as BaseButton } from "@/components/ui/button";
 import { cn } from "@/helpers/utils";
 import { useDialog } from "@/hooks/use-dialog";
 import { useShare } from "@/hooks/use-share";
-import { AllStoryIds, ShareButtonProps, ShareMediumType } from "@/types";
+import { ShareButtonProps, ShareMediumType, ShareStoryProps } from "@/types";
 
 import { Button } from "./button";
+import { SaveImageButton } from "./save-image-button";
 import {
   InstagramIcon,
   TiktokIcon,
@@ -20,12 +21,13 @@ import { LoadingIcon } from "../loader/base";
 import { AlertDialogCancel } from "../ui/alert-dialog";
 
 export const ShareDialogContent = ({
-  storyId,
-  info,
+  storyProps,
 }: {
-  storyId: AllStoryIds;
-  info: any;
+  storyProps: ShareStoryProps;
 }) => {
+  const storyId = storyProps.id;
+  const info = storyProps.info;
+
   const [share, { loading, copied, storyLink, selectedMedium }] = useShare({
     storyId,
   });
@@ -81,29 +83,43 @@ export const ShareDialogContent = ({
         </AlertDialogCancel>
       </div>
       <div className="grid grid-cols-3 md:grid-cols-5 gap-3 justify-between">
-        {shareMediums.map((medium) => (
-          <BaseButton
-            key={medium.name}
-            variant="link"
-            onClick={() => onShareClick(medium.type as ShareMediumType)}
-            className={cn(
-              "text-foreground flex-col flex-center text-sm gap-y-1.5 h-auto px-0 font-normal",
-              medium?.className,
-            )}
-            disabled={
-              selectedMedium === medium.type && !medium.loadingIcon
-                ? loading
-                : undefined
-            }
-          >
-            <span className="flex-shrink-0 flex justify-center">
-              {loading && medium?.loadingIcon && selectedMedium === medium.type
-                ? medium.loadingIcon
-                : medium.icon}
-            </span>
-            {medium.name}
-          </BaseButton>
-        ))}
+        {shareMediums.map((medium) => {
+          if (medium.type === "download") {
+            return (
+              <SaveImageButton
+                key={medium.name}
+                storyProps={storyProps}
+                loading={selectedMedium === medium.type ? loading : undefined}
+              />
+            );
+          }
+
+          return (
+            <BaseButton
+              key={medium.name}
+              variant="link"
+              onClick={() => onShareClick(medium.type as ShareMediumType)}
+              className={cn(
+                "text-foreground flex-col flex-center text-sm gap-y-1.5 h-auto px-0 font-normal",
+                medium?.className,
+              )}
+              disabled={
+                selectedMedium === medium.type && !medium.loadingIcon
+                  ? loading
+                  : undefined
+              }
+            >
+              <span className="flex-shrink-0 flex justify-center">
+                {loading &&
+                medium?.loadingIcon &&
+                selectedMedium === medium.type
+                  ? medium.loadingIcon
+                  : medium.icon}
+              </span>
+              {medium.name}
+            </BaseButton>
+          );
+        })}
       </div>
 
       <div className="hidden md:flex mt-2 border-2 rounded-lg bg-muted-gray h-11 items-center overflow-hidden">
@@ -135,9 +151,7 @@ export const ShareButton = ({
     show({
       onOverlayClick: hide,
       contentClassName: "max-w-xs md:max-w-lg rounded-2xl",
-      children: (
-        <ShareDialogContent storyId={storyProps.id} info={storyProps.info} />
-      ),
+      children: <ShareDialogContent storyProps={storyProps} />,
     });
   };
 

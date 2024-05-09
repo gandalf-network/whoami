@@ -1,7 +1,4 @@
-import {
-  enqueueActivityData,
-  enqueueStateThresholdCheck,
-} from "@/actions/lib/queue/producers";
+import { enqueueActivityData } from "@/actions/lib/queue/producers";
 import { removeNonAlphanumericLastChar } from "@/helpers/utils";
 
 export async function GET(req: Request) {

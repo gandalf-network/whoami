@@ -34,13 +34,7 @@ export async function generateMetadata(
     // fetch data based on story kinds
     if (
       (
-        [
-          "firstTvShow",
-          "mostWatchedTvShow",
-          "totalShows",
-          "crossoverStar",
-          "tvGenre",
-        ] as AllStoryIds[]
+        ["firstTvShow", "mostWatchedTvShow", "totalShows"] as AllStoryIds[]
       ).includes(story)
     ) {
       // @note: this is the mocked data and should be replaced with the actual data
@@ -54,8 +48,6 @@ export async function generateMetadata(
 
       const { firstTvShow, mostWatchedTvShow, watchHistory } =
         await getFirstPhase(id);
-
-      const { genreDistribution, yourCrossoverStar } = await getSecondPhase(id);
 
       switch (story) {
         case "firstTvShow":
@@ -88,6 +80,22 @@ export async function generateMetadata(
             },
           });
           break;
+      }
+    }
+
+    if ((["crossoverStar", "tvGenre"] as AllStoryIds[]).includes(story)) {
+      // @note: this is the mocked data and should be replaced with the actual data
+      // const {
+      //   firstTvShow,
+      //   mostWatchedTvShow,
+      //   watchHistory,
+      //   genreDistribution,
+      //   yourCrossoverStar,
+      // } = TVStatsMockedData;
+
+      const { genreDistribution, yourCrossoverStar } = await getSecondPhase(id);
+
+      switch (story) {
         case "crossoverStar":
           title = `My crossover star is ${yourCrossoverStar.name}`;
           images = buildOgImageUrl({

@@ -79,7 +79,7 @@ export const MostRewatchTVShowStory = ({
         <ShareButton
           storyProps={{
             id: "mostWatchedTvShow",
-            info: mostWatchedTvShow.show.title,
+            info: mostWatchedTvShow?.show?.title,
             ...storyProps,
           }}
         />

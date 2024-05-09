@@ -61,7 +61,7 @@ export const FirstTVShowStory = ({
         <ShareButton
           storyProps={{
             id: "firstTvShow",
-            info: firstTvShow.show.title,
+            info: firstTvShow?.show?.title,
             ...storyProps,
           }}
         />

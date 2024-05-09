@@ -467,6 +467,9 @@ export async function getAndDumpActivities(
     const seenShows: Set<string> = new Set();
     const episodes: insertEpisodeInput[] = [];
 
+    console.log(
+      "\n..............Started Fetching Data......................\n",
+    );
     const initialActivityResponse = await eye.getActivity({
       dataKey,
       source: Source.Netflix,
@@ -560,6 +563,7 @@ export async function getAndDumpActivities(
       }
     }
 
+    console.log("\n............Data Fetching Complete......................\n");
     const topShows = await getTop3ShowsByUser(user.id, false);
     const firstShow = await getUsersFirstShow(user.id);
     const shows = [...topShows, firstShow];

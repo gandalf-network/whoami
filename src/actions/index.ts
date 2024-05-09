@@ -118,8 +118,6 @@ export async function updateUserStateBySession(
 export async function getAndUpdateRottenTomatoesScore(
   payload: ShowPayload,
 ): Promise<number> {
-  const user = await findOrCreateUserBySessionID(payload.SessionID);
-
   const fetchPromises = payload.Shows.map(async (show) => {
     try {
       const score = await getRottenTomatoScore(show.title, show.actors);
@@ -138,8 +136,13 @@ export async function getAndUpdateRottenTomatoesScore(
     }
   });
 
-  await Promise.allSettled(fetchPromises);
-  return await getNumberOfUpdatedTomatoeScores(user.id);
+  const results = await Promise.allSettled(fetchPromises);
+
+  const fulfilledCount = results.filter(
+    (result) => result.status === "fulfilled",
+  ).length;
+
+  return fulfilledCount;
 }
 
 export async function getCompletedShowDataBySession(
@@ -293,7 +296,7 @@ export async function preloadTopShowsData(sessionID: string) {
 }
 
 export async function getShowData(payload: ShowPayload): Promise<number> {
-  let processed: number = 0;
+  let processed = 0;
   console.log("> Number of shows:", payload?.Shows?.length);
 
   const queryShowPromises = payload.Shows.map(async (show) => {
@@ -308,7 +311,10 @@ export async function getShowData(payload: ShowPayload): Promise<number> {
       const showDetails = await tmdbClient.getTVShowDetails(showId);
       return { show, showDetails };
     } catch (error) {
-      console.log(`Search failed for show title: ${show.title}, error:`, error);
+      console.error(
+        `Search failed for show title: ${show.title}, error:`,
+        error,
+      );
       return null;
     }
   });
@@ -316,7 +322,8 @@ export async function getShowData(payload: ShowPayload): Promise<number> {
   const fetchedShows = (await Promise.all(queryShowPromises)).filter(
     Boolean,
   ) as { show: JobShow; showDetails: TVShowDetails }[];
-  const saveShowPromises = fetchedShows.map(async ({ show, showDetails }) => {
+
+  for (const { show, showDetails } of fetchedShows) {
     try {
       const genres: string[] = showDetails.genres.map((genre) => genre.name);
       const actors: ActorInput[] = [];
@@ -336,7 +343,34 @@ export async function getShowData(payload: ShowPayload): Promise<number> {
         actorNames.push(currentActor.name);
       }
 
-      await createActorsAndConnectToShow(actors, show.id);
+      // Retry logic for creating actors and connecting them to the show
+      let retryAttempts = 3;
+      const retryDelay = 2000;
+      let success = false;
+
+      while (!success && retryAttempts > 0) {
+        try {
+          await createActorsAndConnectToShow(actors, show.id);
+          success = true;
+        } catch (error: any) {
+          if (
+            error.message.includes("deadlock detected") &&
+            retryAttempts > 1
+          ) {
+            console.warn(
+              `Deadlock detected for show ${show.title}. Retrying... (${3 - retryAttempts + 1}/3)`,
+            );
+            await new Promise((resolve) => setTimeout(resolve, retryDelay));
+          } else {
+            console.error(
+              `Failed to process actors for show ${show.title}:`,
+              error,
+            );
+            break;
+          }
+        }
+        retryAttempts--;
+      }
 
       const updatedShow: UpdateShowInput = {
         id: show.id,
@@ -345,31 +379,26 @@ export async function getShowData(payload: ShowPayload): Promise<number> {
         summary: showDetails.overview,
         imageURL: `https://image.tmdb.org/t/p/w1280/${showDetails.poster_path}`,
       };
-
       await updateShow(updatedShow);
 
-      return {
-        id: show.id,
-        title: show.title,
-        actors: actorNames,
-      };
+      processed++;
+      show.actors = actorNames;
     } catch (error) {
-      console.log(
+      console.error(
         `getShowData: show title ${show.title} failed with error:`,
         error,
       );
-      return null;
     }
-  });
+  }
 
-  const results = (await Promise.all(saveShowPromises)).filter(
-    Boolean,
-  ) as JobShow[];
-  payload.Shows = results;
-  processed = results.length;
+  payload.Shows = fetchedShows.map(({ show }) => show);
 
   if (payload.ProceedNext) {
-    await enqueueRottenTomatoes(payload);
+    try {
+      await enqueueRottenTomatoes(payload);
+    } catch (error) {
+      console.error(`Failed to enqueue Rotten Tomatoes data:`, error);
+    }
   }
 
   return processed;
@@ -460,7 +489,7 @@ export async function getAndDumpActivities(
   dataKey: string,
 ): Promise<number[]> {
   const limit = 500;
-  const chunkLimit = 8;
+  const chunkLimit = 50;
   let totalChunks = 0;
   let totalShows = 0;
   try {

@@ -45,7 +45,6 @@ export async function createActorsAndConnectToShow(
       skipDuplicates: true,
     });
   } catch (error: any) {
-    console.error("An error occurred:", error);
     throw error;
   }
 }

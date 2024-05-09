@@ -26,7 +26,7 @@ const makeKey = (sessionId: string, queueName: QueueName, suffix: string) =>
 const makeGlobalKey = (sessionId: string, suffix: string) =>
   `session:${sessionId}:${suffix}`;
 
-const COMPLETION_THRESHOLD = 90;
+const COMPLETION_THRESHOLD = 95;
 
 export const sessionStates: Record<string, SessionState> = {
   NOT_STARTED: "NOT_STARTED",
@@ -85,7 +85,7 @@ export async function setSessionGlobalState(
 export async function setSessionStartTime(
   sessionId: string,
   startTime: number,
-) {
+): Promise<void> {
   await kv.set(makeGlobalKey(sessionId, "startTime"), startTime);
 }
 
@@ -130,6 +130,14 @@ export async function getQueueSessionState(
   return [completedJobs, executedChunks];
 }
 
+export async function atomicIncrement(
+  key: string,
+  incrementBy: number,
+): Promise<number> {
+  const newValue = await kv.incrby(key, incrementBy);
+  return newValue;
+}
+
 export async function setQueueSessionState(
   sessionId: string,
   queueName: QueueName,
@@ -146,6 +154,19 @@ export async function setQueueSessionState(
   );
 }
 
+export async function incrementQueueSessionState(
+  sessionId: string,
+  queueName: QueueName,
+  completedJobsIncrement: number,
+  executedChunksIncrement: number,
+) {
+  const completedJobsKey = makeKey(sessionId, queueName, "completedJobs");
+  const executedChunksKey = makeKey(sessionId, queueName, "executedChunks");
+
+  await atomicIncrement(completedJobsKey, completedJobsIncrement);
+  await atomicIncrement(executedChunksKey, executedChunksIncrement);
+}
+
 export async function getQueueCompletion(
   sessionId: string,
   queueName: QueueName,
@@ -153,14 +174,10 @@ export async function getQueueCompletion(
   const totalJobsKey = makeGlobalKey(sessionId, "totalJobs");
   const completedJobsKey = makeKey(sessionId, queueName, "completedJobs");
 
-  const totalJobsString: string | null = await kv.get(totalJobsKey);
-  const completedJobsString: string | null = await kv.get(completedJobsKey);
+  const totalJobs = parseInt((await kv.get(totalJobsKey)) || "0", 10);
+  const completedJobs = parseInt((await kv.get(completedJobsKey)) || "0", 10);
 
-  const totalJobs = parseInt(totalJobsString || "0");
-  const completedJobs = parseInt(completedJobsString || "0");
-  if (totalJobs === 0) {
-    return 0;
-  }
+  if (totalJobs === 0) return 0;
 
   return (completedJobs / totalJobs) * 100;
 }
@@ -211,11 +228,27 @@ export async function checkLastPhaseThreshold(
 ): Promise<boolean> {
   const queuesToCheck: QueueName[] = ["tvBFF", "starSignPicker"];
   let canTrigger = true;
+  const [, totalChunks] = await getSessionGlobalState(sessionID);
+  if (totalChunks == 0) {
+    return false;
+  }
 
   for (const queueName of queuesToCheck) {
     const completion = await getQueueCompletion(
       sessionID,
       queueName as QueueName,
+    );
+    const [, executedChunks] = await getQueueSessionState(sessionID, queueName);
+
+    console.log(
+      `${queueName}`,
+      "<>",
+      "completion",
+      completion,
+      "executedChunks",
+      executedChunks,
+      "totalChunks",
+      totalChunks,
     );
     if (completion < COMPLETION_THRESHOLD) {
       canTrigger = false;

@@ -14,6 +14,7 @@ import {
   queueNames,
   setQueueSessionState,
   setSessionGlobalState,
+  setSessionStartTime,
 } from "@/actions/lib/queue/state";
 
 import { inngest } from "../client";
@@ -22,6 +23,7 @@ async function queryActivities(event: { data: ActivityDataPayload }) {
   const { sessionID, dataKey } = event.data;
   try {
     // enqueue state threshold check
+    await setSessionStartTime(sessionID, performance.now());
     await enqueueStateThresholdCheck(sessionID);
 
     // set session index and user state to `PROCESSING`

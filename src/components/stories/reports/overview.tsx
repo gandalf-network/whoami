@@ -198,7 +198,7 @@ export const ReportOverviewDownloadStory = ({
       {...props}
     >
       <div className="gap-y-10 flex-1 flex-col flex-center text-center relative z-20">
-        <Text className="max-w-sm text-lg -translate-y-8" font="caption">
+        <Text className="max-w-sm text-base mb-3" font="caption">
           {personality?.reason}
         </Text>
 

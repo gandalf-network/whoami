@@ -116,7 +116,7 @@ export const CrossOverStarDownloadStory = ({
           <Text className="text-xl font-semibold">
             {crossoverStar?.topShows?.length} shows
           </Text>
-          <Text className="text-lg mt-4 font-medium">
+          <Text className="text-base mt-4 font-medium">
             I’ve watched including{" "}
             {formatStringArrayToJSX({
               strings: crossoverStar?.topShows,

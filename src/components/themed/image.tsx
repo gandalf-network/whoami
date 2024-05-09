@@ -12,8 +12,14 @@ export const ThemedImage = ({
   src,
   className,
   iconClassName,
+  disableConvertionToBase64,
+  isLoading,
   ...props
-}: React.ImgHTMLAttributes<HTMLImageElement> & { iconClassName?: string }) => {
+}: React.ImgHTMLAttributes<HTMLImageElement> & {
+  iconClassName?: string;
+  disableConvertionToBase64?: boolean;
+  isLoading?: boolean;
+}) => {
   const placeholderClassName =
     "rounded-lg flex-center w-full h-full border-2 shadow-black shadow-[4px_4px] relative bg-background object-cover";
 
@@ -22,6 +28,12 @@ export const ThemedImage = ({
   const [loading, setLoading] = useState(false);
 
   const fetchImage = async () => {
+    // if disableConvertionToBase64 is true, we don't need to convert the image to Base64
+    if (disableConvertionToBase64) {
+      setImageSrc(src || "");
+      return;
+    }
+
     try {
       setLoading(true);
 
@@ -43,6 +55,14 @@ export const ThemedImage = ({
       fetchImage();
     }
   }, [src]);
+
+  if (isLoading) {
+    return (
+      <div className={cn(placeholderClassName, className)}>
+        <Loader2 className="w-8 h-8 animate-spin" />
+      </div>
+    );
+  }
 
   if (imageSrc || src) {
     if (loading) {

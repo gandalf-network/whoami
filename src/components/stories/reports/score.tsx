@@ -168,7 +168,7 @@ export const RottenTomatoeScoreDownloadStory = ({
         </div>
 
         <Circle
-          className="absolute top-[6%] -left-[90%] w-[60vh] h-[60vh] pointer-events-none"
+          className="absolute top-[6%] -left-[90%] w-[60vh] h-[55vh] pointer-events-none"
           strokeWidth={0.2}
         />
       </div>

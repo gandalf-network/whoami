@@ -7,3 +7,4 @@ export * from "./progress";
 export * from "./share-button";
 export * from "./qr-code";
 export * from "./image";
+export * from "./circular-progress";

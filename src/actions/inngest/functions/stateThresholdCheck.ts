@@ -29,7 +29,8 @@ export const stateThresholdCheckTask = inngest.createFunction(
   { event: eventNames.StateThresholdCheck },
   async ({ event, step }) => {
     const { sessionID } = event.data;
-    if (!sessionID) return;
+    console.log("RETURN")
+    return 
 
     if ((await getSessionStartTime(sessionID)) == 0) {
       await setSessionStartTime(sessionID, performance.now());

@@ -465,7 +465,7 @@ export async function getAndDumpActivities(
   let totalShows = 0;
   try {
     const user = await upsertUser(sessionID, dataKey);
-    
+
     const seenShows = new Map<string, { showId: string; userShowId: string }>();
     const episodes: insertEpisodeInput[] = [];
     const jobShows: Map<string, JobShow> = new Map();

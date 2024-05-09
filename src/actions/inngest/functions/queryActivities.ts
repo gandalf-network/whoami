@@ -5,7 +5,6 @@ import { getAndDumpActivities, updateUserStateBySession } from "@/actions";
 import { eventNames } from "@/actions/lib/queue/event";
 import {
   ActivityDataPayload,
-  enqueueStarSignPicker,
   enqueueStateThresholdCheck,
 } from "@/actions/lib/queue/producers";
 import {

@@ -150,7 +150,7 @@ export async function getQueueCompletion(
   return (completedJobs / totalJobs) * 100;
 }
 
-export async function checkDependentQueuesThresold(
+export async function checkDependentQueuesThreshold(
   sessionID: string,
 ): Promise<boolean> {
   const queuesToCheck: QueueName[] = [
@@ -182,7 +182,7 @@ export async function checkDependentQueuesThresold(
   return canTrigger;
 }
 
-export async function checkIndependentQueuesThresold(
+export async function checkLastPhaseThreshold(
   sessionID: string,
 ): Promise<boolean> {
   const queuesToCheck: QueueName[] = ["tvBFF", "starSignPicker"];
@@ -202,7 +202,7 @@ export async function checkIndependentQueuesThresold(
   return canTrigger;
 }
 
-export async function checkQueueThresold(
+export async function checkQueueThreshold(
   sessionID: string,
   queueName: QueueName,
 ): Promise<boolean> {
@@ -220,12 +220,17 @@ export async function checkQueueThresold(
   return true;
 }
 
-export async function statsPhaseReady(sessionID: string): Promise<boolean> {
+export async function checkSecondPhaseThreshold(
+  sessionID: string,
+): Promise<boolean> {
   return (
-    (await checkQueueThresold(
+    (await checkQueueThreshold(
       sessionID,
       queueNames.QueryActivities as QueueName,
     )) &&
-    (await checkQueueThresold(sessionID, queueNames.QueryShowData as QueueName))
+    (await checkQueueThreshold(
+      sessionID,
+      queueNames.QueryShowData as QueueName,
+    ))
   );
 }

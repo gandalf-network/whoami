@@ -1,6 +1,4 @@
 import { preloadTopShowsData } from "@/actions";
-import { getTop3ShowsByUser, getUsersFirstShow } from "@/actions/database/show";
-import { findOrCreateUserBySessionID } from "@/actions/database/user";
 import { eventNames } from "@/actions/lib/queue/event";
 import { enqueueTVShowQuips } from "@/actions/lib/queue/producers";
 
@@ -12,11 +10,6 @@ async function executeFirstPhaseRequest(event: { data: any }, step: any) {
     await step.run("preload-show-data-for-first-phase", async () => {
       return await preloadTopShowsData(sessionID);
     });
-    const user = await findOrCreateUserBySessionID(sessionID);
-    const topShows = await getTop3ShowsByUser(user.id);
-    const firstShow = await getUsersFirstShow(user.id);
-
-    console.log({ firstShow, topShows });
 
     await enqueueTVShowQuips(sessionID);
   } catch (error) {

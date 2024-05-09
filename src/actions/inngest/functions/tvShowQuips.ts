@@ -12,6 +12,7 @@ async function tvShowQuips(event: { data: any }, step: any) {
       return await getAndUpdateTVShowQuips(sessionID);
     });
 
+    console.log(">>>>> FIRST_PHASE_READY >>>>>>>>");
     await updateUserStateBySession(sessionID, UserState.FIRST_PHASE_READY);
   } catch (error) {
     console.error("Error processing job:", error);

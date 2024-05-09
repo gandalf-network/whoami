@@ -470,6 +470,8 @@ export async function getAndDumpActivities(
     console.log(
       "\n..............Started Fetching Data......................\n",
     );
+    const startTime = performance.now();
+
     const initialActivityResponse = await eye.getActivity({
       dataKey,
       source: Source.Netflix,
@@ -487,7 +489,12 @@ export async function getAndDumpActivities(
     const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
 
     const fetchPromises = pageNumbers.map((page) =>
-      eye.getActivity({ dataKey, source: Source.Netflix, limit, page }),
+      {
+        if(page == 1) {
+          return initialActivityResponse
+        }
+        return eye.getActivity({ dataKey, source: Source.Netflix, limit, page })
+      }
     );
     const pageResults = await Promise.all(fetchPromises);
 
@@ -564,11 +571,11 @@ export async function getAndDumpActivities(
     }
 
     console.log("\n............Data Fetching Complete......................\n");
-    const topShows = await getTop3ShowsByUser(user.id, false);
-    const firstShow = await getUsersFirstShow(user.id);
-    const shows = [...topShows, firstShow];
-    await getShowDataWithTMDB(shows);
-    await updateUserStateBySession(sessionID, UserState.FIRST_PHASE_READY);
+    const endTime = performance.now();
+    console.log(`> getAndDumpActivities took ${endTime - startTime} milliseconds.`);
+
+    preloadTopShowsData(sessionID)
+
     return [totalShows, totalChunks];
   } catch (error: any) {
     await updateUserStateBySession(sessionID, UserState.FAILED);

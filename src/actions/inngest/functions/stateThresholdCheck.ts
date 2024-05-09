@@ -41,7 +41,7 @@ export const stateThresholdCheckTask = inngest.createFunction(
         results = await stateThresholdCheck();
       };
 
-      interval = setInterval(check, 10000);
+      interval = setInterval(check, 2000);
       await new Promise((resolve) => setTimeout(resolve, maxDuration));
       clearInterval(interval);
 

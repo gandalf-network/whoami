@@ -166,15 +166,6 @@ export const LoadingTrivia = () => {
     { delay: 5000 },
   );
 
-  useEffect(() => {
-    // Set the index to change every 5 seconds
-    const interval = setInterval(() => {
-      setIndex((prev) => (prev + 1) % texts.length);
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, []);
-
   return (
     <div className="max-w-[95%] mx-auto flex-col flex-center gap-6 md:gap-4 rounded-lg border-2 bg-primary-cyan-shade p-6 md:p-4">
       <div className="w-8 h-8">

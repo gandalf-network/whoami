@@ -488,14 +488,12 @@ export async function getAndDumpActivities(
     const totalPages = Math.ceil(total / limit);
     const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
 
-    const fetchPromises = pageNumbers.map((page) =>
-      {
-        if(page == 1) {
-          return initialActivityResponse
-        }
-        return eye.getActivity({ dataKey, source: Source.Netflix, limit, page })
+    const fetchPromises = pageNumbers.map((page) => {
+      if (page == 1) {
+        return initialActivityResponse;
       }
-    );
+      return eye.getActivity({ dataKey, source: Source.Netflix, limit, page });
+    });
     const pageResults = await Promise.all(fetchPromises);
 
     let totalShows = 0;
@@ -572,9 +570,11 @@ export async function getAndDumpActivities(
 
     console.log("\n............Data Fetching Complete......................\n");
     const endTime = performance.now();
-    console.log(`> getAndDumpActivities took ${endTime - startTime} milliseconds.`);
+    console.log(
+      `> getAndDumpActivities took ${endTime - startTime} milliseconds.`,
+    );
 
-    preloadTopShowsData(sessionID)
+    preloadTopShowsData(sessionID);
 
     return [totalShows, totalChunks];
   } catch (error: any) {

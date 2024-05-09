@@ -71,6 +71,7 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
     reportCard?: UserReportCardType;
   }) => {
     if (data?.firstPhaseData) {
+      console.log(data.firstPhaseData);
       setFirstPhaseData(data.firstPhaseData);
     }
 

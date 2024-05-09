@@ -112,7 +112,7 @@ export const getStoryShareText = (storyId: AllStoryIds, info: any) => {
       return `My favorite Netflix TV genres are ${info.join(", ")}. Try it out to find out yours.`;
     // default
     default:
-      return "Just viewed my Netflix TV metrics on WhoAmI.TV 📺. Take a look at yours here ✨";
+      return "";
   }
 };
 

@@ -22,7 +22,10 @@ const config = {
         primary: {
           DEFAULT: "var(--primary)",
           foreground: "var(--primary-foreground)",
-          cyan: "var(--primary-cyan)",
+          cyan: {
+            DEFAULT: "var(--primary-cyan)",
+            shade: "var(--primary-cyan-shade)",
+          },
           green: "var(--primary-green)",
           yellow: "var(--primary-yellow)",
           amber: "var(--primary-amber)",

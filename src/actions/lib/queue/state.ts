@@ -13,7 +13,6 @@ export const queueNames = {
   QueryShowData: "queryShowData",
   CrawlRottenTomatoes: "crawlRottenTomatoe",
   TVBFF: "tvBFF",
-  TVShowQuips: "tvShowQuips",
   StarSignPicker: "starSignPicker",
   StateThresholdCheck: "stateThresholdCheck",
 };
@@ -207,13 +206,20 @@ export async function checkQueueThresold(
   const completion = await getQueueCompletion(sessionID, queueName);
   const [, executedChunks] = await getQueueSessionState(sessionID, queueName);
   const [, totalChunks] = await getSessionGlobalState(sessionID);
-  if (
-    completion < COMPLETION_THRESHOLD &&
-    totalChunks > 0 &&
-    executedChunks < totalChunks
+  if (completion < COMPLETION_THRESHOLD &&executedChunks < totalChunks
   ) {
     return false;
   }
 
   return true;
+}
+
+export async function statsPhaseReady(sessionID: string): Promise<boolean> {
+  return (
+    (await checkQueueThresold(
+      sessionID,
+      queueNames.QueryActivities as QueueName,
+    )) &&
+    (await checkQueueThresold(sessionID, queueNames.QueryShowData as QueueName))
+  );
 }

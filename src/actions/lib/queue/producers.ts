@@ -34,6 +34,7 @@ export type ShowPayload = {
   SessionID: string;
   Shows: JobShow[];
   JobID: string;
+  ProceedNext?: boolean;
 };
 
 export async function enqueueRottenTomatoes(
@@ -118,6 +119,23 @@ export async function enqueueStateThresholdCheckHandler(
     });
     return console.log(
       "> enqueueStateThresholdCheckHandler: data successfully enqueued",
+    );
+  } catch (error) {
+    console.error("Failed to enqueue data", error);
+    throw error;
+  }
+}
+
+export async function enqueueFirstPhaseHandler(
+  sessionID: string,
+): Promise<void> {
+  try {
+    await inngest.send({
+      name: eventNames.FirstPhaseHandler,
+      data: { sessionID },
+    });
+    return console.log(
+      "> enqueueFirstPhaseHandler: data successfully enqueued",
     );
   } catch (error) {
     console.error("Failed to enqueue data", error);

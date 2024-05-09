@@ -188,16 +188,7 @@ export async function getTop3ShowsByUser(
       "numberOfEpisodes" DESC
     LIMIT 3;
     `;
-  for (const show of topShows) {
-    if (show?.watchCount && show?.numberOfEpisodes) {
-      // eslint-disable-next-line no-unused-expressions
-      show.watchCount > show.numberOfEpisodes
-        ? console.info(
-            `INFO: ${show.title} has more watchCounts ${show.watchCount} than episodes ${show.numberOfEpisodes}`,
-          )
-        : "";
-    }
-  }
+
   return topShows;
 }
 

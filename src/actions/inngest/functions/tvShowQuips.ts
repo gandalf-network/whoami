@@ -1,32 +1,17 @@
-import { getAndUpdateTVShowQuips } from "@/actions";
+import { getAndUpdateTVShowQuips, updateUserStateBySession } from "@/actions";
 import { eventNames } from "@/actions/lib/queue/event";
-import {
-  QueueName,
-  getSessionGlobalState,
-  queueNames,
-  setQueueSessionState,
-} from "@/actions/lib/queue/state";
 
 import { inngest } from "../client";
+import { UserState } from "@prisma/client";
 
 async function tvShowQuips(event: { data: any }, step: any) {
   const { sessionID } = event.data;
   try {
-    const processedData = await step.run(
-      "get-and-update-tv-quips",
-      async () => {
-        return await getAndUpdateTVShowQuips(sessionID);
-      },
-    );
-    const queueName = queueNames.TVShowQuips as QueueName;
-    const [, totalChunks] = await getSessionGlobalState(sessionID);
+    await step.run("get-and-update-tv-quips", async () => {
+      return getAndUpdateTVShowQuips(sessionID);
+    });
 
-    await setQueueSessionState(
-      sessionID,
-      queueName,
-      processedData,
-      totalChunks,
-    );
+    await updateUserStateBySession(sessionID, UserState.FIRST_PHASE_READY)
   } catch (error) {
     console.error("Error processing job:", error);
     throw error;

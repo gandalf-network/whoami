@@ -55,7 +55,7 @@ import {
   extractEpisodeNumberFromTitle,
   parseDate,
 } from "../helpers/parser";
-import { ActorInput, ParsedActivity } from "../types";
+import { ActorInput, ParsedActivity, Show } from "../types";
 
 const eye = new Eye({
   baseURL: process.env.GANDALF_SAURON_URL as string,
@@ -262,6 +262,30 @@ export async function getShowDataWithTVDB(
   return processed;
 }
 
+export async function preloadTopShowsData(sessionID: string) {
+  const user = await findOrCreateUserBySessionID(sessionID);
+  const topShows = await getTop3ShowsByUser(user.id, false);
+  const firstShow = await getUsersFirstShow(user.id);
+
+  const shows = [...topShows, firstShow];
+  const jobShows: JobShow[] = shows.map((show) => {
+    return {
+      id: show.id,
+      title: show.title,
+      actors: [],
+    };
+  });
+
+  const payload: ShowPayload = {
+    SessionID: sessionID,
+    Shows: jobShows,
+    ProceedNext: false,
+    JobID: "",
+  };
+
+  await getShowData(payload);
+}
+
 export async function getShowData(payload: ShowPayload): Promise<number> {
   let processed: number = 0;
   console.log("> Number of shows:", payload?.Shows?.length);
@@ -337,7 +361,10 @@ export async function getShowData(payload: ShowPayload): Promise<number> {
   ) as JobShow[];
   payload.Shows = results;
   processed = results.length;
-  await enqueueRottenTomatoes(payload);
+
+  if (payload.ProceedNext) {
+    await enqueueRottenTomatoes(payload);
+  }
 
   return processed;
 }
@@ -446,6 +473,7 @@ export async function getAndDumpActivities(
           const showPayload: ShowPayload = {
             SessionID: sessionID,
             Shows: currentChunk,
+            ProceedNext: true,
             JobID: jobId,
           };
           await enqueueShowData(showPayload);

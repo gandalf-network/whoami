@@ -7,7 +7,7 @@ async function stateThresholdCheck() {
   try {
     const sessionIDs = await getSessionsByState(sessionStates.PROCESSING);
     for (const sessionID of sessionIDs) {
-      enqueueStateThresholdCheckHandler(sessionID);
+      await enqueueStateThresholdCheckHandler(sessionID);
     }
     return sessionIDs;
   } catch (error) {

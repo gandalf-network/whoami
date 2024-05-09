@@ -86,7 +86,7 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
       }
 
       // check if the user data is ready
-      if (data.state === "STATS_DATA_READY") {
+      if (data.state === "SECOND_PHASE_READY") {
         const stats = await getStats(sessionId);
 
         if (stats) {

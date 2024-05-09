@@ -9,6 +9,7 @@ import { starSignPickerTask } from "@/actions/inngest/functions/starSignPicker";
 import { stateThresholdCheckTask } from "@/actions/inngest/functions/stateThresholdCheck";
 import { tvBFFTask } from "@/actions/inngest/functions/tvBFF";
 import { tvShowQuipsTask } from "@/actions/inngest/functions/tvShowQuips";
+import { firstPhaseHandlerTask } from "@/actions/inngest/functions/handleFirstPhase";
 
 export const maxDuration = 180;
 
@@ -21,6 +22,7 @@ export const { GET, POST, PUT } = serve({
     crawlRottenTomatoesTask,
     starSignPickerTask,
     tvBFFTask,
+    firstPhaseHandlerTask,
     stateThresholdCheckTask,
     stateThresholdCheckHandlerTask,
   ],

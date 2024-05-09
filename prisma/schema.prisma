@@ -18,8 +18,13 @@ enum UserState {
   AWAITING_CONNECTION
   CONNECTED
   FAILED
-  CRUNCHING_DATA
-  STATS_DATA_READY
+  PROCESSING
+
+  // this phase represents the first and the most watched tv shows.
+  FIRST_PHASE_READY
+  // this phase contains information about the crossover stars and genre distribution.
+  SECOND_PHASE_READY
+  // this stage represents the completion of the report card. 
   COMPLETED
 }
 

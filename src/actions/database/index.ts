@@ -16,7 +16,7 @@ export async function getStatsResponse(sessionID: string) {
   const user = await findOrCreateUserBySessionID(sessionID);
   if (
     user.state !== UserState.COMPLETED &&
-    user.state !== UserState.STATS_DATA_READY
+    user.state !== UserState.SECOND_PHASE_READY
   ) {
     throw new Error("users data has not been fetched yet");
   }

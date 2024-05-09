@@ -1,5 +1,6 @@
 export const eventNames = {
   QueryActivities: "app/activities.query.requested",
+  FirstPhaseHandler: "app/first.phase.handler",
   QueryShowData: "app/show.data.query.requested",
   CrawlRottenTomatoes: "app/rotten.tomatoes.query.requested",
   TVBFF: "app/tv.bff.requested",

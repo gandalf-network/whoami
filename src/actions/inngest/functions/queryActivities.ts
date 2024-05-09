@@ -3,7 +3,10 @@ import { performance } from "perf_hooks";
 
 import { getAndDumpActivities, updateUserStateBySession } from "@/actions";
 import { eventNames } from "@/actions/lib/queue/event";
-import { ActivityDataPayload } from "@/actions/lib/queue/producers";
+import {
+  ActivityDataPayload,
+  enqueueFirstPhaseHandler,
+} from "@/actions/lib/queue/producers";
 import {
   setSessionIndex,
   sessionStates,
@@ -18,22 +21,26 @@ import { inngest } from "../client";
 async function queryActivities(event: { data: ActivityDataPayload }) {
   const { sessionID, dataKey } = event.data;
   try {
+    await setSessionIndex(sessionID, sessionStates.PROCESSING);
+    await updateUserStateBySession(sessionID, UserState.PROCESSING);
+
     const [totalData, totalChunks] = await getAndDumpActivities(
       sessionID,
       dataKey,
     );
-    await setSessionIndex(sessionID, sessionStates.PROCESSING);
-    await updateUserStateBySession(sessionID, UserState.CRUNCHING_DATA);
     await setSessionGlobalState(sessionID, totalData, totalChunks);
 
     const queueName = queueNames.QueryActivities as QueueName;
     await setQueueSessionState(sessionID, queueName, totalData, totalChunks);
 
     console.log(`> [totalData]:`, totalData, "[totalChunks]:", totalChunks);
+    await enqueueFirstPhaseHandler(sessionID);
+
     return totalData;
   } catch (error) {
-    await updateUserStateBySession(sessionID, UserState.CRUNCHING_DATA);
+    await updateUserStateBySession(sessionID, UserState.FAILED);
     console.error("Error processing job:", error);
+    throw error;
   }
 }
 

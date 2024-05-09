@@ -12,18 +12,18 @@ import { inngest } from "../client";
 async function starSignPicker(event: { data: any }, step: any) {
   const { sessionID } = event.data;
   try {
-    const processedData = await step.run(
+    await step.run(
       "get-and-update-star-sign-picker",
       async () => {
         return await getAndUpdateStarSignPicker(sessionID);
       },
     );
     const queueName = queueNames.StarSignPicker as QueueName;
-    const [, totalChunks] = await getSessionGlobalState(sessionID);
+    const [totalJobs, totalChunks] = await getSessionGlobalState(sessionID);
     await setQueueSessionState(
       sessionID,
       queueName,
-      processedData,
+      totalJobs,
       totalChunks,
     );
   } catch (error) {

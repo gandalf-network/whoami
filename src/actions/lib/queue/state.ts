@@ -159,6 +159,10 @@ export async function checkDependentQueuesThresold(
     "crawlRottenTomatoe",
   ];
   let canTrigger = true;
+  const [, totalChunks] = await getSessionGlobalState(sessionID);
+  if (totalChunks == 0) {
+    return false;
+  }
 
   for (const queueName of queuesToCheck) {
     const completion = await getQueueCompletion(
@@ -167,7 +171,6 @@ export async function checkDependentQueuesThresold(
     );
 
     const [, executedChunks] = await getQueueSessionState(sessionID, queueName);
-    const [, totalChunks] = await getSessionGlobalState(sessionID);
 
     console.log(`${queueName}`, "<>", completion);
     if (completion < COMPLETION_THRESHOLD && executedChunks < totalChunks) {
@@ -206,6 +209,10 @@ export async function checkQueueThresold(
   const completion = await getQueueCompletion(sessionID, queueName);
   const [, executedChunks] = await getQueueSessionState(sessionID, queueName);
   const [, totalChunks] = await getSessionGlobalState(sessionID);
+  if (totalChunks == 0) {
+    return false;
+  }
+
   if (completion < COMPLETION_THRESHOLD && executedChunks < totalChunks) {
     return false;
   }

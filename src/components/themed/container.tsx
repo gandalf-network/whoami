@@ -97,7 +97,7 @@ export const StoryDownloadContainer = ({
   return (
     <div
       className={cn(
-        "py-6 px-4 bg-primary-purple w-[375px] h-[770px] flex-col hidden absolute top-0 left-0 -z-10",
+        "py-6 px-4 bg-primary-purple w-[375px] h-[666px] flex-col hidden absolute top-0 left-0 -z-10",
         className,
       )}
       {...props}

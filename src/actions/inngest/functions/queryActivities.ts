@@ -34,7 +34,7 @@ async function queryActivities(event: { data: ActivityDataPayload }) {
   } catch (error) {
     await updateUserStateBySession(sessionID, UserState.CRUNCHING_DATA);
     console.error("Error processing job:", error);
-  }
+  } 
 }
 
 export const queryActivitiesTask = inngest.createFunction(

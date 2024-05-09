@@ -26,11 +26,6 @@ export const loadingTexts = [
   {
     title: "",
     description:
-      "Processing your data will take a few minutes. Enjoy some Netflix fun facts while you wait",
-  },
-  {
-    title: "",
-    description:
       "Netflix's original name was Kibble, inspired by the CEO's dog.",
   },
   {

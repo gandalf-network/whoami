@@ -193,21 +193,3 @@ export const shuffleArray = (array: string[]) => {
 
   return shuffledArray;
 };
-
-export const getArrayIndexPercentage = (array: any[], index: number) => {
-  // Ensure that the index is within the array's boundaries
-  if (index < 0 || index > array.length) {
-    throw new Error("Index out of bounds");
-  }
-
-  // If the array has only one item, the percentage is 100%
-  if (array.length === 1) {
-    return 100;
-  }
-
-  // Calculate the percentage
-  const percentage = (index / (array.length - 1)) * 100;
-
-  console.log({ percentage });
-  return percentage;
-};

@@ -4,6 +4,7 @@ import { Check, Copy, ShareIcon, XIcon } from "lucide-react";
 import { Button as BaseButton } from "@/components/ui/button";
 import { cn } from "@/helpers/utils";
 import { useDialog } from "@/hooks/use-dialog";
+import { useIsMobile } from "@/hooks/use-is-mobile";
 import { useShare } from "@/hooks/use-share";
 import { ShareButtonProps, ShareMediumType, ShareStoryProps } from "@/types";
 
@@ -25,6 +26,8 @@ export const ShareDialogContent = ({
 }: {
   storyProps: ShareStoryProps;
 }) => {
+  const isMobile = useIsMobile();
+
   const storyId = storyProps.id;
   const info = storyProps.info;
 
@@ -84,7 +87,7 @@ export const ShareDialogContent = ({
       </div>
       <div className="grid grid-cols-3 md:grid-cols-5 gap-3 justify-between">
         {shareMediums.map((medium) => {
-          if (medium.type === "download") {
+          if (medium.type === "download" && isMobile) {
             return (
               <SaveImageButton
                 key={medium.name}

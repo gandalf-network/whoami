@@ -5,6 +5,7 @@ import { eventNames } from "@/actions/lib/queue/event";
 import {
   enqueueStarSignPicker,
   enqueueTVBFF,
+  enqueueTVShowQuips,
 } from "@/actions/lib/queue/producers";
 import {
   QueueName,
@@ -39,6 +40,15 @@ export const stateThresholdCheckHandlerTask = inngest.createFunction(
         await checkQueueThresold(sessionID, queueNames.TVShowQuips as QueueName)
       ) {
         await updateUserStateBySession(sessionID, UserState.STATS_DATA_READY);
+      }
+
+      if (
+        await checkQueueThresold(
+          sessionID,
+          queueNames.QueryShowData as QueueName,
+        )
+      ) {
+        await enqueueTVShowQuips(sessionID);
       }
 
       if (await checkDependentQueuesThresold(sessionID)) {

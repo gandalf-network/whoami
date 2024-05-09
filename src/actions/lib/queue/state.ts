@@ -207,7 +207,7 @@ export async function checkQueueThresold(
   const completion = await getQueueCompletion(sessionID, queueName);
   const [, executedChunks] = await getQueueSessionState(sessionID, queueName);
   const [, totalChunks] = await getSessionGlobalState(sessionID);
-  if (completion < COMPLETION_THRESHOLD && executedChunks < totalChunks) {
+  if (completion < COMPLETION_THRESHOLD && (totalChunks > 0 && executedChunks < totalChunks)) {
     return false;
   }
 

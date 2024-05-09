@@ -10,13 +10,17 @@ import {
   getUserAverageRottenTomatoScore,
 } from "./show";
 import { findOrCreateUserBySessionID } from "./user";
-import { MostWatchedTvShowWithEpisode, UserStats } from "../../types";
+import {
+  FirstPhaseData,
+  MostWatchedTvShowWithEpisode,
+  SecondPhaseData,
+} from "../../types";
 
-export async function getStatsResponse(sessionID: string) {
+export async function getFirstPhaseResponse(sessionID: string) {
   const user = await findOrCreateUserBySessionID(sessionID);
   if (
     user.state !== UserState.COMPLETED &&
-    user.state !== UserState.SECOND_PHASE_READY
+    user.state !== UserState.FIRST_PHASE_READY
   ) {
     throw new Error("users data has not been fetched yet");
   }
@@ -24,16 +28,14 @@ export async function getStatsResponse(sessionID: string) {
   const usersFirstShow = await getUsersFirstShow(user.id);
   const usersMostWatchedTVShows = await getTop3ShowsByUser(user.id, false);
   const usersMostWatchedTVShow = usersMostWatchedTVShows[0];
-  const topShowsByActor = await getUsersTopShowsByActor(user.id);
   const watchCount = await getTotalNumberOfShowsWatchedByUser(user.id);
-  const topGenres = await getUsersTopGenres(user.id, 5);
   const aiResponses = await createOrUpdateUsersAIResponse({ userID: user.id });
 
   const mostWatchedTvShow: MostWatchedTvShowWithEpisode = {
     ...usersMostWatchedTVShow,
   };
 
-  const stats: UserStats = {
+  const data: FirstPhaseData = {
     firstTvShow: {
       show: usersFirstShow,
       quip: aiResponses.firstTVShowQuip ? aiResponses.firstTVShowQuip : "",
@@ -44,18 +46,37 @@ export async function getStatsResponse(sessionID: string) {
         ? aiResponses.mostWatchedTVShowQuip
         : "",
     },
-    yourCrossoverStar: topShowsByActor,
     watchHistory: {
       totalShowsWatched: watchCount,
       topShows: usersMostWatchedTVShows,
     },
+  };
+
+  return data;
+}
+
+export async function getSecondPhaseResponse(sessionID: string) {
+  const user = await findOrCreateUserBySessionID(sessionID);
+  if (
+    user.state !== UserState.COMPLETED &&
+    user.state !== UserState.SECOND_PHASE_READY
+  ) {
+    throw new Error("users data has not been fetched yet");
+  }
+
+  const topShowsByActor = await getUsersTopShowsByActor(user.id);
+  const topGenres = await getUsersTopGenres(user.id, 5);
+  const aiResponses = await createOrUpdateUsersAIResponse({ userID: user.id });
+
+  const data: SecondPhaseData = {
+    yourCrossoverStar: topShowsByActor,
     genreDistribution: {
       genres: topGenres,
       quip: aiResponses.topGenresQuip ? aiResponses.topGenresQuip : "",
     },
   };
 
-  return stats;
+  return data;
 }
 
 export async function getReportCardResponse(sessionID: string) {

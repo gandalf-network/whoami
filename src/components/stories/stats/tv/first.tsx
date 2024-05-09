@@ -18,9 +18,9 @@ export const FirstTVShowStory = ({
   className,
   ...props
 }: StoryContentProps) => {
-  const { stats } = useUserData();
+  const { firstPhaseData } = useUserData();
 
-  const firstTvShow = stats?.firstTvShow || {};
+  const firstTvShow = firstPhaseData?.firstTvShow || {};
 
   const showImage = firstTvShow?.show?.imageURL;
 
@@ -75,9 +75,9 @@ export const FirstTVShowStory = ({
 export const FirstTVShowDownloadStory = ({
   ...props
 }: StoryDownloadContentProps) => {
-  const { stats } = useUserData();
+  const { firstPhaseData } = useUserData();
 
-  const firstTvShow = stats?.firstTvShow || {};
+  const firstTvShow = firstPhaseData?.firstTvShow || {};
 
   const showImage = firstTvShow?.show?.imageURL;
 

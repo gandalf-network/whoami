@@ -1,6 +1,10 @@
-import { getStats, getReportCard } from "@/actions";
+import { getFirstPhase, getSecondPhase, getReportCard } from "@/actions";
 
-export type UserStatsType = Awaited<ReturnType<typeof getStats>>;
+export type UserFirstPhaseDataType = Awaited<ReturnType<typeof getFirstPhase>>;
+
+export type UserSecondPhaseDataType = Awaited<
+  ReturnType<typeof getSecondPhase>
+>;
 
 export type UserReportCardType = Awaited<ReturnType<typeof getReportCard>>;
 
@@ -37,10 +41,13 @@ export type WatchHistory = {
 
 export type MostWatchedTvShowWithEpisode = Show;
 
-export type UserStats = {
+export type FirstPhaseData = {
   firstTvShow: { show: Show; quip: string };
   watchHistory: WatchHistory;
   mostWatchedTvShow: { show: MostWatchedTvShowWithEpisode; quip: string };
+};
+
+export type SecondPhaseData = {
   yourCrossoverStar: YourCrossoverStar;
   genreDistribution: { genres: TopGenres; quip: string };
 };

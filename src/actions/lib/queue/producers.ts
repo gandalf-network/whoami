@@ -30,6 +30,12 @@ export type JobShow = {
   actors: string[];
 };
 
+const jobShow: JobShow = {
+  id: "",
+  title: "",
+  actors: [""],
+};
+
 export type ShowPayload = {
   SessionID: string;
   Shows: JobShow[];

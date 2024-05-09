@@ -3,18 +3,25 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
-import { findOrCreateUser, findUser, getReportCard, getStats } from "@/actions";
+import {
+  findOrCreateUser,
+  findUser,
+  getFirstPhase,
+  getReportCard,
+  getSecondPhase,
+} from "@/actions";
 import {
   createOrGetSessionId,
   getDataFromSession,
   storeDataInSession,
   storeSessionId,
 } from "@/helpers/storage";
-import { parseStatsBigIntValueAsJSONReady } from "@/helpers/story";
+import { parseFirstPhaseBigIntValueAsJSONReady } from "@/helpers/story";
 import {
   UseSessionOptionsType,
+  UserFirstPhaseDataType,
   UserReportCardType,
-  UserStatsType,
+  UserSecondPhaseDataType,
 } from "@/types";
 
 import { useInterval } from "./use-interval";
@@ -33,8 +40,13 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
     ReturnType<typeof findOrCreateUser>
   > | null>(null);
 
-  // user stats data
-  const [stats, setStats] = useState<UserStatsType | null>(null);
+  // user first phase data
+  const [firstPhaseData, setFirstPhaseData] =
+    useState<UserFirstPhaseDataType | null>(null);
+
+  // user second phase data
+  const [secondPhaseData, setSecondPhaseData] =
+    useState<UserSecondPhaseDataType | null>(null);
 
   // user report card data
   const [reportCard, setReportCard] = useState<UserReportCardType | null>(null);
@@ -54,11 +66,16 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
 
   // update data
   const updateData = (data: {
-    stats?: UserStatsType;
+    firstPhaseData?: UserFirstPhaseDataType;
+    secondPhaseData?: UserSecondPhaseDataType;
     reportCard?: UserReportCardType;
   }) => {
-    if (data?.stats) {
-      setStats(data.stats);
+    if (data?.firstPhaseData) {
+      setFirstPhaseData(data.firstPhaseData);
+    }
+
+    if (data?.secondPhaseData) {
+      setSecondPhaseData(data.secondPhaseData);
     }
 
     if (data?.reportCard) {
@@ -85,26 +102,46 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
         throw new Error("Internal server error while crunching the data");
       }
 
-      // check if the user data is ready
-      if (data.state === "SECOND_PHASE_READY") {
-        const stats = await getStats(sessionId);
+      // check if the user's first phase data is ready
+      if (data.state === "FIRST_PHASE_READY") {
+        const firstPhaseData = await getFirstPhase(sessionId);
 
-        if (stats) {
-          updateData({ stats });
+        if (firstPhaseData) {
+          updateData({ firstPhaseData });
+        }
+      }
+
+      // check if the user's second phase data is ready
+      if (data.state === "SECOND_PHASE_READY") {
+        const secondPhaseData = await getSecondPhase(sessionId);
+
+        if (secondPhaseData) {
+          updateData({ secondPhaseData });
         }
       }
 
       if (data.state === "COMPLETED") {
         const _reportCard = await getReportCard(sessionId);
-        const _stats = stats ? stats : await getStats(sessionId);
+        const _firstPhaseData = firstPhaseData
+          ? firstPhaseData
+          : await getFirstPhase(sessionId);
+        const _secondPhaseData = secondPhaseData
+          ? secondPhaseData
+          : await getSecondPhase(sessionId);
 
-        updateData({ stats: _stats, reportCard: _reportCard });
+        updateData({
+          firstPhaseData: _firstPhaseData,
+          secondPhaseData: _secondPhaseData,
+          reportCard: _reportCard,
+        });
 
-        console.log({ _stats, _reportCard });
+        console.log({ _firstPhaseData, _secondPhaseData, _reportCard });
 
-        if (_stats && _reportCard) {
+        if (_firstPhaseData && _secondPhaseData && _reportCard) {
           storeDataInSession({
-            stats: parseStatsBigIntValueAsJSONReady(_stats),
+            firstPhaseData:
+              parseFirstPhaseBigIntValueAsJSONReady(_firstPhaseData),
+            secondPhaseData: _secondPhaseData,
             reportCard: _reportCard,
           });
         }
@@ -237,7 +274,9 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
 
   useInterval(refetch, {
     delay:
-      (stats && reportCard) || retries >= 300 || !sessionValid
+      (firstPhaseData && secondPhaseData && reportCard) ||
+      retries >= 300 ||
+      !sessionValid
         ? undefined
         : options && options?.refetchInterval
           ? options.refetchInterval
@@ -248,7 +287,8 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
   return {
     sessionId,
     user,
-    stats,
+    firstPhaseData,
+    secondPhaseData,
     reportCard,
     loading,
     refetch,

@@ -16,17 +16,17 @@ import { useSession } from "@/hooks/use-session";
 export default function Page() {
   const { url: connectUrl, loading } = useGandalfConnect();
 
-  const { stats, reportCard } = useSession({
+  const { firstPhaseData, secondPhaseData, reportCard } = useSession({
     initializeUser: true,
   });
 
   const router = useRouter();
 
   useEffect(() => {
-    if (stats || reportCard) {
+    if (firstPhaseData || secondPhaseData || reportCard) {
       router.push("/stories");
     }
-  }, [stats, reportCard]);
+  }, [firstPhaseData, secondPhaseData, reportCard]);
 
   return (
     <Container className="relative bg-primary-pink-shade">

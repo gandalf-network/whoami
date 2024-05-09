@@ -1,5 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { HalfEclipse, PentagramStar } from "@/components/icon";
+import { StoryLoader } from "@/components/loader/story";
 import { useUserData } from "@/components/providers/user";
 import {
   PageHeader,
@@ -18,9 +19,11 @@ export const GenreDistributionStory = ({
   className,
   ...props
 }: StoryContentProps) => {
-  const { stats } = useUserData();
+  const { secondPhaseData } = useUserData();
 
-  const genreDistribution = stats?.genreDistribution;
+  const genreDistribution = secondPhaseData?.genreDistribution;
+
+  const isLoading = !secondPhaseData;
 
   return (
     <div
@@ -29,54 +32,64 @@ export const GenreDistributionStory = ({
         className,
       )}
     >
-      <div className="offset-content flex-1 flex-col flex-center">
-        <PageHeader storyProps={storyProps} name="tv Stats" />
+      {isLoading ? (
+        <>
+          <PageHeader storyProps={storyProps} name="tv Stats" />
+          <StoryLoader title="Genre Distribution" />
+        </>
+      ) : (
+        <>
+          <div className="offset-content flex-1 flex-col flex-center">
+            <PageHeader storyProps={storyProps} name="tv Stats" />
 
-        <div className="gap-y-8 story-content">
-          <Text className="text-2xl uppercase" font="heading">
-            Genre Distribution
-          </Text>
+            <div className="gap-y-8 story-content">
+              <Text className="text-2xl uppercase" font="heading">
+                Genre Distribution
+              </Text>
 
-          <div className="px-8 max-w-full">
-            <Text className="text-lg mb-2.5 font-medium">
-              Your top {genreDistribution?.genres?.length} TV genres include:
-            </Text>
-            <div className="relative w-full">
-              <div className="min-w-80 mx-auto flex-center my-3 flex flex-col gap-y-0.5 w-full z-10 relative">
-                {genreDistribution?.genres?.map?.((genre, index) => {
-                  const label = `${genre.genre} - ${parseInt((genre?.percentage || 0).toString(), 10)}%`;
-                  return (
-                    <Progress
-                      key={`${label}-${index}`}
-                      max={100}
-                      value={genre.percentage}
-                      label={label}
-                      className="w-full"
-                      containerClassName="px-0"
-                    />
-                  );
-                })}
+              <div className="px-8 max-w-full">
+                <Text className="text-lg mb-2.5 font-medium">
+                  Your top {genreDistribution?.genres?.length} TV genres
+                  include:
+                </Text>
+                <div className="relative w-full">
+                  <div className="min-w-80 mx-auto flex-center my-3 flex flex-col gap-y-0.5 w-full z-10 relative">
+                    {genreDistribution?.genres?.map?.((genre, index) => {
+                      const label = `${genre.genre} - ${parseInt((genre?.percentage || 0).toString(), 10)}%`;
+                      return (
+                        <Progress
+                          key={`${label}-${index}`}
+                          max={100}
+                          value={genre.percentage}
+                          label={label}
+                          className="w-full"
+                          containerClassName="px-0"
+                        />
+                      );
+                    })}
+                  </div>
+                  <PentagramStar className="absolute w-24 -right-14 -top-6" />
+                </div>
+                <Text className="text-base" font="caption">
+                  {genreDistribution?.quip}
+                </Text>
               </div>
-              <PentagramStar className="absolute w-24 -right-14 -top-6" />
             </div>
-            <Text className="text-base" font="caption">
-              {genreDistribution?.quip}
-            </Text>
           </div>
-        </div>
-      </div>
 
-      <HalfEclipse className="absolute w-16 rotate-[-40deg] -left-2 -bottom-6" />
+          <HalfEclipse className="absolute w-16 rotate-[-40deg] -left-2 -bottom-6" />
 
-      <div className="flex-center-x pb-4">
-        <ShareButton
-          storyProps={{
-            id: "tvGenre",
-            info: genreDistribution?.genres?.map((genre) => genre.genre),
-            ...storyProps,
-          }}
-        />
-      </div>
+          <div className="flex-center-x pb-4">
+            <ShareButton
+              storyProps={{
+                id: "tvGenre",
+                info: genreDistribution?.genres?.map((genre) => genre.genre),
+                ...storyProps,
+              }}
+            />
+          </div>
+        </>
+      )}
 
       <GenreDistributionDownloadStory />
     </div>
@@ -86,9 +99,9 @@ export const GenreDistributionStory = ({
 export const GenreDistributionDownloadStory = ({
   ...props
 }: StoryDownloadContentProps) => {
-  const { stats } = useUserData();
+  const { secondPhaseData } = useUserData();
 
-  const genreDistribution = stats?.genreDistribution;
+  const genreDistribution = secondPhaseData?.genreDistribution;
 
   return (
     <StoryDownloadContainer

@@ -12,7 +12,11 @@ import { getPersonalities } from "./api/perplexity";
 import { getRottenTomatoScore } from "./api/rottenTomatoes";
 import TMDBClient, { TVShowDetails } from "./api/tmdb";
 import TVDBClient from "./api/tvdb";
-import { getReportCardResponse, getStatsResponse } from "./database";
+import {
+  getFirstPhaseResponse,
+  getReportCardResponse,
+  getSecondPhaseResponse,
+} from "./database";
 import {
   getActorsByShow,
   getActorsImageByCharacterNameAndShow,
@@ -93,8 +97,12 @@ export async function findOrCreateUser(sessionID: string) {
   }
 }
 
-export async function getStats(sessionID: string) {
-  return getStatsResponse(sessionID);
+export async function getFirstPhase(sessionID: string) {
+  return getFirstPhaseResponse(sessionID);
+}
+
+export async function getSecondPhase(sessionID: string) {
+  return getSecondPhaseResponse(sessionID);
 }
 
 export async function getReportCard(sessionID: string) {

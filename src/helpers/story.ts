@@ -1,4 +1,4 @@
-import { AllStoryIds, TopGenres, UserStats } from "@/types";
+import { AllStoryIds, FirstPhaseData, TopGenres } from "@/types";
 
 import { createOrGetSessionId } from "./storage";
 import { getEnvDetails } from "./utils";
@@ -55,13 +55,15 @@ export const getStoryLink = (storyId: AllStoryIds) => {
 // get story index
 export const getStoryIndex = (storyId: AllStoryIds) => {
   switch (storyId) {
-    // tv stats
+    // first phase
     case "firstTvShow":
       return 1;
     case "mostWatchedTvShow":
       return 2;
     case "totalShows":
       return 3;
+
+    // second phase
     case "crossoverStar":
       return 4;
     case "tvGenre":
@@ -99,15 +101,15 @@ export const getStoryShareText = (storyId: AllStoryIds, info: any) => {
   switch (storyId) {
     // tv stats
     case "firstTvShow":
-      return `My first Netflix TV show is ${info}. Checkout whoami.tv to find out yours.`;
+      return `My first Netflix TV show is ${info}. Try it out to find out yours.`;
     case "mostWatchedTvShow":
-      return `My most watched Netflix TV show is ${info}. Checkout whoami.tv to find out yours.`;
+      return `My most watched Netflix TV show is ${info}. Try it out to find out yours.`;
     case "totalShows":
-      return `I have watched ${info} Netflix shows. Checkout whoami.tv to find out yours.`;
+      return `I have watched ${info} Netflix shows. Try it out to find out yours.`;
     case "crossoverStar":
-      return `My crossover star is ${info}. Checkout whoami.tv to find out yours.`;
+      return `My crossover star is ${info}. Try it out to find out yours.`;
     case "tvGenre":
-      return `My favorite Netflix TV genres are ${info}. Checkout whoami.tv to find out yours.`;
+      return `My favorite Netflix TV genres are ${info.join(", ")}. Try it out to find out yours.`;
     // default
     default:
       return "Just viewed my Netflix TV metrics on WhoAmI.TV 📺. Take a look at yours here ✨";
@@ -131,23 +133,23 @@ export const getHighestPercentageGenre = (genres: TopGenres) => {
   return highestGenre;
 };
 
-export const parseStatsBigIntValueAsJSONReady = (
-  stats: UserStats,
-): UserStats => {
-  const watchCount = stats?.mostWatchedTvShow?.show?.watchCount;
+export const parseFirstPhaseBigIntValueAsJSONReady = (
+  data: FirstPhaseData,
+): FirstPhaseData => {
+  const watchCount = data?.mostWatchedTvShow?.show?.watchCount;
 
   return {
-    ...stats,
+    ...data,
     mostWatchedTvShow: {
-      ...stats.mostWatchedTvShow,
+      ...data.mostWatchedTvShow,
       show: {
-        ...stats.mostWatchedTvShow.show,
+        ...data.mostWatchedTvShow.show,
         watchCount: (watchCount ? Number(watchCount) : 0).toString() as any,
       },
     },
     watchHistory: {
-      ...stats.watchHistory,
-      topShows: stats.watchHistory.topShows.map((show) => {
+      ...data.watchHistory,
+      topShows: data.watchHistory.topShows.map((show) => {
         return {
           ...show,
           watchCount: (show.watchCount

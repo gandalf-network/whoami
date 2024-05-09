@@ -1,6 +1,10 @@
-import { UserReportCardType, UserStatsType } from "@/types";
+import {
+  UserReportCardType,
+  UserFirstPhaseDataType,
+  UserSecondPhaseDataType,
+} from "@/types";
 
-export const TVStatsMockedData: UserStatsType = {
+export const TVFirstPhaseMockedData: UserFirstPhaseDataType = {
   firstTvShow: {
     show: {
       id: "1",
@@ -23,6 +27,35 @@ export const TVStatsMockedData: UserStatsType = {
     },
     quip: "Looks like those coffee-fueled shenanigans keep calling you back for more!",
   },
+  watchHistory: {
+    totalShowsWatched: 78,
+    topShows: [
+      {
+        id: "1",
+        dateFirstPlayed: "",
+        title: "The Last Kingdom",
+        imageURL:
+          "https://res.cloudinary.com/dmsic9qmj/image/upload/v1712250917/gandalf/whoami/tlk_djxkxl.png",
+      },
+      {
+        id: "1",
+        dateFirstPlayed: "",
+        title: "Friends",
+        imageURL:
+          "https://res.cloudinary.com/dmsic9qmj/image/upload/v1712250921/gandalf/whoami/fr_fn7ebw.png",
+      },
+      {
+        id: "1",
+        dateFirstPlayed: "",
+        title: "The Crown",
+        imageURL:
+          "https://res.cloudinary.com/dmsic9qmj/image/upload/v1712250926/gandalf/whoami/tc_bhh31q.png",
+      },
+    ],
+  },
+};
+
+export const TVSeconfPhaseMockedData: UserSecondPhaseDataType = {
   yourCrossoverStar: {
     name: "Jennifer Aniston",
     topShows: ["Friends", "The Morning Show", "The Break-Up"],
@@ -53,32 +86,6 @@ export const TVStatsMockedData: UserStatsType = {
       },
     ],
     quip: "Looks like you're a well-rounded viewer with a penchant for a good laugh and an adrenaline rush!",
-  },
-  watchHistory: {
-    totalShowsWatched: 78,
-    topShows: [
-      {
-        id: "1",
-        dateFirstPlayed: "",
-        title: "The Last Kingdom",
-        imageURL:
-          "https://res.cloudinary.com/dmsic9qmj/image/upload/v1712250917/gandalf/whoami/tlk_djxkxl.png",
-      },
-      {
-        id: "1",
-        dateFirstPlayed: "",
-        title: "Friends",
-        imageURL:
-          "https://res.cloudinary.com/dmsic9qmj/image/upload/v1712250921/gandalf/whoami/fr_fn7ebw.png",
-      },
-      {
-        id: "1",
-        dateFirstPlayed: "",
-        title: "The Crown",
-        imageURL:
-          "https://res.cloudinary.com/dmsic9qmj/image/upload/v1712250926/gandalf/whoami/tc_bhh31q.png",
-      },
-    ],
   },
 };
 

@@ -16,9 +16,9 @@ export const TotalTVShowStory = ({
   className,
   ...props
 }: StoryContentProps) => {
-  const { stats } = useUserData();
+  const { firstPhaseData } = useUserData();
 
-  const watchHistory = stats?.watchHistory || {};
+  const watchHistory = firstPhaseData?.watchHistory || {};
   const firstShowImage = watchHistory?.topShows?.[0]?.imageURL;
   const secondShowImage = watchHistory?.topShows?.[1]?.imageURL;
   const thirdShowImage = watchHistory?.topShows?.[2]?.imageURL;
@@ -98,9 +98,9 @@ export const TotalTVShowStory = ({
 export const TotalTVShowDownloadStory = ({
   ...props
 }: StoryDownloadContentProps) => {
-  const { stats } = useUserData();
+  const { firstPhaseData } = useUserData();
 
-  const watchHistory = stats?.watchHistory || {};
+  const watchHistory = firstPhaseData?.watchHistory || {};
   const firstShowImage = watchHistory?.topShows?.[0]?.imageURL;
   const secondShowImage = watchHistory?.topShows?.[1]?.imageURL;
   const thirdShowImage = watchHistory?.topShows?.[2]?.imageURL;

@@ -2,12 +2,17 @@
 
 import { createContext } from "@/helpers/context";
 import { useSession } from "@/hooks/use-session";
-import { UserReportCardType, UserStatsType } from "@/types";
+import {
+  UserFirstPhaseDataType,
+  UserReportCardType,
+  UserSecondPhaseDataType,
+} from "@/types";
 
 import { Loader } from "../loader";
 
 export interface UserDataContextProps {
-  stats: UserStatsType;
+  firstPhaseData: UserFirstPhaseDataType;
+  secondPhaseData: UserSecondPhaseDataType;
   reportCard: UserReportCardType;
 }
 
@@ -21,12 +26,14 @@ export const [UserDataContextProvider, useUserDataContext] =
 export const UserDataProvider = (props: UserDataProviderProps) => {
   const { children } = props;
 
-  const { stats, reportCard } = useSession();
+  const { firstPhaseData, secondPhaseData, reportCard } = useSession();
 
-  const loading = !stats && !reportCard;
+  const loading = !firstPhaseData && !secondPhaseData && !reportCard;
 
   return (
-    <UserDataContextProvider value={{ stats, reportCard }}>
+    <UserDataContextProvider
+      value={{ firstPhaseData, secondPhaseData, reportCard }}
+    >
       <Loader loading={loading}>{children}</Loader>
     </UserDataContextProvider>
   );

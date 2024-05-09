@@ -1,6 +1,6 @@
 import { Metadata, ResolvingMetadata } from "next";
 
-import { getReportCard, getStats } from "@/actions";
+import { getReportCard, getFirstPhase, getSecondPhase } from "@/actions";
 import { LandingScreen } from "@/components/screens/landing";
 import { UserStories } from "@/components/stories";
 import { Container } from "@/components/themed";
@@ -52,13 +52,10 @@ export async function generateMetadata(
       //   yourCrossoverStar,
       // } = TVStatsMockedData;
 
-      const {
-        firstTvShow,
-        mostWatchedTvShow,
-        watchHistory,
-        genreDistribution,
-        yourCrossoverStar,
-      } = await getStats(id);
+      const { firstTvShow, mostWatchedTvShow, watchHistory } =
+        await getFirstPhase(id);
+
+      const { genreDistribution, yourCrossoverStar } = await getSecondPhase(id);
 
       switch (story) {
         case "firstTvShow":

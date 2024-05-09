@@ -1,5 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { Circle, GridDots, Rectangle } from "@/components/icon";
+import { StoryLoader } from "@/components/loader/story";
 import { useUserData } from "@/components/providers/user";
 import {
   PageHeader,
@@ -17,9 +18,11 @@ export const CrossOverStarStory = ({
   className,
   ...props
 }: StoryContentProps) => {
-  const { stats } = useUserData();
+  const { secondPhaseData } = useUserData();
 
-  const crossoverStar = stats?.yourCrossoverStar || {};
+  const crossoverStar = secondPhaseData?.yourCrossoverStar || {};
+
+  const isLoading = !secondPhaseData;
 
   return (
     <div
@@ -30,52 +33,58 @@ export const CrossOverStarStory = ({
     >
       <PageHeader storyProps={storyProps} name="tv Stats" />
 
-      <div className="gap-y-10 story-content">
-        <Text className="text-2xl uppercase" font="heading">
-          Crossover Star
-        </Text>
+      {isLoading ? (
+        <StoryLoader title="Star Sign" />
+      ) : (
+        <>
+          <div className="gap-y-10 story-content">
+            <Text className="text-2xl uppercase" font="heading">
+              Crossover Star
+            </Text>
 
-        <div className="relative p-0 w-64 h-64 rounded-full">
-          <GridDots className="absolute w-[375px] top-[-17%] -translate-x-2/4 left-2/4" />
-          <Circle className="absolute w-16 -top-0 -left-0" />
-          <Rectangle
-            className="absolute w-8 bottom-6 right-4 z-20"
-            strokeWidth={1.5}
-          />
-          <ThemedImage
-            className="rounded-full z-10"
-            src={crossoverStar?.imageURL}
-          />
-        </div>
+            <div className="relative p-0 w-64 h-64 rounded-full">
+              <GridDots className="absolute w-[375px] top-[-17%] -translate-x-2/4 left-2/4" />
+              <Circle className="absolute w-16 -top-0 -left-0" />
+              <Rectangle
+                className="absolute w-8 bottom-6 right-4 z-20"
+                strokeWidth={1.5}
+              />
+              <ThemedImage
+                className="rounded-full z-10"
+                src={crossoverStar?.imageURL}
+              />
+            </div>
 
-        <div className="mt-8">
-          <Text className="text-xl font-bold">
-            {crossoverStar?.name || "-"}
-          </Text>
-          <Text className="text-base my-3 font-medium">
-            Has appeared in{" "}
-            <strong>
-              {crossoverStar?.topShows?.length} show
-              {crossoverStar?.topShows?.length > 1 ? "s " : " "}
-            </strong>
-            you&apos;ve watched, including{" "}
-            {formatStringArrayToJSX({
-              strings: crossoverStar?.topShows,
-              className: "font-bold",
-            })}
-          </Text>
-        </div>
-      </div>
+            <div className="mt-8">
+              <Text className="text-xl font-bold">
+                {crossoverStar?.name || "-"}
+              </Text>
+              <Text className="text-base my-3 font-medium">
+                Has appeared in{" "}
+                <strong>
+                  {crossoverStar?.topShows?.length} show
+                  {crossoverStar?.topShows?.length > 1 ? "s " : " "}
+                </strong>
+                you&apos;ve watched, including{" "}
+                {formatStringArrayToJSX({
+                  strings: crossoverStar?.topShows,
+                  className: "font-bold",
+                })}
+              </Text>
+            </div>
+          </div>
 
-      <div className="flex-center-x pb-4">
-        <ShareButton
-          storyProps={{
-            id: "crossoverStar",
-            info: crossoverStar.name,
-            ...storyProps,
-          }}
-        />
-      </div>
+          <div className="flex-center-x pb-4">
+            <ShareButton
+              storyProps={{
+                id: "crossoverStar",
+                info: crossoverStar.name,
+                ...storyProps,
+              }}
+            />
+          </div>
+        </>
+      )}
 
       <CrossOverStarDownloadStory />
     </div>
@@ -85,9 +94,9 @@ export const CrossOverStarStory = ({
 export const CrossOverStarDownloadStory = ({
   ...props
 }: StoryDownloadContentProps) => {
-  const { stats } = useUserData();
+  const { secondPhaseData } = useUserData();
 
-  const crossoverStar = stats?.yourCrossoverStar || {};
+  const crossoverStar = secondPhaseData?.yourCrossoverStar || {};
 
   return (
     <StoryDownloadContainer

@@ -17,9 +17,9 @@ export const MostRewatchTVShowStory = ({
   className,
   ...props
 }: StoryContentProps) => {
-  const { stats } = useUserData();
+  const { firstPhaseData } = useUserData();
 
-  const mostWatchedTvShow = stats?.mostWatchedTvShow || {};
+  const mostWatchedTvShow = firstPhaseData?.mostWatchedTvShow || {};
 
   const watchCount = Number(mostWatchedTvShow?.show?.watchCount);
   const numberOfEpisodes = mostWatchedTvShow?.show?.numberOfEpisodes;
@@ -93,9 +93,9 @@ export const MostRewatchTVShowStory = ({
 export const MostRewatchTVShowDownloadStory = ({
   ...props
 }: StoryDownloadContentProps) => {
-  const { stats } = useUserData();
+  const { firstPhaseData } = useUserData();
 
-  const mostWatchedTvShow = stats?.mostWatchedTvShow || {};
+  const mostWatchedTvShow = firstPhaseData?.mostWatchedTvShow || {};
 
   const watchCount = Number(mostWatchedTvShow?.show?.watchCount);
   const numberOfEpisodes = mostWatchedTvShow?.show?.numberOfEpisodes;

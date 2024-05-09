@@ -63,6 +63,7 @@ export const StarSignStory = ({
             <ShareButton
               storyProps={{
                 id: "starSign",
+                info: starSign.name,
                 ...storyProps,
               }}
             />

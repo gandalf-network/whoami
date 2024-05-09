@@ -616,10 +616,6 @@ export async function getAndDumpActivities(
       `> After processing data: took ${(finalTime - startTime) / 1000} seconds.`,
     );
 
-    // Preload top shows data and enqueue TV show quips
-    preloadTopShowsData(sessionID);
-    await enqueueTVShowQuips(sessionID);
-
     return [totalShows, totalChunks];
   } catch (error: any) {
     await updateUserStateBySession(sessionID, UserState.FAILED);

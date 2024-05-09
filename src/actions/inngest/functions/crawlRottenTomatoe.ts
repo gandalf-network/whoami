@@ -3,10 +3,8 @@ import { eventNames } from "@/actions/lib/queue/event";
 import { ShowPayload } from "@/actions/lib/queue/producers";
 import {
   QueueName,
-  getQueueSessionState,
   incrementQueueSessionState,
   queueNames,
-  setQueueSessionState,
 } from "@/actions/lib/queue/state";
 
 import { inngest } from "../client";

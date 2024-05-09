@@ -168,6 +168,10 @@ export function handleShowTitleEdgeCases(title: string): string {
   }
 }
 
-export const replaceAmpersandWithAnd = (text: string) => {
+export const replaceAmpersandWithAnd = (text?: string) => {
+  if (!text) {
+    return text;
+  }
+
   return text.replace(/&/g, "and");
 };

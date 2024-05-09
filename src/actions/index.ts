@@ -59,7 +59,7 @@ import {
   extractEpisodeNumberFromTitle,
   parseDate,
 } from "../helpers/parser";
-import { ActorInput, ParsedActivity } from "../types";
+import { ActorInput, ParsedActivity, Show } from "../types";
 
 const eye = new Eye({
   baseURL: process.env.GANDALF_SAURON_URL as string,
@@ -374,6 +374,78 @@ export async function getShowData(payload: ShowPayload): Promise<number> {
   return processed;
 }
 
+export async function getShowDataWithTMDB(shows: Show[]): Promise<number> {
+  const queryShowPromises = shows.map(async (show) => {
+    try {
+      show.title = handleShowTitleEdgeCases(show.title);
+      const showResponse = await tmdbClient.searchTVShows(show.title);
+      if (showResponse.results.length === 0) {
+        throw new Error(`No results found for title: ${show.title}`);
+      }
+
+      const showId = showResponse.results[0].id;
+      const showDetails = await tmdbClient.getTVShowDetails(showId);
+      return { show, showDetails };
+    } catch (error) {
+      console.log(`Search failed for show title: ${show.title}, error:`, error);
+      return null;
+    }
+  });
+
+  const fetchedShows = (await Promise.all(queryShowPromises)).filter(
+    Boolean,
+  ) as { show: Show; showDetails: TVShowDetails }[];
+  const saveShowPromises = fetchedShows.map(async ({ show, showDetails }) => {
+    try {
+      const genres: string[] = showDetails.genres.map((genre) => genre.name);
+      const actors: ActorInput[] = [];
+      const actorNames: string[] = [];
+
+      for (const currentActor of showDetails.aggregate_credits.cast) {
+        const actor = {
+          name: currentActor.name,
+          popularity: currentActor.popularity,
+          totalEpisodeCount: currentActor.total_episode_count ?? 0,
+          characterName: currentActor.roles?.[0]?.character ?? "",
+          imageURL: currentActor.profile_path
+            ? `https://image.tmdb.org/t/p/w1280/${currentActor.profile_path}`
+            : "",
+        };
+        actors.push(actor);
+        actorNames.push(currentActor.name);
+      }
+
+      await createActorsAndConnectToShow(actors, show.id);
+
+      const updatedShow: UpdateShowInput = {
+        id: show.id,
+        genres,
+        numberOfEpisodes: showDetails.number_of_episodes,
+        summary: showDetails.overview,
+        imageURL: `https://image.tmdb.org/t/p/w1280/${showDetails.poster_path}`,
+      };
+
+      await updateShow(updatedShow);
+
+      return {
+        id: show.id,
+        title: show.title,
+        actors: actorNames,
+      };
+    } catch (error) {
+      console.log(
+        `getShowData: show title ${show.title} failed with error:`,
+        error,
+      );
+      return null;
+    }
+  });
+
+  const results = (await Promise.all(saveShowPromises)).filter(Boolean);
+
+  return results.length;
+}
+
 function generateJobId(
   pageCount: number,
   chunkNumber: number,
@@ -487,6 +559,12 @@ export async function getAndDumpActivities(
         totalShows += jobShows.length;
       }
     }
+
+    const topShows = await getTop3ShowsByUser(user.id, false);
+    const firstShow = await getUsersFirstShow(user.id);
+    const shows = [...topShows, firstShow];
+    await getShowDataWithTMDB(shows);
+    await updateUserStateBySession(sessionID, UserState.FIRST_PHASE_READY);
     return [totalShows, totalChunks];
   } catch (error: any) {
     await updateUserStateBySession(sessionID, UserState.FAILED);

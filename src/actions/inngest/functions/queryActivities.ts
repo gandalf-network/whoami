@@ -3,10 +3,7 @@ import { performance } from "perf_hooks";
 
 import { getAndDumpActivities, updateUserStateBySession } from "@/actions";
 import { eventNames } from "@/actions/lib/queue/event";
-import {
-  ActivityDataPayload,
-  enqueueFirstPhaseHandler,
-} from "@/actions/lib/queue/producers";
+import { ActivityDataPayload } from "@/actions/lib/queue/producers";
 import {
   setSessionIndex,
   sessionStates,
@@ -34,7 +31,7 @@ async function queryActivities(event: { data: ActivityDataPayload }) {
     await setQueueSessionState(sessionID, queueName, totalData, totalChunks);
 
     console.log(`> [totalData]:`, totalData, "[totalChunks]:", totalChunks);
-    await enqueueFirstPhaseHandler(sessionID);
+    // await enqueueFirstPhaseHandler(sessionID);
 
     return totalData;
   } catch (error) {

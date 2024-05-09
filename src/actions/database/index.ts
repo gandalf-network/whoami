@@ -19,8 +19,8 @@ import {
 export async function getFirstPhaseResponse(sessionID: string) {
   const user = await findOrCreateUserBySessionID(sessionID);
   if (
-    user.state != UserState.COMPLETED &&
-    user.state != UserState.FIRST_PHASE_READY
+    user.state !== UserState.COMPLETED &&
+    user.state !== UserState.FIRST_PHASE_READY
   ) {
     throw new Error("users data has not been fetched yet");
   }

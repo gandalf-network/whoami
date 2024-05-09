@@ -3,13 +3,13 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { Button as BaseButton } from "@/components/ui/button";
-import { cn, getArrayIndexPercentage, shuffleArray } from "@/helpers/utils";
+import { cn, shuffleArray } from "@/helpers/utils";
 
 import { DoYouKnowThatIcon, HalfEclipse, QuadrilateralStar } from "../icon";
 import {
   BluePinkWaveBackground,
+  CountdownCircleTimer,
   PageHeader,
-  ThemedCircularProgress,
 } from "../themed";
 
 export interface LoadingScreenProps
@@ -174,10 +174,19 @@ export const LoadingTrivia = () => {
 
   return (
     <div className="flex-col flex-center gap-6 rounded-lg border-2 bg-primary-cyan-shade p-6">
-      <div className="w-10 h-10">
-        <ThemedCircularProgress
-          value={getArrayIndexPercentage(texts, index + 1)}
-          text={(index + 1).toString()}
+      <div className="w-12 h-12">
+        <CountdownCircleTimer
+          isPlaying
+          duration={5}
+          rotation="clockwise"
+          colors={["#000"] as any}
+          strokeWidth={5}
+          trailColor="#fff"
+          key={index}
+          onComplete={() => {
+            return { shouldRepeat: true };
+          }}
+          size={36}
         />
       </div>
 
@@ -216,7 +225,7 @@ export const LoadingScreen = ({
   useEffect(() => {
     const interval = setInterval(() => {
       setIsTitleLoading(false);
-    }, 5000);
+    }, 2000);
 
     return () => clearInterval(interval);
   }, []);

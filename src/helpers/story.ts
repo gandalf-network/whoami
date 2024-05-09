@@ -109,7 +109,7 @@ export const getStoryShareText = (storyId: AllStoryIds, info: any) => {
     case "tvGenre":
       return `My favorite Netflix TV genres are ${info.join(", ")}. Try it out to find out yours.`;
     case "rottenTomatoesScore":
-      return `My Rotten Tomatoes score is ${info}. Try it out to find out yours.`;
+      return `My Netflix Rotten Tomatoes score is ${info}. Try it out to find out yours.`;
     case "tvBff":
       return `My Netflix TV BFF is ${info}. Try it out to find out yours.`;
     case "starSign":

@@ -1,4 +1,10 @@
-import { getAndUpdateTVShowQuips, preloadTopShowsData, updateUserStateBySession } from "@/actions";
+import { UserState } from "@prisma/client";
+
+import {
+  getAndUpdateTVShowQuips,
+  preloadTopShowsData,
+  updateUserStateBySession,
+} from "@/actions";
 import { eventNames } from "@/actions/lib/queue/event";
 import {
   QueueName,
@@ -8,7 +14,6 @@ import {
 } from "@/actions/lib/queue/state";
 
 import { inngest } from "../client";
-import { UserState } from "@prisma/client";
 
 async function tvShowQuips(event: { data: any }, step: any) {
   const { sessionID } = event.data;

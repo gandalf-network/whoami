@@ -41,8 +41,8 @@ async function queryActivities(event: { data: ActivityDataPayload }) {
     await setQueueSessionState(sessionID, queueName, totalData, totalChunks);
 
     console.log(`> [totalData]:`, totalData, "[totalChunks]:", totalChunks);
-    enqueueTVShowQuips(sessionID)
-    
+    enqueueTVShowQuips(sessionID);
+
     return totalData;
   } catch (error) {
     await updateUserStateBySession(sessionID, UserState.FAILED);

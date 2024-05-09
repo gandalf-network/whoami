@@ -282,7 +282,7 @@ export async function checkStatsReadyThreshold(
   sessionID: string,
 ): Promise<boolean> {
   return await checkQueueThreshold(
-      sessionID,
-      queueNames.TVShowQuips as QueueName
-    )
+    sessionID,
+    queueNames.TVShowQuips as QueueName,
+  );
 }

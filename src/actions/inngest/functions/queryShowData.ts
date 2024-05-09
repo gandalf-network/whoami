@@ -14,7 +14,7 @@ async function queryShowData(event: { data: ShowPayload }) {
   try {
     const processedData = await getShowData(event.data);
     const queueName = queueNames.QueryShowData as QueueName;
-    
+
     await incrementQueueSessionState(
       showPayload.SessionID,
       queueName,

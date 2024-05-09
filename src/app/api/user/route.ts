@@ -12,8 +12,6 @@ export async function GET(req: Request) {
 
     const user = await findUser(sessionID);
 
-    console.log({ user });
-
     if (user) {
       return Response.json(user);
     } else {

@@ -59,7 +59,7 @@ import {
   extractEpisodeNumberFromTitle,
   parseDate,
 } from "../helpers/parser";
-import { ActorInput, ParsedActivity, Show } from "../types";
+import { ActorInput, ParsedActivity } from "../types";
 
 const eye = new Eye({
   baseURL: process.env.GANDALF_SAURON_URL as string,
@@ -74,7 +74,6 @@ const tmdbClient = new TMDBClient(
 const tvdbClient = new TVDBClient();
 
 export async function createUser(sessionID: string) {
-  console.log(sessionID);
   return createUserBySessionID(sessionID);
 }
 
@@ -85,8 +84,6 @@ export async function findUser(sessionID: string) {
 export async function findOrCreateUser(sessionID: string) {
   try {
     const user = await findUser(sessionID);
-    console.log({ user, sessionID });
-
     if (!user) {
       return createUser(sessionID);
     }

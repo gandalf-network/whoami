@@ -572,7 +572,7 @@ export async function getAndDumpActivities(
     console.log("\n............Data Fetching Complete......................\n");
     const endTime = performance.now();
     console.log(
-      `> getAndDumpActivities took ${endTime - startTime} milliseconds.`,
+      `> getAndDumpActivities took ${(endTime - startTime) / 1000}·seconds.`,
     );
     preloadTopShowsData(sessionID);
 

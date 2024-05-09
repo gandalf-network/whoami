@@ -132,7 +132,6 @@ export async function enqueueStateThresholdCheck(
   }
 }
 
-
 export async function enqueueFirstPhaseHandler(
   sessionID: string,
 ): Promise<void> {

@@ -36,7 +36,7 @@ export const stateThresholdCheckTask = inngest.createFunction(
 
       // Update state to `COMPLETED` if last phase threshold is met
       if (await checkLastPhaseThreshold(sessionID)) {
-        console.log(">>>>> COMPELETED >>>>>>>>");
+        console.log(">>>>> COMPLETED >>>>>>>>");
         await completeSession(sessionID);
         return;
       }

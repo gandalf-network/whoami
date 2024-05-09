@@ -52,6 +52,7 @@ import {
   ShowPayload,
   enqueueRottenTomatoes,
   enqueueShowData,
+  enqueueTVShowQuips,
 } from "./lib/queue/producers";
 import { TVDB_API_KEY } from "../helpers/constants";
 import {
@@ -458,7 +459,7 @@ export async function getAndDumpActivities(
   sessionID: string,
   dataKey: string,
 ): Promise<number[]> {
-  const limit = 500;
+  const limit = 1000;
   const chunkLimit = 8;
   let totalChunks = 0;
   let total: number = 0;
@@ -573,8 +574,9 @@ export async function getAndDumpActivities(
     console.log(
       `> getAndDumpActivities took ${endTime - startTime} milliseconds.`,
     );
-
     preloadTopShowsData(sessionID);
+
+    await enqueueTVShowQuips(sessionID);
 
     return [totalShows, totalChunks];
   } catch (error: any) {

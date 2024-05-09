@@ -14,7 +14,6 @@ import {
 
 export interface LoadingScreenProps
   extends React.HTMLAttributes<HTMLDivElement> {
-  title?: string;
   texts?: { title?: string; description: string }[];
 }
 
@@ -214,21 +213,9 @@ export const LoadingTrivia = () => {
 
 export const LoadingScreen = ({
   className,
-  title = "Processing your data will take a few minutes. Enjoy some Netflix fun facts while you wait",
   texts = loadingTexts,
   ...props
 }: LoadingScreenProps) => {
-  const [isTitleLoading, setIsTitleLoading] = useState(true);
-
-  useEffect(() => {
-    // Set the title to be loaded after 2 seconds
-    const interval = setInterval(() => {
-      setIsTitleLoading(false);
-    }, 2000);
-
-    return () => clearInterval(interval);
-  }, []);
-
   return (
     <div
       className={cn(
@@ -240,31 +227,20 @@ export const LoadingScreen = ({
       <PageHeader />
 
       <div className="flex-1 flex-center flex-col gap-2.5 mb-14 px-2 relative z-50">
-        {isTitleLoading ? (
-          <div className="flex-col flex-center gap-6 w-full py-6 px-2">
-            <img
-              src="/loading.gif"
-              className="w-16 h-16 object-cover"
-              alt="loading animation"
-            />
-            <p className="text-center text-lg font-medium">{title}</p>
-          </div>
-        ) : (
-          <div className="flex-center flex-col gap-2 pb-14 px-2 w-full mb-4">
-            <img
-              src="/loading.gif"
-              className="w-16 h-16 object-cover"
-              alt="loading animation"
-            />
+        <div className="flex-center flex-col gap-2 pb-14 px-2 w-full mb-4">
+          <img
+            src="/loading.gif"
+            className="w-16 h-16 object-cover"
+            alt="loading animation"
+          />
 
-            <p className="text-center text-base opacity-50 mb-3">
-              Crunching your data <br />
-              This might take a minute...
-            </p>
+          <p className="text-center text-base opacity-50 mb-3">
+            Crunching your data <br />
+            This might take a minute...
+          </p>
 
-            <LoadingTrivia />
-          </div>
-        )}
+          <LoadingTrivia />
+        </div>
       </div>
 
       <QuadrilateralStar

@@ -1,8 +1,9 @@
+import { UserState } from "@prisma/client";
+
 import { getAndUpdateTVShowQuips, updateUserStateBySession } from "@/actions";
 import { eventNames } from "@/actions/lib/queue/event";
 
 import { inngest } from "../client";
-import { UserState } from "@prisma/client";
 
 async function tvShowQuips(event: { data: any }, step: any) {
   const { sessionID } = event.data;
@@ -11,7 +12,7 @@ async function tvShowQuips(event: { data: any }, step: any) {
       return getAndUpdateTVShowQuips(sessionID);
     });
 
-    await updateUserStateBySession(sessionID, UserState.FIRST_PHASE_READY)
+    await updateUserStateBySession(sessionID, UserState.FIRST_PHASE_READY);
   } catch (error) {
     console.error("Error processing job:", error);
     throw error;

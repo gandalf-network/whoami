@@ -176,7 +176,7 @@ export const replaceAmpersandWithAnd = (text?: string) => {
   return text.replace(/&/g, "and");
 };
 
-const shuffleArray = (array: string[]) => {
+export const shuffleArray = (array: string[]) => {
   // Create a copy of the array to avoid modifying the original array
   const shuffledArray = array.slice();
 

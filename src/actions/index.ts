@@ -94,11 +94,11 @@ export async function findOrCreateUser(sessionID: string) {
   }
 }
 
-export async function getFirstPhase(sessionID: string) {
+export async function getFirstPhaseData(sessionID: string) {
   return getFirstPhaseResponse(sessionID);
 }
 
-export async function getSecondPhase(sessionID: string) {
+export async function getSecondPhaseData(sessionID: string) {
   return getSecondPhaseResponse(sessionID);
 }
 

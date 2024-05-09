@@ -1,6 +1,10 @@
 import { Metadata, ResolvingMetadata } from "next";
 
-import { getReportCard, getFirstPhase, getSecondPhase } from "@/actions";
+import {
+  getReportCard,
+  getFirstPhaseData,
+  getSecondPhaseData,
+} from "@/actions";
 import { LandingScreen } from "@/components/screens/landing";
 import { UserStories } from "@/components/stories";
 import { Container } from "@/components/themed";
@@ -47,7 +51,7 @@ export async function generateMetadata(
       // } = TVStatsMockedData;
 
       const { firstTvShow, mostWatchedTvShow, watchHistory } =
-        await getFirstPhase(id);
+        await getFirstPhaseData(id);
 
       switch (story) {
         case "firstTvShow":
@@ -83,17 +87,13 @@ export async function generateMetadata(
       }
     }
 
-    if ((["crossoverStar", "tvGenre"] as AllStoryIds[]).includes(story)) {
+    if ((["crossoverStar"] as AllStoryIds[]).includes(story)) {
       // @note: this is the mocked data and should be replaced with the actual data
       // const {
-      //   firstTvShow,
-      //   mostWatchedTvShow,
-      //   watchHistory,
-      //   genreDistribution,
       //   yourCrossoverStar,
       // } = TVStatsMockedData;
 
-      const { genreDistribution, yourCrossoverStar } = await getSecondPhase(id);
+      const { yourCrossoverStar } = await getSecondPhaseData(id);
 
       switch (story) {
         case "crossoverStar":
@@ -106,6 +106,27 @@ export async function generateMetadata(
             },
           });
           break;
+      }
+    }
+
+    if (
+      (
+        [
+          "tvGenre",
+          "rottenTomatoesScore",
+          "tvBff",
+          "starSign",
+          "overview",
+        ] as AllStoryIds[]
+      ).includes(story)
+    ) {
+      // @note: this is the mocked data and should be replaced with the actual data
+      // const { tvGenre, personality, tvBFF, starSign } = ReportsCardMockedData;
+
+      const { personality, tvBFF, starSign, genreDistribution } =
+        await getReportCard(id);
+
+      switch (story) {
         case "tvGenre":
           title = `My favorite TV genres are ${genreDistribution.genres
             .map((genre) => genre.genre)
@@ -117,25 +138,6 @@ export async function generateMetadata(
             },
           });
           break;
-      }
-    }
-
-    if (
-      (
-        [
-          "rottenTomatoesScore",
-          "tvBff",
-          "starSign",
-          "overview",
-        ] as AllStoryIds[]
-      ).includes(story)
-    ) {
-      // @note: this is the mocked data and should be replaced with the actual data
-      // const { personality, tvBFF, starSign } = ReportsCardMockedData;
-
-      const { personality, tvBFF, starSign } = await getReportCard(id);
-
-      switch (story) {
         case "rottenTomatoesScore":
           title = `My Rotten Tomatoes score is ${personality.rtScore}%`;
           images = buildOgImageUrl({

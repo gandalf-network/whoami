@@ -62,31 +62,6 @@ export const TVSeconfPhaseMockedData: UserSecondPhaseDataType = {
     imageURL:
       "https://res.cloudinary.com/dmsic9qmj/image/upload/v1712250919/gandalf/whoami/ja_pefc4y.png",
   },
-  genreDistribution: {
-    genres: [
-      {
-        genre: "😂 Comedy",
-        percentage: 35,
-      },
-      {
-        genre: "👀 Drama",
-        percentage: 25,
-      },
-      {
-        genre: "🕵️‍♂️ Mystery",
-        percentage: 20,
-      },
-      {
-        genre: " 😱 Thriller",
-        percentage: 12,
-      },
-      {
-        genre: "🚀 Sci-fi ",
-        percentage: 8,
-      },
-    ],
-    quip: "Looks like you're a well-rounded viewer with a penchant for a good laugh and an adrenaline rush!",
-  },
 };
 
 export const ReportsCardMockedData: UserReportCardType = {
@@ -114,5 +89,30 @@ export const ReportsCardMockedData: UserReportCardType = {
     rtScore: 10,
     reason:
       "You have a taste for the finest shows, with a keen eye for quality and a love for the classics.",
+  },
+  genreDistribution: {
+    genres: [
+      {
+        genre: "😂 Comedy",
+        percentage: 35,
+      },
+      {
+        genre: "👀 Drama",
+        percentage: 25,
+      },
+      {
+        genre: "🕵️‍♂️ Mystery",
+        percentage: 20,
+      },
+      {
+        genre: " 😱 Thriller",
+        percentage: 12,
+      },
+      {
+        genre: "🚀 Sci-fi ",
+        percentage: 8,
+      },
+    ],
+    quip: "Looks like you're a well-rounded viewer with a penchant for a good laugh and an adrenaline rush!",
   },
 };

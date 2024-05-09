@@ -6,9 +6,9 @@ import { useEffect, useState } from "react";
 import {
   findOrCreateUser,
   findUser,
-  getFirstPhase,
+  getFirstPhaseData,
   getReportCard,
-  getSecondPhase,
+  getSecondPhaseData,
 } from "@/actions";
 import {
   createOrGetSessionId,
@@ -71,7 +71,6 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
     reportCard?: UserReportCardType;
   }) => {
     if (data?.firstPhaseData) {
-      console.log(data.firstPhaseData);
       setFirstPhaseData(data.firstPhaseData);
     }
 
@@ -105,7 +104,7 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
 
       // check if the user's first phase data is ready
       if (data.state === "FIRST_PHASE_READY") {
-        const firstPhaseData = await getFirstPhase(sessionId);
+        const firstPhaseData = await getFirstPhaseData(sessionId);
 
         if (firstPhaseData) {
           updateData({ firstPhaseData });
@@ -114,7 +113,7 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
 
       // check if the user's second phase data is ready
       if (data.state === "SECOND_PHASE_READY") {
-        const secondPhaseData = await getSecondPhase(sessionId);
+        const secondPhaseData = await getSecondPhaseData(sessionId);
 
         if (secondPhaseData) {
           updateData({ secondPhaseData });
@@ -125,18 +124,16 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
         const _reportCard = await getReportCard(sessionId);
         const _firstPhaseData = firstPhaseData
           ? firstPhaseData
-          : await getFirstPhase(sessionId);
+          : await getFirstPhaseData(sessionId);
         const _secondPhaseData = secondPhaseData
           ? secondPhaseData
-          : await getSecondPhase(sessionId);
+          : await getSecondPhaseData(sessionId);
 
         updateData({
           firstPhaseData: _firstPhaseData,
           secondPhaseData: _secondPhaseData,
           reportCard: _reportCard,
         });
-
-        console.log({ _firstPhaseData, _secondPhaseData, _reportCard });
 
         if (_firstPhaseData && _secondPhaseData && _reportCard) {
           storeDataInSession({

@@ -65,15 +65,9 @@ export async function getSecondPhaseResponse(sessionID: string) {
   }
 
   const topShowsByActor = await getUsersTopShowsByActor(user.id);
-  const topGenres = await getUsersTopGenres(user.id, 5);
-  const aiResponses = await createOrUpdateUsersAIResponse({ userID: user.id });
 
   const data: SecondPhaseData = {
     yourCrossoverStar: topShowsByActor,
-    genreDistribution: {
-      genres: topGenres,
-      quip: aiResponses.topGenresQuip ? aiResponses.topGenresQuip : "",
-    },
   };
 
   return data;
@@ -89,6 +83,12 @@ export async function getReportCardResponse(sessionID: string) {
   const topShows = await getTop3ShowsByUser(user.id);
   const topShow = topShows[0];
   const rtScore = await getUserAverageRottenTomatoScore(user.id);
+  const topGenres = await getUsersTopGenres(user.id, 5);
+
+  const genreDistribution = {
+    genres: topGenres,
+    quip: aiResponses.topGenresQuip ? aiResponses.topGenresQuip : "",
+  };
 
   const tvBFF = {
     show: topShow.title,
@@ -119,5 +119,6 @@ export async function getReportCardResponse(sessionID: string) {
     starSign,
     personality,
     rottenTomato,
+    genreDistribution,
   };
 }

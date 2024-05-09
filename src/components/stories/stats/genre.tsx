@@ -19,11 +19,11 @@ export const GenreDistributionStory = ({
   className,
   ...props
 }: StoryContentProps) => {
-  const { secondPhaseData } = useUserData();
+  const { reportCard } = useUserData();
 
-  const genreDistribution = secondPhaseData?.genreDistribution;
+  const genreDistribution = reportCard?.genreDistribution;
 
-  const isLoading = !secondPhaseData;
+  const isLoading = !reportCard;
 
   return (
     <div
@@ -99,9 +99,9 @@ export const GenreDistributionStory = ({
 export const GenreDistributionDownloadStory = ({
   ...props
 }: StoryDownloadContentProps) => {
-  const { secondPhaseData } = useUserData();
+  const { reportCard } = useUserData();
 
-  const genreDistribution = secondPhaseData?.genreDistribution;
+  const genreDistribution = reportCard?.genreDistribution;
 
   return (
     <StoryDownloadContainer

@@ -1,9 +1,15 @@
-import { getFirstPhase, getSecondPhase, getReportCard } from "@/actions";
+import {
+  getFirstPhaseData,
+  getSecondPhaseData,
+  getReportCard,
+} from "@/actions";
 
-export type UserFirstPhaseDataType = Awaited<ReturnType<typeof getFirstPhase>>;
+export type UserFirstPhaseDataType = Awaited<
+  ReturnType<typeof getFirstPhaseData>
+>;
 
 export type UserSecondPhaseDataType = Awaited<
-  ReturnType<typeof getSecondPhase>
+  ReturnType<typeof getSecondPhaseData>
 >;
 
 export type UserReportCardType = Awaited<ReturnType<typeof getReportCard>>;
@@ -49,7 +55,6 @@ export type FirstPhaseData = {
 
 export type SecondPhaseData = {
   yourCrossoverStar: YourCrossoverStar;
-  genreDistribution: { genres: TopGenres; quip: string };
 };
 
 export type Actor = {

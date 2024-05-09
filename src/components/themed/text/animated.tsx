@@ -19,7 +19,5 @@ export const TextAnimation: React.FC<
     return () => clearInterval(interval);
   }, [texts.length]);
 
-  if (texts[currentTextIndex] === undefined) return null;
-
   return <p {...props}>{texts[currentTextIndex]}</p>;
 };

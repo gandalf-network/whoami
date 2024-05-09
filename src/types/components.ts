@@ -36,6 +36,7 @@ export interface ShareButtonProps extends ButtonProps {
     id: AllStoryIds;
     action?: Action;
     isPaused?: boolean;
+    info?: any;
   };
 }
 

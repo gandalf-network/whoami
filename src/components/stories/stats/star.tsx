@@ -71,6 +71,7 @@ export const CrossOverStarStory = ({
         <ShareButton
           storyProps={{
             id: "crossoverStar",
+            info: crossoverStar.name,
             ...storyProps,
           }}
         />

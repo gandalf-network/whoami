@@ -72,6 +72,7 @@ export const GenreDistributionStory = ({
         <ShareButton
           storyProps={{
             id: "tvGenre",
+            info: genreDistribution?.genres?.map((genre) => genre.genre),
             ...storyProps,
           }}
         />

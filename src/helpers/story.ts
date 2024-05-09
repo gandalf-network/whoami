@@ -91,6 +91,29 @@ export const getStoryDownloadSelector = (storyId: AllStoryIds) => {
   };
 };
 
+export const getStoryShareText = (storyId: AllStoryIds, info: any) => {
+  if (!info) {
+    return "Just viewed my Netflix TV metrics on WhoAmI.TV 📺. Take a look at yours here ✨";
+  }
+
+  switch (storyId) {
+    // tv stats
+    case "firstTvShow":
+      return `My first Netflix TV show is ${info}. Checkout whoami.tv to find out yours.`;
+    case "mostWatchedTvShow":
+      return `My most watched Netflix TV show is ${info}. Checkout whoami.tv to find out yours.`;
+    case "totalShows":
+      return `I have watched ${info} Netflix shows. Checkout whoami.tv to find out yours.`;
+    case "crossoverStar":
+      return `My crossover star is ${info}. Checkout whoami.tv to find out yours.`;
+    case "tvGenre":
+      return `My favorite Netflix TV genres are ${info}. Checkout whoami.tv to find out yours.`;
+    // default
+    default:
+      return "Just viewed my Netflix TV metrics on WhoAmI.TV 📺. Take a look at yours here ✨";
+  }
+};
+
 export const getHighestPercentageGenre = (genres: TopGenres) => {
   // Initialize variables to first genre in the array
   let highestGenre = genres?.[0];

@@ -19,7 +19,13 @@ import {
 import { LoadingIcon } from "../loader/base";
 import { AlertDialogCancel } from "../ui/alert-dialog";
 
-export const ShareDialogContent = ({ storyId }: { storyId: AllStoryIds }) => {
+export const ShareDialogContent = ({
+  storyId,
+  info,
+}: {
+  storyId: AllStoryIds;
+  info: any;
+}) => {
   const [share, { loading, copied, storyLink, selectedMedium }] = useShare({
     storyId,
   });
@@ -61,7 +67,7 @@ export const ShareDialogContent = ({ storyId }: { storyId: AllStoryIds }) => {
   ];
 
   const onShareClick = (type: ShareMediumType) => {
-    share({ type });
+    share({ type, info });
   };
 
   return (
@@ -129,7 +135,9 @@ export const ShareButton = ({
     show({
       onOverlayClick: hide,
       contentClassName: "max-w-xs md:max-w-lg rounded-2xl",
-      children: <ShareDialogContent storyId={storyProps.id} />,
+      children: (
+        <ShareDialogContent storyId={storyProps.id} info={storyProps.info} />
+      ),
     });
   };
 

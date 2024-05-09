@@ -69,6 +69,7 @@ export const TVBFFStory = ({
             <ShareButton
               storyProps={{
                 id: "tvBff",
+                info: name,
                 ...storyProps,
               }}
             />

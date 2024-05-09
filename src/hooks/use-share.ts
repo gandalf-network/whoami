@@ -1,6 +1,10 @@
 import { useState } from "react";
 
-import { getStoryDownloadSelector, getStoryLink } from "@/helpers/story";
+import {
+  getStoryDownloadSelector,
+  getStoryLink,
+  getStoryShareText,
+} from "@/helpers/story";
 import {
   dataURLtoFile,
   isMobileOrTablet,
@@ -25,10 +29,14 @@ export const useShare = ({ storyId }: { storyId: AllStoryIds }) => {
 
   const storyLink = getStoryLink(storyId);
 
-  const shareText =
-    "Just viewed my TV metrics on WhoAmI.TV 📺. Take a look at yours here ✨";
-
-  const share = async ({ type }: { type: ShareMediumType }) => {
+  const share = async ({
+    type,
+    info,
+  }: {
+    type: ShareMediumType;
+    info: any;
+  }) => {
+    const shareText = getStoryShareText(storyId, info);
     try {
       setSelectedMedium(type);
       setLoading(true);

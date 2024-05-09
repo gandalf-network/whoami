@@ -489,18 +489,26 @@ export async function getAndDumpActivities(
     const totalPages = Math.ceil(total / limit);
     const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
 
-    const fetchPromises = pageNumbers.map((page) => {
-      if (page == 1) {
-        return initialActivityResponse;
-      }
-      return eye.getActivity({ dataKey, source: Source.Netflix, limit, page });
-    });
-    const pageResults = await Promise.all(fetchPromises);
+    const pageResults = await Promise.all(
+      pageNumbers.map(async (page) => {
+        try {
+          if (page === 1) {
+            return initialActivityResponse;
+          } else {
+            return await eye.getActivity({ dataKey, source: Source.Netflix, limit, page });
+          }
+        } catch (error) {
+          console.error(`Error fetching page ${page}: ${error}`);
+          throw error;
+        }
+      })
+    );
 
     const midTime = performance.now();
     console.log(
       `> getAndDumpActivities took ${(midTime - startTime) / 1000} seconds.`,
     );
+
     let totalShows = 0;
     for (const activityResponse of pageResults) {
       const jobShows: JobShow[] = [];

@@ -43,7 +43,10 @@ export const stateThresholdCheckHandlerTask = inngest.createFunction(
       }
 
       if (
-        await checkQueueThresold(sessionID, queueNames.QueryShowData as QueueName)
+        await checkQueueThresold(
+          sessionID,
+          queueNames.QueryShowData as QueueName,
+        )
       ) {
         await enqueueTVShowQuips(sessionID);
       }

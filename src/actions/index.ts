@@ -459,7 +459,7 @@ export async function getAndDumpActivities(
   sessionID: string,
   dataKey: string,
 ): Promise<number[]> {
-  const limit = 1000;
+  const limit = 500;
   const chunkLimit = 8;
   let totalChunks = 0;
   let total: number = 0;

@@ -462,17 +462,20 @@ export async function getAndDumpActivities(
   const limit = 500;
   const chunkLimit = 8;
   let totalChunks = 0;
-  let total: number = 0;
+  let totalShows = 0;
   try {
     const user = await upsertUser(sessionID, dataKey);
-    const seenShows: Set<string> = new Set();
+    
+    const seenShows = new Map<string, { showId: string; userShowId: string }>();
     const episodes: insertEpisodeInput[] = [];
+    const jobShows: Map<string, JobShow> = new Map();
 
     console.log(
       "\n..............Started Fetching Data......................\n",
     );
     const startTime = performance.now();
 
+    // Fetch initial page to get the total number of pages
     const initialActivityResponse = await eye.getActivity({
       dataKey,
       source: Source.Netflix,
@@ -480,119 +483,112 @@ export async function getAndDumpActivities(
       page: 1,
     });
 
-    total = initialActivityResponse.total;
+    const total = initialActivityResponse.total;
     if (initialActivityResponse.data.length === 0) {
       console.log("No data to fetch.");
       return [0, 0];
     }
 
+    // Fetch all pages concurrently
     const totalPages = Math.ceil(total / limit);
     const pageNumbers = Array.from({ length: totalPages }, (_, i) => i + 1);
 
     const pageResults = await Promise.all(
       pageNumbers.map(async (page) => {
-        try {
-          if (page === 1) {
-            return initialActivityResponse;
-          } else {
-            return await eye.getActivity({
-              dataKey,
-              source: Source.Netflix,
-              limit,
-              page,
-            });
-          }
-        } catch (error) {
-          console.error(`Error fetching page ${page}: ${error}`);
-          throw error;
+        if (page === 1) {
+          return initialActivityResponse;
+        } else {
+          return eye.getActivity({
+            dataKey,
+            source: Source.Netflix,
+            limit,
+            page,
+          });
         }
       }),
     );
 
     const midTime = performance.now();
     console.log(
-      `> getAndDumpActivities took ${(midTime - startTime) / 1000} seconds.`,
+      `> Before processing data: took ${(midTime - startTime) / 1000} seconds.`,
     );
 
-    let totalShows = 0;
     for (const activityResponse of pageResults) {
-      const jobShows: JobShow[] = [];
       for (const activity of activityResponse.data) {
         const metadata = activity?.metadata as NetflixActivityMetadata;
         const originalTitle = metadata.title;
         const originalTitleSplit = originalTitle.split(":");
         const title = originalTitleSplit[0];
 
-        if (originalTitleSplit.length >= 3) {
-          const parsedActivity: ParsedActivity | null =
-            parseActivityInput(originalTitle);
-          if (!parsedActivity) continue;
+        const parsedActivity = parseActivityInput(originalTitle);
+        if (!parsedActivity) continue;
 
-          const updatedTitle = parsedActivity.movieTitle
-            ? parsedActivity.movieTitle
-            : title;
-          let updatedEpisodeNumber = parsedActivity.episodeNumber;
-          let updatedEpisodeTitle = parsedActivity.episodeTitle;
+        const updatedTitle = parsedActivity.movieTitle ?? title;
+        let {
+          episodeNumber: updatedEpisodeNumber,
+          episodeTitle: updatedEpisodeTitle,
+        } = parsedActivity;
 
-          if (!parsedActivity.episodeNumber && parsedActivity.episodeTitle) {
-            [updatedEpisodeNumber, updatedEpisodeTitle] =
-              extractEpisodeNumberFromTitle(parsedActivity.episodeTitle);
-          }
+        if (!parsedActivity.episodeNumber && parsedActivity.episodeTitle) {
+          [updatedEpisodeNumber, updatedEpisodeTitle] =
+            extractEpisodeNumberFromTitle(parsedActivity.episodeTitle);
+        }
 
+        // Cache shows to avoid repetitive upsertShow calls
+        if (!seenShows.has(updatedTitle)) {
           const show = await upsertShow(updatedTitle);
           const userShow = await upsertUserShow(user.id, show.id);
-
-          const episode = {
-            title: updatedEpisodeTitle || "",
-            datePlayed: parseDate(metadata.date),
-            userShowID: userShow.id,
-            season: parsedActivity.seasonNumber,
-            episode: updatedEpisodeNumber,
-          };
-          episodes.push(episode);
-
-          if (!seenShows.has(updatedTitle)) {
-            seenShows.add(updatedTitle);
-            jobShows.push({
-              id: show.id,
-              title: show.title,
-              actors: [],
-            });
-          }
+          seenShows.set(updatedTitle, {
+            showId: show.id,
+            userShowId: userShow.id,
+          });
+          jobShows.set(updatedTitle, {
+            id: show.id,
+            title: show.title,
+            actors: [],
+          });
         }
-      }
 
-      if (jobShows.length > 0) {
-        await batchInsertEpisodes(episodes);
+        const { userShowId } = seenShows.get(updatedTitle)!;
 
-        const jobChunks = chunkShows(jobShows, chunkLimit);
-        for (let chunkIndex = 0; chunkIndex < jobChunks.length; chunkIndex++) {
-          const currentChunk = jobChunks[chunkIndex];
-          const jobId = generateJobId(
-            activityResponse.page,
-            chunkIndex,
-            sessionID,
-          );
-          const showPayload: ShowPayload = {
-            SessionID: sessionID,
-            Shows: currentChunk,
-            ProceedNext: true,
-            JobID: jobId,
-          };
-          await enqueueShowData(showPayload);
-          totalChunks++;
-        }
-        totalShows += jobShows.length;
+        episodes.push({
+          title: updatedEpisodeTitle || "",
+          datePlayed: parseDate(metadata.date),
+          userShowID: userShowId,
+          season: parsedActivity.seasonNumber,
+          episode: updatedEpisodeNumber,
+        });
       }
     }
+
+    if (episodes.length > 0) {
+      await batchInsertEpisodes(episodes);
+    }
+
+    // Chunk and enqueue job shows
+    const jobChunks = chunkShows(Array.from(jobShows.values()), chunkLimit);
+    for (let chunkIndex = 0; chunkIndex < jobChunks.length; chunkIndex++) {
+      const currentChunk = jobChunks[chunkIndex];
+      const jobId = generateJobId(1, chunkIndex, sessionID);
+      const showPayload: ShowPayload = {
+        SessionID: sessionID,
+        Shows: currentChunk,
+        ProceedNext: true,
+        JobID: jobId,
+      };
+      await enqueueShowData(showPayload);
+      totalChunks++;
+    }
+    totalShows = jobShows.size;
 
     console.log("\n............Data Fetching Complete......................\n");
     const finalTime = performance.now();
     console.log(
-      `> getAndDumpActivities took ${(finalTime - startTime) / 1000} seconds.`,
+      `> After processing data: took ${(finalTime - startTime) / 1000} seconds.`,
     );
-    preloadTopShowsData(sessionID);
 
+    // Preload top shows data and enqueue TV show quips
+    preloadTopShowsData(sessionID);
     await enqueueTVShowQuips(sessionID);
 
     return [totalShows, totalChunks];

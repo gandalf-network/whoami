@@ -27,7 +27,7 @@ export const stateThresholdCheckTask = inngest.createFunction(
   { event: eventNames.StateThresholdCheck },
   async ({ event, step }) => {
     const { sessionID } = event.data;
-    if (sessionID) return;
+    if (!sessionID) return;
 
     console.log(`> Running state threshold checks... SID: ${sessionID}`);
 
@@ -80,18 +80,18 @@ async function completeSession(sessionID: string) {
 async function processDependentQueues(sessionID: string) {
   if (await checkDependentQueuesThreshold(sessionID)) {
     if (
-      !(await checkQueueThreshold(sessionID, queueNames.TVBFF as QueueName))
-    ) {
-      await enqueueTVBFF(sessionID);
-    }
-
-    if (
       !(await checkQueueThreshold(
         sessionID,
         queueNames.StarSignPicker as QueueName,
       ))
     ) {
       await enqueueStarSignPicker(sessionID);
+    }
+
+    if (
+      !(await checkQueueThreshold(sessionID, queueNames.TVBFF as QueueName))
+    ) {
+      await enqueueTVBFF(sessionID);
     }
   }
 }

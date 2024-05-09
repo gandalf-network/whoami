@@ -28,7 +28,6 @@ export const stateThresholdCheckTask = inngest.createFunction(
   async ({ event, step }) => {
     const { sessionID } = event.data;
     if (!sessionID) return;
-    return;
 
     console.log(`> Running state threshold checks... SID: ${sessionID}`);
 

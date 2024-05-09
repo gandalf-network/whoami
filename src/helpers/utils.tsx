@@ -196,7 +196,7 @@ export const shuffleArray = (array: string[]) => {
 
 export const getArrayIndexPercentage = (array: any[], index: number) => {
   // Ensure that the index is within the array's boundaries
-  if (index < 0 || index >= array.length) {
+  if (index < 0 || index > array.length) {
     throw new Error("Index out of bounds");
   }
 

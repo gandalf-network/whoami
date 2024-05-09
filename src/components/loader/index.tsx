@@ -149,10 +149,18 @@ export const LoadingTrivia = () => {
   const [index, setIndex] = useState(0);
 
   const onNext = () => {
+    if (index === texts.length - 1) {
+      return setIndex(0);
+    }
+
     setIndex((prev) => (prev + 1) % texts.length);
   };
 
   const onPrev = () => {
+    if (index === 0) {
+      return setIndex(texts.length - 1);
+    }
+
     setIndex((prev) => (prev - 1 + texts.length) % texts.length);
   };
 
@@ -165,10 +173,10 @@ export const LoadingTrivia = () => {
   }, [texts]);
 
   return (
-    <div className="flex-col flex-center gap-6 w-full rounded-lg border-2 bg-primary-cyan-shade p-6">
+    <div className="flex-col flex-center gap-6 rounded-lg border-2 bg-primary-cyan-shade p-6">
       <div className="w-10 h-10">
         <ThemedCircularProgress
-          value={getArrayIndexPercentage(texts, index)}
+          value={getArrayIndexPercentage(texts, index + 1)}
           text={(index + 1).toString()}
         />
       </div>
@@ -203,6 +211,16 @@ export const LoadingScreen = ({
   texts = loadingTexts,
   ...props
 }: LoadingScreenProps) => {
+  const [isTitleLoading, setIsTitleLoading] = useState(true);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIsTitleLoading(false);
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div
       className={cn(
@@ -213,30 +231,32 @@ export const LoadingScreen = ({
     >
       <PageHeader />
 
-      <div className="flex-1 flex-center flex-col gap-2.5 pb-10 px-2">
-        {/* <div className="flex-col flex-center gap-6 w-full rounded-lg border-2 bg-primary-cyan-shade py-6 px-2">
-          <img
-            src="/loading.gif"
-            className="w-16 h-16 object-cover"
-            alt="loading animation"
-          />
-          <p className="text-center text-lg font-medium">{title}</p>
-        </div> */}
+      <div className="flex-1 flex-center flex-col gap-2.5 mb-10 px-2 relative z-50">
+        {isTitleLoading ? (
+          <div className="flex-col flex-center gap-6 w-full py-6 px-2">
+            <img
+              src="/loading.gif"
+              className="w-16 h-16 object-cover"
+              alt="loading animation"
+            />
+            <p className="text-center text-lg font-medium">{title}</p>
+          </div>
+        ) : (
+          <div className="flex-center flex-col gap-2 pb-14 px-2 w-full">
+            <img
+              src="/loading.gif"
+              className="w-16 h-16 object-cover"
+              alt="loading animation"
+            />
 
-        <div className="flex-center flex-col gap-2 pb-14">
-          <img
-            src="/loading.gif"
-            className="w-16 h-16 object-cover"
-            alt="loading animation"
-          />
+            <p className="text-center text-base opacity-50 mb-3">
+              Crunching your data <br />
+              This might take a minute...
+            </p>
 
-          <p className="text-center text-base opacity-50 mb-3">
-            Crunching your data <br />
-            This might take a minute...
-          </p>
-
-          <LoadingTrivia />
-        </div>
+            <LoadingTrivia />
+          </div>
+        )}
       </div>
 
       <QuadrilateralStar

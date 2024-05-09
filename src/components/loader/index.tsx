@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 import { Button as BaseButton } from "@/components/ui/button";
 import { cn, shuffleArray } from "@/helpers/utils";
+import { useInterval } from "@/hooks/use-interval";
 
 import { DoYouKnowThatIcon, HalfEclipse, QuadrilateralStar } from "../icon";
 import {
@@ -157,6 +158,13 @@ export const LoadingTrivia = () => {
 
     setIndex((prev) => (prev - 1 + texts.length) % texts.length);
   };
+
+  useInterval(
+    () => {
+      setIndex((prev) => (prev + 1) % texts.length);
+    },
+    { delay: 5000 },
+  );
 
   useEffect(() => {
     // Set the index to change every 5 seconds

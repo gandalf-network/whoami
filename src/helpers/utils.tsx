@@ -175,3 +175,21 @@ export const replaceAmpersandWithAnd = (text?: string) => {
 
   return text.replace(/&/g, "and");
 };
+
+const shuffleArray = (array: string[]) => {
+  // Create a copy of the array to avoid modifying the original array
+  const shuffledArray = array.slice();
+
+  // Fisher-Yates shuffle algorithm
+  for (let i = shuffledArray.length - 1; i > 0; i--) {
+    // Get a random index from 0 to i
+    const j = Math.floor(Math.random() * (i + 1));
+
+    // Swap elements at index i and j
+    const temp = shuffledArray[i];
+    shuffledArray[i] = shuffledArray[j];
+    shuffledArray[j] = temp;
+  }
+
+  return shuffledArray;
+};

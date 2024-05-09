@@ -167,3 +167,7 @@ export function handleShowTitleEdgeCases(title: string): string {
       return title;
   }
 }
+
+export const replaceAmpersandWithAnd = (text: string) => {
+  return text.replace(/&/g, "and");
+};

@@ -5,6 +5,7 @@ import { LandingScreen } from "@/components/screens/landing";
 import { UserStories } from "@/components/stories";
 import { Container } from "@/components/themed";
 import { buildOgImageUrl, sharedMetadata } from "@/helpers/metadata";
+import { replaceAmpersandWithAnd } from "@/helpers/utils";
 import { AllStoryIds } from "@/types";
 
 type PageProps = {
@@ -66,7 +67,7 @@ export async function generateMetadata(
           images = buildOgImageUrl({
             story,
             data: {
-              name: firstTvShow.show.title,
+              name: replaceAmpersandWithAnd(firstTvShow.show.title),
               imageUrl: firstTvShow.show.imageURL,
             },
           });
@@ -76,7 +77,7 @@ export async function generateMetadata(
           images = buildOgImageUrl({
             story,
             data: {
-              name: mostWatchedTvShow.show.title,
+              name: replaceAmpersandWithAnd(mostWatchedTvShow.show.title),
               imageUrl: mostWatchedTvShow.show.imageURL,
             },
           });
@@ -96,7 +97,7 @@ export async function generateMetadata(
           images = buildOgImageUrl({
             story,
             data: {
-              name: yourCrossoverStar.name,
+              name: replaceAmpersandWithAnd(yourCrossoverStar.name),
               imageUrl: yourCrossoverStar.imageURL,
             },
           });
@@ -108,7 +109,10 @@ export async function generateMetadata(
           images = buildOgImageUrl({
             story,
             data: {
-              genres: genreDistribution.genres,
+              genres: genreDistribution.genres.map((genre) => ({
+                ...genre,
+                genre: replaceAmpersandWithAnd(genre.genre),
+              })),
             },
           });
           break;
@@ -145,8 +149,8 @@ export async function generateMetadata(
           images = buildOgImageUrl({
             story,
             data: {
-              name: tvBFF.name,
-              show: tvBFF.show,
+              name: replaceAmpersandWithAnd(tvBFF?.name || ""),
+              show: replaceAmpersandWithAnd(tvBFF.show),
               imageUrl: tvBFF.imageURL,
             },
           });
@@ -156,7 +160,7 @@ export async function generateMetadata(
           images = buildOgImageUrl({
             story,
             data: {
-              name: starSign.name,
+              name: replaceAmpersandWithAnd(starSign.name || ""),
             },
           });
           break;
@@ -166,9 +170,9 @@ export async function generateMetadata(
             story,
             data: {
               score: personality.rtScore,
-              tvBff: tvBFF.name,
-              star: starSign.name,
-              title: personality.personality,
+              tvBff: replaceAmpersandWithAnd(tvBFF?.name || ""),
+              star: replaceAmpersandWithAnd(starSign?.name || ""),
+              title: replaceAmpersandWithAnd(personality?.personality || ""),
             },
           });
           break;

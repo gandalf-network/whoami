@@ -495,13 +495,18 @@ export async function getAndDumpActivities(
           if (page === 1) {
             return initialActivityResponse;
           } else {
-            return await eye.getActivity({ dataKey, source: Source.Netflix, limit, page });
+            return await eye.getActivity({
+              dataKey,
+              source: Source.Netflix,
+              limit,
+              page,
+            });
           }
         } catch (error) {
           console.error(`Error fetching page ${page}: ${error}`);
           throw error;
         }
-      })
+      }),
     );
 
     const midTime = performance.now();

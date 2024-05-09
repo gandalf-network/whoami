@@ -1,54 +1,61 @@
-import { enqueueStateThresholdCheckHandler } from "@/actions/lib/queue/producers";
-import { getSessionsByState, sessionStates } from "@/actions/lib/queue/state";
+import { QueueName, checkDependentQueuesThresold, checkIndependentQueuesThresold, checkQueueThresold, getSessionsByState, queueNames, sessionStates, setSessionIndex, statsPhaseReady } from "@/actions/lib/queue/state";
 
 import { inngest } from "../client";
-
-async function stateThresholdCheck() {
-  try {
-    const sessionIDs = await getSessionsByState(sessionStates.PROCESSING);
-    for (const sessionID of sessionIDs) {
-      await enqueueStateThresholdCheckHandler(sessionID);
-    }
-    return sessionIDs;
-  } catch (error) {
-    console.error("Error processing job:", error);
-  }
-}
+import { eventNames } from "@/actions/lib/queue/event";
+import { enqueueStarSignPicker, enqueueTVBFF } from "@/actions/lib/queue/producers";
+import { UserState } from "@prisma/client";
+import { updateUserStateBySession } from "@/actions";
 
 export const stateThresholdCheckTask = inngest.createFunction(
-  { id: "state-threshold-check" },
   {
-    cron: "*/1 * * * *",
+    id: "state-threshold-check",
     concurrency: {
       limit: 50,
     },
   },
-  async ({ event }) => {
+  { event: eventNames.StateThresholdCheck },
+  async ({ event, step }) => {
+    const { sessionID } = event.data;
+    console.log(`> running state threshold checks... ${sessionID}`);
     try {
-      console.log("> running state threshold checks...");
-      const startTime = Date.now();
-      const maxDuration = 60000;
-      let results;
-      let interval: string | number | NodeJS.Timeout | undefined;
+      console.log(await getSessionsByState(sessionStates.PROCESSING))
+      if (await checkIndependentQueuesThresold(sessionID)) {
+        await updateUserStateBySession(sessionID, UserState.COMPLETED);
+        await setSessionIndex(sessionID, sessionStates.COMPLETED);
+        return;
+      }
 
-      const check = async () => {
-        if (Date.now() - startTime > maxDuration) {
-          console.log("Reached maximum execution time. Ending checks.");
-          clearInterval(interval);
-          return;
+      if (await statsPhaseReady(sessionID)) {
+        await updateUserStateBySession(sessionID, UserState.SECOND_PHASE_READY);
+      }
+
+      if (await checkDependentQueuesThresold(sessionID)) {
+        if (
+          !(await checkQueueThresold(sessionID, queueNames.TVBFF as QueueName))
+        ) {
+          await enqueueTVBFF(sessionID);
         }
 
-        results = await stateThresholdCheck();
-      };
+        if (
+          !(await checkQueueThresold(
+            sessionID,
+            queueNames.StarSignPicker as QueueName,
+          ))
+        ) {
+          await enqueueStarSignPicker(sessionID);
+        }
+      }
 
-      interval = setInterval(check, 2000);
-      await new Promise((resolve) => setTimeout(resolve, maxDuration));
-      clearInterval(interval);
-
-      return { event, sessions: results };
-    } catch (err) {
-      console.error(err);
-      return { event, sessions: null };
+    } catch (error) {
+      console.error("Error processing job:", error);
     }
+    
+    console.log("DONE>>>>>>")
+    // Reschedule the same function again by invoking itself.
+    await step.run("reschedule-state-threshold-check", async () => {
+      await inngest.send({ name: eventNames.StateThresholdCheck, data: { sessionID } });
+    });
+
+    return { event };
   },
 );

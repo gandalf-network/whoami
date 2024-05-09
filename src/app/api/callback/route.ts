@@ -1,4 +1,4 @@
-import { enqueueActivityData } from "@/actions/lib/queue/producers";
+import { enqueueActivityData, enqueueStateThresholdCheck } from "@/actions/lib/queue/producers";
 import { removeNonAlphanumericLastChar } from "@/helpers/utils";
 
 export async function GET(req: Request) {
@@ -22,6 +22,7 @@ export async function GET(req: Request) {
   dataKey = removeNonAlphanumericLastChar(dataKey);
 
   await enqueueActivityData(sessionID, dataKey);
+  await enqueueStateThresholdCheck(sessionID)
 
   return new Response(JSON.stringify({ message: "Crunching you data..." }), {
     status: 200,

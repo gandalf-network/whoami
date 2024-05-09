@@ -9,7 +9,7 @@ async function tvShowQuips(event: { data: any }, step: any) {
   const { sessionID } = event.data;
   try {
     await step.run("get-and-update-tv-quips", async () => {
-      return getAndUpdateTVShowQuips(sessionID);
+      return await getAndUpdateTVShowQuips(sessionID);
     });
 
     await updateUserStateBySession(sessionID, UserState.FIRST_PHASE_READY);

@@ -3,7 +3,6 @@ import { serve } from "inngest/next";
 import { inngest } from "@/actions/inngest/client";
 import { crawlRottenTomatoesTask } from "@/actions/inngest/functions/crawlRottenTomatoe";
 import { firstPhaseHandlerTask } from "@/actions/inngest/functions/handleFirstPhase";
-import { stateThresholdCheckHandlerTask } from "@/actions/inngest/functions/handleThresholdCheck";
 import { queryActivitiesTask } from "@/actions/inngest/functions/queryActivities";
 import { queryShowDataTask } from "@/actions/inngest/functions/queryShowData";
 import { starSignPickerTask } from "@/actions/inngest/functions/starSignPicker";
@@ -24,6 +23,5 @@ export const { GET, POST, PUT } = serve({
     tvBFFTask,
     firstPhaseHandlerTask,
     stateThresholdCheckTask,
-    stateThresholdCheckHandlerTask,
   ],
 });

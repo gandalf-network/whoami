@@ -187,7 +187,16 @@ export async function checkDependentQueuesThreshold(
 
     const [, executedChunks] = await getQueueSessionState(sessionID, queueName);
 
-    console.log(`${queueName}`, "<>", completion);
+    console.log(
+      `${queueName}`,
+      "<>",
+      "completion",
+      completion,
+      "executedChunks",
+      executedChunks,
+      "totalChunks",
+      totalChunks,
+    );
     if (completion < COMPLETION_THRESHOLD && executedChunks < totalChunks) {
       canTrigger = false;
       break;

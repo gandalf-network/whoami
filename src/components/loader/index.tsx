@@ -165,7 +165,7 @@ export const LoadingTrivia = () => {
     }, 5000);
 
     return () => clearInterval(interval);
-  }, [texts]);
+  }, []);
 
   return (
     <div className="max-w-[95%] mx-auto flex-col flex-center gap-6 md:gap-4 rounded-lg border-2 bg-primary-cyan-shade p-6 md:p-4">

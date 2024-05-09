@@ -363,6 +363,7 @@ export async function getAndDumpActivities(
     const seenShows: Set<string> = new Set();
     const episodes: insertEpisodeInput[] = [];
 
+    const startTime = performance.now();
     const initialActivityResponse = await eye.getActivity({
       dataKey,
       source: Source.Netflix,
@@ -454,6 +455,12 @@ export async function getAndDumpActivities(
         totalShows += jobShows.length;
       }
     }
+
+    const endTime = performance.now();
+    console.log(
+      `> getAndDumpActivities took ${(endTime - startTime) / 1000} seconds.`,
+    );
+
     return [totalShows, totalChunks];
   } catch (error: any) {
     await updateUserStateBySession(sessionID, UserState.FAILED);

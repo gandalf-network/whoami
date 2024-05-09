@@ -165,6 +165,7 @@ export const LoadingTrivia = () => {
   };
 
   useEffect(() => {
+    // Set the index to change every 5 seconds
     const interval = setInterval(() => {
       setIndex((prev) => (prev + 1) % texts.length);
     }, 5000);
@@ -173,26 +174,28 @@ export const LoadingTrivia = () => {
   }, [texts]);
 
   return (
-    <div className="flex-col flex-center gap-6 rounded-lg border-2 bg-primary-cyan-shade p-6">
-      <div className="w-12 h-12">
+    <div className="max-w-[95%] mx-auto flex-col flex-center gap-6 md:gap-4 rounded-lg border-2 bg-primary-cyan-shade p-6 md:p-4">
+      <div className="w-8 h-8">
         <CountdownCircleTimer
           isPlaying
           duration={5}
           rotation="clockwise"
           colors={["#000"] as any}
-          strokeWidth={5}
+          strokeWidth={4}
           trailColor="#fff"
           key={index}
           onComplete={() => {
             return { shouldRepeat: true };
           }}
-          size={36}
+          size={32}
         />
       </div>
 
       <div>
         <DoYouKnowThatIcon />
-        <p className="text-center text-lg font-medium mt-1.5">{texts[index]}</p>
+        <p className="text-center text-lg md:text-base font-medium mt-1.5">
+          {texts[index]}
+        </p>
       </div>
 
       <div className="flex justify-center gap-12 items-center mt-2">
@@ -223,6 +226,7 @@ export const LoadingScreen = ({
   const [isTitleLoading, setIsTitleLoading] = useState(true);
 
   useEffect(() => {
+    // Set the title to be loaded after 2 seconds
     const interval = setInterval(() => {
       setIsTitleLoading(false);
     }, 2000);
@@ -240,7 +244,7 @@ export const LoadingScreen = ({
     >
       <PageHeader />
 
-      <div className="flex-1 flex-center flex-col gap-2.5 mb-10 px-2 relative z-50">
+      <div className="flex-1 flex-center flex-col gap-2.5 mb-14 px-2 relative z-50">
         {isTitleLoading ? (
           <div className="flex-col flex-center gap-6 w-full py-6 px-2">
             <img

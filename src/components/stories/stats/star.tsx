@@ -7,6 +7,7 @@ import {
   ShareButton,
   StoryDownloadContainer,
   Text,
+  ThemedBaseImage,
 } from "@/components/themed";
 import { getStoryDownloadSelector } from "@/helpers/story";
 import { cn, formatStringArrayToJSX } from "@/helpers/utils";
@@ -42,7 +43,7 @@ export const CrossOverStarStory = ({
             className="absolute w-8 bottom-6 right-4 z-20"
             strokeWidth={1.5}
           />
-          <ThemedImage
+          <ThemedBaseImage
             className="rounded-full z-10"
             src={crossoverStar?.imageURL}
           />

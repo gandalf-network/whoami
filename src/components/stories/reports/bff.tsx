@@ -8,6 +8,7 @@ import {
   ShareButton,
   Text,
   ThemedImage,
+  ThemedBaseImage,
 } from "@/components/themed";
 import { getStoryDownloadSelector } from "@/helpers/story";
 import { cn } from "@/helpers/utils";
@@ -46,7 +47,7 @@ export const TVBFFStory = ({
               <Heart className="absolute w-12 -top-5 -right-5 z-30" />
               <Cross className="absolute w-[250px] rotate-45 bottom-10 -left-[80%] z-10" />
 
-              <ThemedImage src={imageURL || ""} className="z-20" />
+              <ThemedBaseImage src={imageURL || ""} className="z-20" />
             </div>
 
             <div>

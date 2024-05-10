@@ -2,13 +2,36 @@
 
 /* eslint-disable @next/next/no-img-element */
 import { Loader2 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 
 import { cn, fetchImageBase64Data } from "@/helpers/utils";
 
 import { MovieIcon } from "../icon";
 
-export const ThemedImage = ({
+const placeholderClassName =
+  "rounded-lg flex-center w-full h-full border-2 shadow-black shadow-[4px_4px] relative bg-background object-cover";
+
+export const ThemedBaseImage = memo(function Image({
+  className,
+  ...props
+}: React.ImgHTMLAttributes<HTMLImageElement>) {
+  if (!props?.src) {
+    return (
+      <div className={cn(placeholderClassName, className)}>
+        <Loader2 className="w-8 h-8 animate-spin" />
+      </div>
+    );
+  }
+  return (
+    <img
+      className={cn(placeholderClassName, className)}
+      alt="image"
+      {...props}
+    />
+  );
+});
+
+export const ThemedImage = memo(function Image({
   src,
   className,
   iconClassName,
@@ -19,10 +42,7 @@ export const ThemedImage = ({
   iconClassName?: string;
   disableConvertionToBase64?: boolean;
   isLoading?: boolean;
-}) => {
-  const placeholderClassName =
-    "rounded-lg flex-center w-full h-full border-2 shadow-black shadow-[4px_4px] relative bg-background object-cover";
-
+}) {
   const [imageSrc, setImageSrc] = useState("");
 
   const [loading, setLoading] = useState(false);
@@ -88,4 +108,4 @@ export const ThemedImage = ({
       <MovieIcon className={cn("w-20", iconClassName)} />
     </div>
   );
-};
+});

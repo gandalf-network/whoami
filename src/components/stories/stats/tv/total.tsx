@@ -5,6 +5,7 @@ import {
   ShareButton,
   StoryDownloadContainer,
   Text,
+  ThemedBaseImage,
   ThemedImage,
 } from "@/components/themed";
 import { getStoryDownloadSelector } from "@/helpers/story";
@@ -40,20 +41,13 @@ export const TotalTVShowStory = ({
         </Text>
 
         <div className="relative flex items-center gap-x-8 p-0 w-[90%] h-72">
-          <ThemedImage src={firstShowImage} className="h-64" />
+          <ThemedBaseImage src={firstShowImage} className="h-64" />
 
           {secondShowImage || thirdShowImage ? (
             <div className="flex flex-col gap-y-4 w-32 h-72 flex-shrink-0 relative z-10 pr-4">
-              <ThemedImage
-                src={secondShowImage}
-                className="h-[48%]"
-                iconClassName="w-14"
-              />
-              <ThemedImage
-                src={thirdShowImage}
-                className="h-[48%]"
-                iconClassName="w-14"
-              />
+              <ThemedBaseImage src={secondShowImage} className="h-[48%]" />
+
+              <ThemedBaseImage src={thirdShowImage} className="h-[48%]" />
             </div>
           ) : null}
 

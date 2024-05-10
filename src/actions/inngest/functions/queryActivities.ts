@@ -3,7 +3,11 @@ import { performance } from "perf_hooks";
 
 import { getAndDumpActivities, updateUserStateBySession } from "@/actions";
 import { eventNames } from "@/actions/lib/queue/event";
-import { ActivityDataPayload } from "@/actions/lib/queue/producers";
+import {
+  ActivityDataPayload,
+  enqueueStateThresholdCheck,
+  enqueueTVShowQuips,
+} from "@/actions/lib/queue/producers";
 import {
   setSessionIndex,
   sessionStates,
@@ -11,6 +15,7 @@ import {
   queueNames,
   setQueueSessionState,
   setSessionGlobalState,
+  setSessionStartTime,
 } from "@/actions/lib/queue/state";
 
 import { inngest } from "../client";
@@ -18,22 +23,31 @@ import { inngest } from "../client";
 async function queryActivities(event: { data: ActivityDataPayload }) {
   const { sessionID, dataKey } = event.data;
   try {
+    // enqueue state threshold check
+    await setSessionStartTime(sessionID, performance.now());
+    await enqueueStateThresholdCheck(sessionID);
+
+    // set session index and user state to `PROCESSING`
+    await setSessionIndex(sessionID, sessionStates.PROCESSING);
+    await updateUserStateBySession(sessionID, UserState.PROCESSING);
+
     const [totalData, totalChunks] = await getAndDumpActivities(
       sessionID,
       dataKey,
     );
-    await setSessionIndex(sessionID, sessionStates.PROCESSING);
-    await updateUserStateBySession(sessionID, UserState.CRUNCHING_DATA);
     await setSessionGlobalState(sessionID, totalData, totalChunks);
 
     const queueName = queueNames.QueryActivities as QueueName;
     await setQueueSessionState(sessionID, queueName, totalData, totalChunks);
 
     console.log(`> [totalData]:`, totalData, "[totalChunks]:", totalChunks);
+    enqueueTVShowQuips(sessionID);
+
     return totalData;
   } catch (error) {
-    await updateUserStateBySession(sessionID, UserState.CRUNCHING_DATA);
+    await updateUserStateBySession(sessionID, UserState.FAILED);
     console.error("Error processing job:", error);
+    throw error;
   }
 }
 
@@ -47,6 +61,7 @@ export const queryActivitiesTask = inngest.createFunction(
   { event: eventNames.QueryActivities },
   async ({ event }) => {
     const startTime = performance.now();
+
     const result = await queryActivities({ data: event.data });
     const endTime = performance.now();
 

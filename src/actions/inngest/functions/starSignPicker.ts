@@ -12,20 +12,12 @@ import { inngest } from "../client";
 async function starSignPicker(event: { data: any }, step: any) {
   const { sessionID } = event.data;
   try {
-    const processedData = await step.run(
-      "get-and-update-star-sign-picker",
-      async () => {
-        return await getAndUpdateStarSignPicker(sessionID);
-      },
-    );
+    await step.run("get-and-update-star-sign-picker", async () => {
+      return await getAndUpdateStarSignPicker(sessionID);
+    });
     const queueName = queueNames.StarSignPicker as QueueName;
-    const [, totalChunks] = await getSessionGlobalState(sessionID);
-    await setQueueSessionState(
-      sessionID,
-      queueName,
-      processedData,
-      totalChunks,
-    );
+    const [totalJobs, totalChunks] = await getSessionGlobalState(sessionID);
+    await setQueueSessionState(sessionID, queueName, totalJobs, totalChunks);
   } catch (error) {
     console.error("Error processing job:", error);
     throw error;

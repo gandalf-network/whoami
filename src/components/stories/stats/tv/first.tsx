@@ -6,6 +6,7 @@ import {
   ShareButton,
   StoryDownloadContainer,
   Text,
+  ThemedBaseImage,
   ThemedImage,
 } from "@/components/themed";
 import { getDate } from "@/helpers/date";
@@ -41,7 +42,7 @@ export const FirstTVShowStory = ({
         <div className="relative p-0 w-52 h-72">
           <QuadrilateralStar className="absolute w-10 -top-5 -left-5" />
           <DodecagramStar className="absolute w-24 -bottom-10 -right-12 z-10" />
-          <ThemedImage src={showImage} className="z-20" />
+          <ThemedBaseImage src={showImage} className="z-20" />
         </div>
 
         <div>

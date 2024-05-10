@@ -6,6 +6,7 @@ import {
   ShareButton,
   StoryDownloadContainer,
   Text,
+  ThemedBaseImage,
   ThemedImage,
 } from "@/components/themed";
 import { getStoryDownloadSelector } from "@/helpers/story";
@@ -47,7 +48,7 @@ export const MostRewatchTVShowStory = ({
           <NonagramStar className="absolute w-12 -top-4 -right-8 z-30" />
           <PentagramStar className="absolute w-24 -bottom-10 -left-12 z-10" />
 
-          <ThemedImage src={showImage} className="z-20" />
+          <ThemedBaseImage src={showImage} className="z-20" />
         </div>
 
         <div>

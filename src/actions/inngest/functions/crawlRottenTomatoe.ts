@@ -3,9 +3,8 @@ import { eventNames } from "@/actions/lib/queue/event";
 import { ShowPayload } from "@/actions/lib/queue/producers";
 import {
   QueueName,
-  getQueueSessionState,
+  incrementQueueSessionState,
   queueNames,
-  setQueueSessionState,
 } from "@/actions/lib/queue/state";
 
 import { inngest } from "../client";
@@ -22,15 +21,11 @@ async function crawlRottenTomatoes(event: { data: ShowPayload }, step: any) {
     );
     const queueName = queueNames.CrawlRottenTomatoes as QueueName;
 
-    const [, executedChunks] = await getQueueSessionState(
-      showPayload.SessionID,
-      queueName,
-    );
-    await setQueueSessionState(
+    await incrementQueueSessionState(
       showPayload.SessionID,
       queueName,
       processedData,
-      executedChunks + 1,
+      1,
     );
     return processedData;
   } catch (error) {

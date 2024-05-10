@@ -1,11 +1,10 @@
-import { getCompletedShowDataBySession, getShowData } from "@/actions";
+import { getShowData } from "@/actions";
 import { eventNames } from "@/actions/lib/queue/event";
 import { ShowPayload } from "@/actions/lib/queue/producers";
 import {
   QueueName,
-  getQueueSessionState,
+  incrementQueueSessionState,
   queueNames,
-  setQueueSessionState,
 } from "@/actions/lib/queue/state";
 
 import { inngest } from "../client";
@@ -13,22 +12,14 @@ import { inngest } from "../client";
 async function queryShowData(event: { data: ShowPayload }) {
   const showPayload = event.data;
   try {
-    await getShowData(event.data);
-    const processedData = await getCompletedShowDataBySession(
-      showPayload.SessionID,
-    );
+    const processedData = await getShowData(event.data);
     const queueName = queueNames.QueryShowData as QueueName;
-    let [, executedChunks] = await getQueueSessionState(
-      showPayload.SessionID,
-      queueName,
-    );
 
-    executedChunks = executedChunks + 1;
-    await setQueueSessionState(
+    await incrementQueueSessionState(
       showPayload.SessionID,
       queueName,
       processedData,
-      executedChunks,
+      1,
     );
     return processedData;
   } catch (error) {

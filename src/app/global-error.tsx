@@ -26,7 +26,7 @@ export default function GlobalError({
             href="/"
             cta={{
               onClick: reset,
-              children: "Go Home",
+              children: "Continue",
             }}
           />
         </Container>

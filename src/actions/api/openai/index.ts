@@ -126,7 +126,7 @@ async function callOpenAI(
   });
 
   let result;
-  const res = await handleRunStatus(run, thread.id, result);
+  const res = await handleRunStatus(run, result);
   try {
     const resOBJ = JSON.parse(res);
     return resOBJ;
@@ -139,42 +139,11 @@ async function callOpenAI(
   }
 }
 
-const handleRequiresAction = async (run: Run, threadID: string, res: any) => {
-  if (
-    run.required_action &&
-    run.required_action.submit_tool_outputs &&
-    run.required_action.submit_tool_outputs.tool_calls
-  ) {
-    run = await openai.beta.threads.runs.submitToolOutputsAndPoll(
-      threadID,
-      run.id,
-      {
-        tool_outputs: [
-          {
-            output: JSON.stringify(
-              run.required_action?.submit_tool_outputs.tool_calls[0].function
-                .arguments,
-            ),
-            tool_call_id:
-              run.required_action.submit_tool_outputs.tool_calls[0].id,
-          },
-        ],
-      },
-    );
-
-    return handleRunStatus(run, threadID, res);
-  }
-};
-
-const handleRunStatus = async (
-  run: Run,
-  threadID: string,
-  res: any,
-): Promise<any> => {
+const handleRunStatus = async (run: Run, res: any): Promise<any> => {
   if (run.status === "requires_action") {
     res = run.required_action?.submit_tool_outputs.tool_calls[0].function
       .arguments as string;
-    return await handleRequiresAction(run, threadID, res);
+    return res;
   } else {
     return res;
   }

@@ -165,6 +165,7 @@ export const ReportOverviewStory = ({
               className="bg-background"
               storyProps={{
                 id: "overview",
+                info: personality?.personality,
                 ...storyProps,
               }}
             />

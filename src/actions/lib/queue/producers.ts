@@ -30,10 +30,17 @@ export type JobShow = {
   actors: string[];
 };
 
+const jobShow: JobShow = {
+  id: "",
+  title: "",
+  actors: [""],
+};
+
 export type ShowPayload = {
   SessionID: string;
   Shows: JobShow[];
   JobID: string;
+  ProceedNext?: boolean;
 };
 
 export async function enqueueRottenTomatoes(
@@ -108,16 +115,16 @@ export async function enqueueTVShowQuips(sessionID: string): Promise<void> {
   }
 }
 
-export async function enqueueStateThresholdCheckHandler(
+export async function enqueueStateThresholdCheck(
   sessionID: string,
 ): Promise<void> {
   try {
     await inngest.send({
-      name: eventNames.StateThresholdCheckHandler,
+      name: eventNames.StateThresholdCheck,
       data: { sessionID },
     });
     return console.log(
-      "> enqueueStateThresholdCheckHandler: data successfully enqueued",
+      "> enqueueStateThresholdCheck: data successfully enqueued",
     );
   } catch (error) {
     console.error("Failed to enqueue data", error);

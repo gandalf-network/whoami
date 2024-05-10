@@ -4,12 +4,13 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "npm run prisma-generate && npm run prisma-deploy && next build",
+    "build": "npm run prisma-generate && npm run prisma-resolve && next build",
     "start": "next start",
     "lint": "next lint",
     "prisma-migrate": "npx prisma migrate dev",
     "prisma-generate": "npx prisma generate",
-    "prisma-deploy": "npx prisma migrate deploy"
+    "prisma-deploy": "npx prisma migrate deploy",
+    "prisma-resolve": "npx prisma migrate resolve --applied 20240509220110_change_state_to_processing"
   },
   "dependencies": {
     "@enipx/react-insta-stories": "^1.0.5",

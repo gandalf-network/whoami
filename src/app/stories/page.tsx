@@ -87,7 +87,7 @@ export async function generateMetadata(
           images = buildOgImageUrl({
             story,
             data: {
-              count: watchHistory.totalShowsWatched,
+              count: watchHistory.topShows.length,
               images: watchHistory.topShows.map((show) => show.imageURL),
             },
           });

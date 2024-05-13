@@ -20,6 +20,10 @@ export const TotalShowOGImage = ({
   images,
   ...props
 }: TotalShowOGImageProps) => {
+  const firstShowImage = images?.[0];
+  const secondShowImage = images?.[1] || "";
+  const thirdShowImage = images?.[2] || "";
+
   return (
     <OGContainer>
       <OGVisualLayout
@@ -38,32 +42,47 @@ export const TotalShowOGImage = ({
             height: "65%",
           }}
         >
-          <img src={images?.[0]} style={{ ...ogStyles.responsiveImage }} />
+          {firstShowImage && (
+            <img src={firstShowImage} style={{ ...ogStyles.responsiveImage }} />
+          )}
         </div>
-        <div style={{ flexDirection: "column", ...ogStyles.flexCenterY }}>
-          <div
-            style={{
-              ...ogStyles.flexCenterY,
-              ...ogStyles.imageBox,
-              height: "220px",
-              width: "150px",
-              marginBottom: "2rem",
-            }}
-          >
-            <img src={images?.[1]} style={{ ...ogStyles.responsiveImage }} />
-          </div>
 
-          <div
-            style={{
-              ...ogStyles.flexCenterY,
-              ...ogStyles.imageBox,
-              width: "150px",
-              height: "220px",
-            }}
-          >
-            <img src={images?.[2]} style={{ ...ogStyles.responsiveImage }} />
+        {secondShowImage || thirdShowImage ? (
+          <div style={{ flexDirection: "column", ...ogStyles.flexCenterY }}>
+            <div
+              style={{
+                ...ogStyles.flexCenterY,
+                ...ogStyles.imageBox,
+                height: "220px",
+                width: "150px",
+                marginBottom: "2rem",
+              }}
+            >
+              {secondShowImage && (
+                <img
+                  src={secondShowImage}
+                  style={{ ...ogStyles.responsiveImage }}
+                />
+              )}
+            </div>
+
+            <div
+              style={{
+                ...ogStyles.flexCenterY,
+                ...ogStyles.imageBox,
+                width: "150px",
+                height: "220px",
+              }}
+            >
+              {thirdShowImage && (
+                <img
+                  src={thirdShowImage}
+                  style={{ ...ogStyles.responsiveImage }}
+                />
+              )}
+            </div>
           </div>
-        </div>
+        ) : null}
       </OGVisualLayout>
 
       <OGGridLayout style={{ width: "50%" }}>

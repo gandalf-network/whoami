@@ -27,7 +27,9 @@ export const FirstTVShowOGImage = ({
             ...ogStyles.imageBox,
           }}
         >
-          <img src={imageUrl} style={{ ...ogStyles.responsiveImage }} />
+          {imageUrl && (
+            <img src={imageUrl} style={{ ...ogStyles.responsiveImage }} />
+          )}
         </div>
       </OGVisualLayout>
 

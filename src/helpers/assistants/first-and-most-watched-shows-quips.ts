@@ -23,7 +23,7 @@ export const GeneralShowAssistant: AssistantCreateParams = {
         - You must respond by calling the submitQuips function
         - Be creative, every quip must feel different from others and organic.
         `,
-  model: "gpt-4",
+  model: "gpt-4o",
   tools: [
     {
       type: "function",

@@ -20,7 +20,7 @@ export const StarSignAssistant: AssistantCreateParams = {
         - You must respond by calling the submit function
         - Be creative, every quip must feel different from others and organic.
         `,
-  model: "gpt-4",
+  model: "gpt-4o",
   tools: [
     {
       type: "function",

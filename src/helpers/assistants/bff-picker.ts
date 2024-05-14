@@ -21,7 +21,7 @@ export const BFFAssistant: AssistantCreateParams = {
         - You must respond by calling the submitBFF function
         - Be creative, every quip must feel different from others and organic.
         `,
-  model: "gpt-4",
+  model: "gpt-4o",
   tools: [
     {
       type: "function",

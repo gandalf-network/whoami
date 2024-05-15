@@ -99,7 +99,7 @@ export const getStoryShareText = (storyId: AllStoryIds, info: any) => {
   switch (storyId) {
     // tv stats
     case "firstTvShow":
-      return `My first Netflix TV show is ${info}. Try it out to find out yours.`;
+      return `My first Netflix TV show was ${info}. Try it out to find out yours.`;
     case "mostWatchedTvShow":
       return `My most watched Netflix TV show is ${info}. Try it out to find out yours.`;
     case "totalShows":

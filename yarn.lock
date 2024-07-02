@@ -128,11 +128,12 @@
   resolved "https://registry.npmjs.org/@fastify/busboy/-/busboy-2.1.1.tgz"
   integrity sha512-vBZP4NlzfOlerQTnba4aqZoMhE/a9HY7HRqoOPaETQcSQuWEIyZMHGfVu6w9wGtGK5fED5qRs2DteVCjOH60sA==
 
-"@gandalf-network/connect@^1.0.5":
-  version "1.0.5"
-  resolved "https://registry.npmjs.org/@gandalf-network/connect/-/connect-1.0.5.tgz"
-  integrity sha512-aLqtQXBxqBmqTzhqOCLhogW82JVZHrCeWnjT8s6c3JP713mmPkOXaDkrPbR+pQiFVJGqnQVyo7tGzDHy4AJhyA==
+"@gandalf-network/connect@^1.0.10":
+  version "1.0.10"
+  resolved "https://registry.yarnpkg.com/@gandalf-network/connect/-/connect-1.0.10.tgz#d3295330aba129c0ec34d89037a7c59e0598ca21"
+  integrity sha512-ZJDROhVo2o7uFKbe6ywX3yw4obNuDdpWjrjQ/HR8iARWESM6Zp5OGayTAKwnKKuSNJ/ne/kI4SJdAXuGrx7Q/g==
   dependencies:
+    dotenv "^16.4.5"
     graphql "^16.8.1"
     graphql-request "^6.1.0"
     qr-code-styling "^1.6.0-rc.1"

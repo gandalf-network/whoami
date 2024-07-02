@@ -23,8 +23,13 @@ export const useGandalfConnect = () => {
     const res = new Connect({
       publicKey: process.env.NEXT_PUBLIC_GANDALF_PUBLIC_KEY as string,
       redirectURL,
-      services: { netflix: true },
+      services: {
+        netflix: {
+          activities: ["WATCH"],
+        }
+      }
     });
+
     return res;
   };
 

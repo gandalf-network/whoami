@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@enipx/react-insta-stories": "^1.0.5",
-    "@gandalf-network/connect": "^1.0.5",
+    "@gandalf-network/connect": "^1.0.10",
     "@prisma/client": "^5.13.0",
     "@radix-ui/react-alert-dialog": "^1.0.5",
     "@radix-ui/react-slot": "^1.0.2",

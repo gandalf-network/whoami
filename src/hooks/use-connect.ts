@@ -26,8 +26,8 @@ export const useGandalfConnect = () => {
       services: {
         netflix: {
           activities: ["WATCH"],
-        }
-      }
+        },
+      },
     });
 
     return res;

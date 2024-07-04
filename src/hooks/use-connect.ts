@@ -45,7 +45,6 @@ export const useGandalfConnect = () => {
     try {
       setLoading(true);
       const connectUrl = await (await init()).generateURL();
-      console.log("Connect URL", connectUrl);
       setUrl(connectUrl);
     } finally {
       setLoading(false);

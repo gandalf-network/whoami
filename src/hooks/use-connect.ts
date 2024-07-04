@@ -28,6 +28,14 @@ export const useGandalfConnect = () => {
           activities: ["WATCH"],
         },
       },
+      options: {
+        style: {
+          primaryColor: "#000000",
+          backgroundColor: "#FFFFFF",
+          foregroundColor: "#000000",
+          accentColor: "#FFB3EF",
+        },
+      },
     });
 
     return res;

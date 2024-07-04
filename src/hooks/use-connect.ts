@@ -28,6 +28,14 @@ export const useGandalfConnect = () => {
           activities: ["WATCH"],
         },
       },
+      options: {
+        style: {
+          primaryColor: '#000000',
+          backgroundColor: '#FFFFFF',
+          foregroundColor: '#000000',
+          accentColor: '#FFB3EF',
+        }
+      }
     });
 
     return res;
@@ -37,6 +45,7 @@ export const useGandalfConnect = () => {
     try {
       setLoading(true);
       const connectUrl = await (await init()).generateURL();
+      console.log("Connect URL", connectUrl);
       setUrl(connectUrl);
     } finally {
       setLoading(false);

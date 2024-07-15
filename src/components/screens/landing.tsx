@@ -26,7 +26,7 @@ export const LandingScreen = () => {
         </Box>
 
         <div className="flex-1 flex-center flex-col gap-3">
-          <div className="flex-1 flex-center flex-col gap-3">
+          <div className="flex-1 flex-center flex-col gap-3 mb-36">
             <div className="flex-center-y gap-x-1">
               <LogoIcon className="w-14" />
               <LogoMarkOutlinedIcon className="w-64" />
@@ -38,10 +38,6 @@ export const LandingScreen = () => {
               Start
             </StartButton>
           </div>
-
-          <p className="text-center font-regular mb-36 text-sm opacity-60">
-            Available for only iPhones & iPads <br /> Android coming soon
-          </p>
         </div>
 
         <div className="flex-center-y gap-x-2 mb-8">

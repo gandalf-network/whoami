@@ -3,10 +3,14 @@ import { useEffect, useState } from "react";
 import { createOrGetSessionId } from "@/helpers/storage";
 import { checkIfMobile, getEnvDetails } from "@/helpers/utils";
 
+import { useIsAndroid } from "./use-android";
+
 export const useGandalfConnect = () => {
   const [url, setUrl] = useState("");
 
   const [loading, setLoading] = useState(false);
+
+  const isAndroid = useIsAndroid();
 
   const init = async () => {
     // lazy load the gandalf next import
@@ -19,6 +23,18 @@ export const useGandalfConnect = () => {
     const redirectURL = isMobile
       ? baseRedirectUrl
       : `${baseRedirectUrl}?sessionID=${createOrGetSessionId()}`;
+
+    const getConnectPlatform = () => {
+      if (!isMobile) {
+        return "UNIVERSAL";
+      }
+
+      if (isAndroid) {
+        return "ANDROID";
+      }
+
+      return undefined;
+    };
 
     const res = new Connect({
       publicKey: process.env.NEXT_PUBLIC_GANDALF_PUBLIC_KEY as string,
@@ -36,6 +52,7 @@ export const useGandalfConnect = () => {
           accentColor: "#FFB3EF",
         },
       },
+      platform: getConnectPlatform() as any,
     });
 
     return res;

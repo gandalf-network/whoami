@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 
 import { initializeSessionId } from "@/helpers/storage";
 import { openLinkInNewTab } from "@/helpers/utils";
-import { useIsAndroid } from "@/hooks/use-android";
 import { useGandalfConnect } from "@/hooks/use-connect";
 import { useIsMobile } from "@/hooks/use-is-mobile";
 import { ButtonProps } from "@/types";
@@ -16,8 +15,6 @@ export const StartButton = (props: ButtonProps) => {
   const { url, loading } = useGandalfConnect();
 
   const [isLoading, setIsLoading] = useState(false);
-
-  const isAndroid = useIsAndroid();
 
   const isMobile = useIsMobile();
 
@@ -57,7 +54,6 @@ export const StartButton = (props: ButtonProps) => {
   return (
     <Button
       {...props}
-      disabled={isAndroid}
       onClick={onClick}
       loading={isMobile && (loading || isLoading)}
     >

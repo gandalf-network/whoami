@@ -24,6 +24,18 @@ export const useGandalfConnect = () => {
       ? baseRedirectUrl
       : `${baseRedirectUrl}?sessionID=${createOrGetSessionId()}`;
 
+    const getConnectPlatform = () => {
+      if (!isMobile) {
+        return "UNIVERSAL";
+      }
+
+      if (isAndroid) {
+        return "ANDROID";
+      }
+
+      return undefined;
+    };
+
     const res = new Connect({
       publicKey: process.env.NEXT_PUBLIC_GANDALF_PUBLIC_KEY as string,
       redirectURL,
@@ -40,7 +52,7 @@ export const useGandalfConnect = () => {
           accentColor: "#FFB3EF",
         },
       },
-      platform: isAndroid ? ("ANDROID" as any) : undefined,
+      platform: getConnectPlatform() as any,
     });
 
     return res;

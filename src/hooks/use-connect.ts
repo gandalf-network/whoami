@@ -3,10 +3,14 @@ import { useEffect, useState } from "react";
 import { createOrGetSessionId } from "@/helpers/storage";
 import { checkIfMobile, getEnvDetails } from "@/helpers/utils";
 
+import { useIsAndroid } from "./use-android";
+
 export const useGandalfConnect = () => {
   const [url, setUrl] = useState("");
 
   const [loading, setLoading] = useState(false);
+
+  const isAndroid = useIsAndroid();
 
   const init = async () => {
     // lazy load the gandalf next import
@@ -36,6 +40,7 @@ export const useGandalfConnect = () => {
           accentColor: "#FFB3EF",
         },
       },
+      platform: isAndroid ? ("ANDROID" as any) : undefined,
     });
 
     return res;

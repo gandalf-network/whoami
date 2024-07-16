@@ -36,6 +36,8 @@ export const useGandalfConnect = () => {
       return undefined;
     };
 
+    alert(`Platform: ${getConnectPlatform()}`);
+
     const res = new Connect({
       publicKey: process.env.NEXT_PUBLIC_GANDALF_PUBLIC_KEY as string,
       redirectURL,
@@ -62,6 +64,9 @@ export const useGandalfConnect = () => {
     try {
       setLoading(true);
       const connectUrl = await (await init()).generateURL();
+      alert(
+        `Connect URL: ${connectUrl} - ${isAndroid ? "Android" : "Not Android"}`,
+      );
       setUrl(connectUrl);
     } finally {
       setLoading(false);

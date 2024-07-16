@@ -6,15 +6,21 @@ export const useIsAndroid = () => {
   const [isAndroid, setIsAndroid] = useState(false);
 
   useEffect(() => {
-    if (!isWindowDefined()) return;
+    const userAgent = isWindowDefined() ? navigator.userAgent : undefined;
 
-    const userAgent = navigator.userAgent || navigator.vendor;
+    if (!userAgent) return;
 
-    window.alert(userAgent);
+    alert(
+      `${userAgent} ${
+        navigator.userAgent.includes("Android") || /android/i.test(userAgent)
+          ? "Android"
+          : "Not Android"
+      }`,
+    );
 
-    if (navigator.userAgent.includes("Android") || /android/i.test(userAgent)) {
-      setIsAndroid(true);
-    }
+    setIsAndroid(
+      navigator.userAgent.includes("Android") || /android/i.test(userAgent),
+    );
   }, []);
 
   return isAndroid;

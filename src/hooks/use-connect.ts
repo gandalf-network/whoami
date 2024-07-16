@@ -1,16 +1,12 @@
 import { useEffect, useState } from "react";
 
 import { createOrGetSessionId } from "@/helpers/storage";
-import { checkIfMobile, getEnvDetails } from "@/helpers/utils";
-
-import { useIsAndroid } from "./use-android";
+import { checkIfMobile, getEnvDetails, isDeviceAndroid } from "@/helpers/utils";
 
 export const useGandalfConnect = () => {
   const [url, setUrl] = useState("");
 
   const [loading, setLoading] = useState(false);
-
-  const isAndroid = useIsAndroid();
 
   const init = async () => {
     // lazy load the gandalf next import
@@ -29,7 +25,7 @@ export const useGandalfConnect = () => {
         return "UNIVERSAL";
       }
 
-      if (isAndroid) {
+      if (isDeviceAndroid()) {
         return "ANDROID";
       }
 

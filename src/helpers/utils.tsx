@@ -193,3 +193,11 @@ export const shuffleArray = (array: string[]) => {
 
   return shuffledArray;
 };
+
+export const isDeviceAndroid = () => {
+  const userAgent = isWindowDefined() ? navigator.userAgent : undefined;
+
+  if (!userAgent) return false;
+
+  return navigator.userAgent.includes("Android") || /android/i.test(userAgent);
+};

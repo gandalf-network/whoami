@@ -1,16 +1,12 @@
 import { useEffect, useState } from "react";
 
 import { createOrGetSessionId } from "@/helpers/storage";
-import { checkIfMobile, getEnvDetails } from "@/helpers/utils";
-
-import { useIsAndroid } from "./use-android";
+import { checkIfMobile, getEnvDetails, isDeviceAndroid } from "@/helpers/utils";
 
 export const useGandalfConnect = () => {
   const [url, setUrl] = useState("");
 
   const [loading, setLoading] = useState(false);
-
-  const isAndroid = useIsAndroid();
 
   const init = async () => {
     // lazy load the gandalf next import
@@ -29,14 +25,12 @@ export const useGandalfConnect = () => {
         return "UNIVERSAL";
       }
 
-      if (isAndroid) {
+      if (isDeviceAndroid()) {
         return "ANDROID";
       }
 
       return undefined;
     };
-
-    alert(`Platform: ${getConnectPlatform()}`);
 
     const res = new Connect({
       publicKey: process.env.NEXT_PUBLIC_GANDALF_PUBLIC_KEY as string,
@@ -64,9 +58,6 @@ export const useGandalfConnect = () => {
     try {
       setLoading(true);
       const connectUrl = await (await init()).generateURL();
-      alert(
-        `Connect URL: ${connectUrl} - ${isAndroid ? "Android" : "Not Android"}`,
-      );
       setUrl(connectUrl);
     } finally {
       setLoading(false);
@@ -76,7 +67,7 @@ export const useGandalfConnect = () => {
   useEffect(() => {
     console.log("Initiating Gandalf Connect");
     generateURL();
-  }, [isAndroid]);
+  }, []);
 
   return { init, url, loading };
 };

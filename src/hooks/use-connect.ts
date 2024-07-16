@@ -71,7 +71,7 @@ export const useGandalfConnect = () => {
   useEffect(() => {
     console.log("Initiating Gandalf Connect");
     generateURL();
-  }, []);
+  }, [isAndroid]);
 
   return { init, url, loading };
 };

@@ -7,7 +7,7 @@ const perplexityAPI = api("@pplx/v0#29jnn2rlt35the2");
 export async function getPersonalities(characters: string[], topShow: string) {
   perplexityAPI.auth(PERPLEXITY_API_KEY);
   const { data } = await perplexityAPI.post_chat_completions({
-    model: "sonar-small-online",
+    model: "llama-3-sonar-large-32k-online",
     messages: [
       { role: "system", content: "Be precise and concise." },
       {

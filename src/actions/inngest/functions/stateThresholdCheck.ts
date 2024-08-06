@@ -20,7 +20,7 @@ import {
 
 import { inngest } from "../client";
 
-const MAX_SESSION_DURATION = 2 * 60 * 1000; // 1 minute in milliseconds
+const MAX_SESSION_DURATION = 2 * 60 * 1000; // 2 minute in milliseconds
 
 export const stateThresholdCheckTask = inngest.createFunction(
   {

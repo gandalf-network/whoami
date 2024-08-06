@@ -20,7 +20,7 @@ import {
 
 import { inngest } from "../client";
 
-const MAX_SESSION_DURATION = 15 * 60 * 1000; // 15 minutes in milliseconds
+const MAX_SESSION_DURATION = 2 * 60 * 1000; // 2 minute in milliseconds
 
 export const stateThresholdCheckTask = inngest.createFunction(
   {
@@ -32,7 +32,7 @@ export const stateThresholdCheckTask = inngest.createFunction(
     const { sessionID } = event.data;
     if (!sessionID) return;
 
-    let sessionStartTime = await getSessionStartTime(sessionID);
+    const sessionStartTime = await getSessionStartTime(sessionID);
     if (sessionStartTime === 0) {
       console.log("No session start time");
       return;
@@ -42,7 +42,9 @@ export const stateThresholdCheckTask = inngest.createFunction(
     const sessionDuration = currentTime - sessionStartTime;
 
     if (sessionDuration > MAX_SESSION_DURATION) {
-      console.log(`Session ${sessionID} has exceeded 15 minutes. Stopping further checks.`);
+      console.log(
+        `Session ${sessionID} has exceeded 15 minutes. Stopping further checks.`,
+      );
       await completeSession(sessionID);
       return;
     }

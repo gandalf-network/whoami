@@ -6,5 +6,5 @@ export const eventNames = {
   StateThresholdCheckHandler: "app/state.threshold.check.handler",
   TVShowQuips: "app/tv.show.quips.requested",
   StarSignPicker: "app/star.sign.picker.requested",
-  StateThresholdCheck: "app/state.threshold.check",
+  StateThresholdCheck: "app/check.threshold.state",
 };

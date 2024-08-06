@@ -24,7 +24,7 @@ const MAX_SESSION_DURATION = 2 * 60 * 1000; // 2 minute in milliseconds
 
 export const stateThresholdCheckTask = inngest.createFunction(
   {
-    id: "state-threshold-check",
+    id: "check-threshold-state",
     concurrency: { limit: 50 },
   },
   { event: eventNames.StateThresholdCheck },

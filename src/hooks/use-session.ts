@@ -224,10 +224,23 @@ export const useSession = (options: UseSessionOptionsType = {}) => {
         `/api/callback?sessionID=${requestSessionId}&dataKey=${dataKey}`,
       );
 
-      // remove data key from the query params
-      // router.replace("/stories", {
-      //   scroll: false,
-      // });
+      // Remove dataKey from the URL without reloading the page
+      // Create a new URL without the dataKey parameter
+      const params = new URLSearchParams(searchParams.toString());
+      params.delete("dataKey");
+      const newQueryString = params.toString();
+      const newUrl = newQueryString
+        ? `${window.location.pathname}?${newQueryString}`
+        : window.location.pathname;
+
+      console.log({
+        newUrl,
+        sessionId,
+        dataKey,
+      });
+
+      // Use router.push to update the URL
+      router.push(newUrl, { scroll: false });
     };
 
     if (dataKey && sessionId) {
